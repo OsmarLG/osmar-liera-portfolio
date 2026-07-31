@@ -1,0 +1,19 @@
+{
+  "name": "Osmar Liera — Backend / Full-Stack Engineer",
+  "short_name": "Osmar Liera",
+  "description": "Portafolio profesional de Osmar Liera.",
+  "lang": "es-MX",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#071018",
+  "theme_color": "#071018",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
