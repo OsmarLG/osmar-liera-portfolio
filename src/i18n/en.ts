@@ -78,7 +78,7 @@ const en: Dictionary = {
     ctaCases: 'See AI case studies',
     ctaCv: 'View résumé',
     ctaWhatsapp: 'WhatsApp',
-    photoAlt: 'Portrait of Osmar Liera wearing glasses and a black T-shirt',
+    photoAlt: 'Close-up portrait of Osmar Liera in a blue polo shirt',
     detectionLabel: 'osmar_liera',
   },
   run: {

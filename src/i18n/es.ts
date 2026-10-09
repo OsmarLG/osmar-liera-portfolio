@@ -78,7 +78,7 @@ const es: Dictionary = {
     ctaCases: 'Ver casos de IA',
     ctaCv: 'Ver CV',
     ctaWhatsapp: 'WhatsApp',
-    photoAlt: 'Retrato de Osmar Liera con lentes y camiseta negra',
+    photoAlt: 'Retrato de Osmar Liera en primer plano, con playera tipo polo azul',
     detectionLabel: 'osmar_liera',
   },
   run: {

@@ -31,3 +31,8 @@
   from = "/og-image.png"
   to = "/og/og-es.jpg"
   status = 301
+
+[[redirects]]
+  from = "/images/osmar-liera.jpg"
+  to = "/images/osmar-liera-perfil.jpg"
+  status = 301

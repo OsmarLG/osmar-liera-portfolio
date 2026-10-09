@@ -4,7 +4,7 @@ import Icon from '../Icon.astro';
 import SocialLinks from '../SocialLinks.astro';
 import type { Dictionary } from '../../i18n';
 import { whatsappHref } from '../../i18n/profile';
-import portrait from '../../assets/photo/osmar-liera.webp';
+import portrait from '../../assets/photo/osmar-perfil.webp';
 
 interface Props {
   dict: Dictionary;
@@ -65,21 +65,25 @@ const waHref = whatsappHref(dict.contact.whatsappMessage);
 
     <div class="hero__visual">
       <div class="portrait">
-        <div class="portrait__frame" data-parallax>
-        <Picture
-          src={portrait}
-          formats={['avif', 'webp']}
-          fallbackFormat="webp"
-          widths={[360, 554]}
-          sizes="(min-width: 1000px) 440px, (min-width: 640px) 60vw, 82vw"
-          alt={hero.photoAlt}
-          loading="eager"
-          fetchpriority="high"
-          class="portrait__img"
-        />
-        <div class="portrait__detect" aria-hidden="true">
-          <span class="portrait__label mono">{hero.detectionLabel}</span>
-        </div>
+        <div class="portrait__stack" data-parallax>
+          <span class="portrait__orbit" aria-hidden="true"></span>
+          <span class="portrait__disc" aria-hidden="true"></span>
+          <div class="portrait__cutout">
+            <Picture
+              src={portrait}
+              formats={['avif', 'webp']}
+              fallbackFormat="webp"
+              widths={[220, 440]}
+              sizes="220px"
+              alt={hero.photoAlt}
+              loading="eager"
+              fetchpriority="high"
+              class="portrait__img"
+            />
+          </div>
+          <div class="portrait__detect" aria-hidden="true">
+            <span class="portrait__label mono">{hero.detectionLabel}</span>
+          </div>
         </div>
       </div>
 
@@ -254,46 +258,86 @@ const waHref = whatsappHref(dict.contact.whatsappMessage);
   .hero__visual {
     position: relative;
     display: grid;
-    justify-items: end;
+    justify-items: center;
   }
 
+  /*
+   * The cut-out photo (501 x 498 px, transparent background) is shown at 220 CSS px,
+   * never upscaled, on a brand disc that shows through its transparent background.
+   * Fixed 280 x 300 box, so the clip can use pixel coordinates.
+   */
   .portrait {
     position: relative;
-    width: min(100%, 440px);
-    aspect-ratio: 554 / 692;
-    margin-inline: auto 0;
+    width: 280px;
+    height: 300px;
   }
 
-  .portrait__frame {
+  .portrait__stack {
     position: absolute;
     inset: 0;
   }
 
-  .portrait :global(.portrait__img) {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: var(--radius-l);
-    mask-image: linear-gradient(to right, transparent 0%, #000 24%), linear-gradient(to top, transparent 0%, #000 34%);
-    mask-composite: intersect;
-    -webkit-mask-composite: source-in;
+  .portrait__disc {
+    position: absolute;
+    left: 12px;
+    top: 42px;
+    width: 256px;
+    height: 256px;
+    border-radius: 50%;
+    background:
+      radial-gradient(circle at 50% 38%, rgb(139 234 250 / 0.55), transparent 58%),
+      radial-gradient(circle at 50% 50%, var(--accent-strong) 0%, #0b6f86 62%, #083846 100%);
+    box-shadow:
+      0 0 0 1px rgb(95 224 245 / 0.45),
+      0 30px 80px -20px rgb(47 201 230 / 0.45);
   }
 
-  .portrait::before {
+  .portrait__disc::after {
     content: '';
     position: absolute;
-    inset: -6% -10% 0 0;
-    z-index: -1;
-    background: radial-gradient(circle at 60% 30%, rgb(47 201 230 / 0.16), transparent 62%);
+    inset: 0;
+    border-radius: 50%;
+    background: radial-gradient(circle at 1px 1px, rgb(255 255 255 / 0.22) 1px, transparent 0) 0 0 / 14px 14px;
+    mask-image: radial-gradient(circle at 50% 30%, #000, transparent 70%);
+  }
+
+  .portrait__orbit {
+    position: absolute;
+    left: -14px;
+    top: 16px;
+    width: 308px;
+    height: 308px;
+    border: 1px dashed rgb(95 224 245 / 0.35);
+    border-radius: 50%;
+  }
+
+  .portrait__cutout {
+    position: absolute;
+    inset: 0;
+    /* Cropped to the disc; the photo's flat top edge fades into it (see mask below). */
+    clip-path: circle(128px at 140px 170px);
+  }
+
+  .portrait__cutout :global(picture) {
+    position: absolute;
+    left: 30px;
+    top: 86px;
+    width: 220px;
+  }
+
+  .portrait :global(.portrait__img) {
+    width: 220px;
+    height: auto;
+    mask-image: linear-gradient(to bottom, transparent 0, #000 18%);
   }
 
   .portrait__detect {
     position: absolute;
-    left: 15%;
-    top: 3%;
-    width: 46%;
-    height: 37%;
-    border: 1px solid rgb(95 224 245 / 0.55);
+    left: 62px;
+    top: 116px;
+    width: 158px;
+    height: 162px;
+    border: 1px solid rgb(237 243 246 / 0.7);
     border-radius: 4px;
   }
 
@@ -303,7 +347,7 @@ const waHref = whatsappHref(dict.contact.whatsappMessage);
     position: absolute;
     width: 14px;
     height: 14px;
-    border-color: var(--accent);
+    border-color: var(--text);
     border-style: solid;
   }
 
@@ -336,8 +380,7 @@ const waHref = whatsappHref(dict.contact.whatsappMessage);
   .run-card {
     position: relative;
     width: min(100%, 430px);
-    margin-top: -5.5rem;
-    margin-right: auto;
+    margin-top: 1.75rem;
     border: 1px solid var(--line-strong);
     border-radius: var(--radius);
     background: rgb(8 16 23 / 0.92);
@@ -348,7 +391,8 @@ const waHref = whatsappHref(dict.contact.whatsappMessage);
 
   @media (min-width: 1000px) {
     .run-card {
-      margin-left: -3.5rem;
+      margin-top: 0.75rem;
+      margin-left: -3rem;
     }
   }
 

@@ -14,7 +14,7 @@ export const person = {
   city: 'La Paz',
   region: 'Baja California Sur',
   country: 'MX',
-  image: `${SITE_URL}/images/osmar-liera.jpg`,
+  image: `${SITE_URL}/images/osmar-liera-perfil.jpg`,
 } as const;
 
 export const whatsappHref = (message: string): string =>

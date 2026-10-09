@@ -19,7 +19,7 @@ const outDir = join(root, 'public', 'og');
 mkdirSync(outDir, { recursive: true });
 
 const font = (pkg, file) => pathToFileURL(join(root, 'node_modules', '@fontsource-variable', pkg, 'files', file)).href;
-const photo = `data:image/webp;base64,${readFileSync(join(root, 'src', 'assets', 'photo', 'osmar-liera.webp')).toString('base64')}`;
+const photo = `data:image/webp;base64,${readFileSync(join(root, 'src', 'assets', 'photo', 'osmar-perfil.webp')).toString('base64')}`;
 
 const cards = {
   es: {
@@ -47,10 +47,15 @@ body { position: relative; background: #05090d; color: #edf3f6; font-family: 'Bo
 body::before { content: ''; position: absolute; inset: 0;
   background: radial-gradient(700px 420px at 90% 0%, rgba(47,201,230,.22), transparent 60%),
               radial-gradient(circle at 1px 1px, rgba(147,169,181,.16) 1px, transparent 0) 0 0 / 26px 26px; }
-.photo { position: absolute; right: 0; top: 0; width: 470px; height: 630px; object-fit: cover; object-position: 30% 0;
-  -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 35%), linear-gradient(to top, transparent 0%, #000 30%);
-  -webkit-mask-composite: source-in; mask-composite: intersect; }
-.box { position: absolute; left: 782px; top: 44px; width: 214px; height: 226px; border: 2px solid rgba(95,224,245,.7); border-radius: 4px; }
+.disc { position: absolute; left: 836px; top: 150px; width: 300px; height: 300px; border-radius: 50%;
+  background: radial-gradient(circle at 50% 38%, rgba(139,234,250,.55), transparent 58%), radial-gradient(circle at 50% 50%, #2fc9e6 0%, #0b6f86 62%, #083846 100%);
+  box-shadow: 0 0 0 1px rgba(95,224,245,.45), 0 30px 90px -20px rgba(47,201,230,.5); }
+.orbit { position: absolute; left: 818px; top: 132px; width: 336px; height: 336px; border: 1px dashed rgba(95,224,245,.4); border-radius: 50%; }
+.cut { position: absolute; left: 836px; top: 150px; width: 300px; height: 300px; border-radius: 50%; overflow: hidden; }
+/* 501 px photo shown at 256 px (downscaled only); its flat top edge fades into the disc. */
+.photo { position: absolute; left: 22px; top: 58px; width: 256px; height: auto;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 18%); mask-image: linear-gradient(to bottom, transparent 0, #000 18%); }
+.box { position: absolute; left: 892px; top: 236px; width: 190px; height: 190px; border: 2px solid rgba(237,243,246,.75); border-radius: 4px; }
 .box span { position: absolute; left: -2px; top: -28px; background: #5fe0f5; color: #02161c; font: 600 15px 'Mono'; padding: 3px 8px; border-radius: 3px; }
 .content { position: absolute; left: 72px; top: 64px; width: 760px; }
 .kicker { font: 500 18px 'Mono'; color: #5fe0f5; letter-spacing: .01em; }
@@ -62,7 +67,9 @@ h1 span { display: block; color: #5fe0f5; padding-left: 36px; }
 .meta b { color: #74e8ad; font-weight: 500; }
 .url { position: absolute; right: 48px; bottom: 44px; font: 600 18px 'Mono'; color: #edf3f6; background: rgba(5,9,13,.7); padding: 6px 12px; border-radius: 8px; border: 1px solid #2a4352; }
 </style></head><body>
-<img class="photo" src="${photo}" alt="">
+<span class="orbit"></span>
+<span class="disc"></span>
+<div class="cut"><img class="photo" src="${photo}" alt=""></div>
 <div class="box"><span>osmar_liera</span></div>
 <div class="content">
   <p class="kicker">${card.kicker}</p>
