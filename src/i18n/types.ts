@@ -69,6 +69,12 @@ export interface ExperienceOrg {
   projects: ExperienceProject[];
 }
 
+export interface PreviousRole {
+  org: string;
+  role: string;
+  summary: string;
+}
+
 export interface CommerceSite {
   name: string;
   market: string;
@@ -245,6 +251,8 @@ export interface Dictionary {
     title: string;
     intro: string;
     orgs: ExperienceOrg[];
+    previousTitle: string;
+    previous: PreviousRole[];
   };
   commerce: {
     title: string;
@@ -290,6 +298,8 @@ export interface Dictionary {
     experience: CvExperienceBlock[];
     teachingTitle: string;
     teaching: { role: string; org: string; period: string; bullets: string[] };
+    previousTitle: string;
+    previous: PreviousRole[];
     productsTitle: string;
     products: { name: string; text: string; repo?: string }[];
     languagesTitle: string;

@@ -9,7 +9,12 @@ Site in Spanish (default) and English. Facts below come from his current résum�
 - Full-Stack Developer, Nuts Marketing (2024 — present) — integration middleware between Shopify stores and Microsoft Dynamics 365 ERPs (Finance & Operations; Business Central + LS Central over SOAP/XML), plus the Shasa (Mexico and US) and Hypsters platforms. Stack: Laravel, Laravel Nova, Filament, Shopify Admin API (GraphQL and webhooks), SOAP, Azure App Service with WebJobs
 - Founder & Technical Lead, ELROI Labs (La Paz, BCS) — software, integration and applied-AI studio: https://labs.elroi.cloud
 - Full-Stack Developer, Tangramx — enterprise applications for insurers, healthcare institutions and logistics operators (primary stack: Python / FastAPI)
-- Instructor, Applied AI for Business — Instituto Tecnológico de La Paz
+- Institutional Systems Programmer and Teacher (final semester of the software development programs) — Instituto Tecnológico de La Paz; as part of teaching, training on applied AI for business
+
+## Previous experience
+
+- Giro26 — Full-Stack Developer: financial ERP, hexagonal architecture and SQL optimization
+- Hi-G — Web & Mobile Developer: Hi-G app with Flutter, Firebase, TypeScript and Web3 integrations
 
 ## AI work in production
 
@@ -23,7 +28,7 @@ Site in Spanish (default) and English. Facts below come from his current résum�
 - Nuts Marketing: Macadamia (internal project, Shopify ↔ Dynamics 365 Finance & Operations middleware for a retailer), El Asturiano (Business Central + LS Central over SOAP/XML), Coco (internal project, new Laravel + Nova app on Azure App Service), Shasa (Mexico and US) and Hypsters on Shopify and Magento, Apple Wallet passes and gift cards. Work delivered as part of the Nuts Marketing team; Shasa retains brand and product ownership.
 - Tangramx: Compass WMS (server-side pagination, race-condition fix in multi-file upload, client-portal admin preview), ATC / ATCSMART (statement-parser fixes, Excel exports).
 - OS CRM (own product, private, in production on Coolify): Laravel 13 + Inertia/React CRM with leads, pipeline, tasks with reminders, clients and projects; WhatsApp via Evolution API with AI drafts and human approval; MCP server with 23 tools; Postiz webhook and website forms that create leads.
-- Own products with public code: PMCRM (https://github.com/OsmarLG/pm-crm-elroi), AVT multitenant SaaS for land sales (https://github.com/OsmarLG/api-avt-l12), NopalGreen operations platform for tortilla producers (https://github.com/OsmarLG/nopalgreen).
+- Own products with public code: PMCRM (https://github.com/OsmarLG/pm-crm-elroi), AVT, his own multitenant SaaS for land sales (https://github.com/OsmarLG/api-avt-l12), NopalGreen operations platform for tortilla producers (https://github.com/OsmarLG/nopalgreen).
 
 ## Languages
 

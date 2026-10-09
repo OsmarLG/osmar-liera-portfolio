@@ -142,6 +142,19 @@ const structuredData = buildStructuredData(dict, pageUrl, dict.meta.cvTitle, dic
           </article>
         </section>
 
+        <section class="cv-block" aria-labelledby="cv-previous">
+          <h2 class="cv-section-title" id="cv-previous">{cvPage.previousTitle}</h2>
+          <ul class="cv-list">
+            {
+              cvPage.previous.map((item) => (
+                <li>
+                  <strong>{item.org}</strong> · {item.role}: {item.summary}
+                </li>
+              ))
+            }
+          </ul>
+        </section>
+
         <section class="cv-block" aria-labelledby="cv-products">
           <h2 class="cv-section-title" id="cv-products">{cvPage.productsTitle}</h2>
           <dl class="cv-products">

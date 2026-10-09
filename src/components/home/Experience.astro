@@ -36,11 +36,13 @@ const { experience, commerce, ui } = dict;
                   <li class="project">
                     <h4 class="project__name">{project.name}</h4>
                     <p class="project__summary">{project.summary}</p>
-                    <ul class="project__bullets">
-                      {project.bullets.map((bullet) => (
-                        <li>{bullet}</li>
-                      ))}
-                    </ul>
+                    {project.bullets.length > 0 && (
+                      <ul class="project__bullets">
+                        {project.bullets.map((bullet) => (
+                          <li>{bullet}</li>
+                        ))}
+                      </ul>
+                    )}
                     {project.caseLink && (
                       <a class="link link-arrow project__link" href={project.caseLink.href}>
                         {project.caseLink.label}
@@ -55,6 +57,21 @@ const { experience, commerce, ui } = dict;
         ))
       }
     </ol>
+
+    <section class="previous" aria-labelledby="previous-title" data-reveal>
+      <h3 class="previous__title mono" id="previous-title">{experience.previousTitle}</h3>
+      <ul class="previous__list" role="list">
+        {
+          experience.previous.map((item) => (
+            <li class="previous__item">
+              <p class="previous__org">{item.org}</p>
+              <p class="previous__role">{item.role}</p>
+              <p class="previous__summary">{item.summary}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
 
     <section class="commerce" aria-labelledby="commerce-title">
       <div class="commerce__intro" data-reveal>
@@ -180,6 +197,52 @@ const { experience, commerce, ui } = dict;
 
   .project__link {
     margin-top: 0.9rem;
+    font-size: 0.95rem;
+  }
+
+  /* Previous experience ------------------------------------------- */
+  .previous {
+    margin-top: clamp(2.5rem, 6vw, 3.5rem);
+  }
+
+  .previous__title {
+    margin-bottom: 1rem;
+    color: var(--text-3);
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: lowercase;
+  }
+
+  .previous__list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    gap: 0.75rem;
+    list-style: none;
+    padding: 0;
+  }
+
+  .previous__item {
+    padding: 1.1rem 1.25rem;
+    border: 1px dashed var(--line-strong);
+    border-radius: var(--radius);
+  }
+
+  .previous__org {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 650;
+  }
+
+  .previous__role {
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  .previous__summary {
+    margin-top: 0.4rem;
+    color: var(--text-2);
     font-size: 0.95rem;
   }
 

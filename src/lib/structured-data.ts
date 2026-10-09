@@ -73,8 +73,14 @@ export function buildStructuredData(dict: Dictionary, pageUrl: string, pageName:
           {
             '@type': 'Occupation',
             name: isEs
-              ? 'Instructor de IA aplicada a negocios (Instituto Tecnológico de La Paz)'
-              : 'Instructor, Applied AI for Business (Instituto Tecnológico de La Paz)',
+              ? 'Programador de sistemas institucionales (Instituto Tecnológico de La Paz)'
+              : 'Institutional Systems Programmer (Instituto Tecnológico de La Paz)',
+          },
+          {
+            '@type': 'Occupation',
+            name: isEs
+              ? 'Docente del último semestre de las carreras de desarrollo de software (Instituto Tecnológico de La Paz)'
+              : 'Teacher, final semester of the software development programs (Instituto Tecnológico de La Paz)',
           },
         ],
         alumniOf: {
