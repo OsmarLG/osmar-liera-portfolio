@@ -65,7 +65,9 @@ const { experience, commerce, ui } = dict;
           experience.previous.map((item) => (
             <li class="previous__item">
               <p class="previous__org">{item.org}</p>
-              <p class="previous__role">{item.role}</p>
+              <p class="previous__role">
+                {item.role} <span class="previous__period mono">· {item.period}</span>
+              </p>
               <p class="previous__summary">{item.summary}</p>
             </li>
           ))
@@ -238,6 +240,12 @@ const { experience, commerce, ui } = dict;
     color: var(--accent);
     font-weight: 600;
     font-size: 0.95rem;
+  }
+
+  .previous__period {
+    color: var(--text-3);
+    font-size: 0.8rem;
+    font-weight: 500;
   }
 
   .previous__summary {

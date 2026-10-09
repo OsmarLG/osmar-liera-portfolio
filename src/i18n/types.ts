@@ -72,6 +72,7 @@ export interface ExperienceOrg {
 export interface PreviousRole {
   org: string;
   role: string;
+  period: string;
   summary: string;
 }
 
@@ -300,6 +301,8 @@ export interface Dictionary {
     teaching: { role: string; org: string; period: string; bullets: string[] };
     previousTitle: string;
     previous: PreviousRole[];
+    educationTitle: string;
+    education: string;
     productsTitle: string;
     products: { name: string; text: string; repo?: string }[];
     languagesTitle: string;

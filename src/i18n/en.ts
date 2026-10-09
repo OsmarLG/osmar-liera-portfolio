@@ -340,6 +340,11 @@ const en: Dictionary = {
             ],
           },
           {
+            name: 'Maratón',
+            summary: 'Digital development for the classic Maratón trivia game.',
+            bullets: [],
+          },
+          {
             name: 'Coco (internal project)',
             summary: 'New Laravel + Nova application on Azure App Service, getting started.',
             bullets: ['Bootstrapping the application with Laravel and Laravel Nova, deployed on Azure App Service.'],
@@ -416,7 +421,7 @@ const en: Dictionary = {
         org: 'Instituto Tecnológico de La Paz',
         role: 'Institutional Systems Programmer · Teacher',
         period: 'Present',
-        summary: 'Two roles at the Tec: building its institutional systems and teaching.',
+        summary: 'A graduate of the Tec; today I work there in two roles: building its institutional systems and teaching.',
         projects: [
           {
             name: 'Institutional systems programmer',
@@ -435,8 +440,8 @@ const en: Dictionary = {
     ],
     previousTitle: 'Previous experience',
     previous: [
-      { org: 'Giro26', role: 'Full-Stack Developer', summary: 'Financial ERP, hexagonal architecture and SQL optimization.' },
-      { org: 'Hi-G', role: 'Web & Mobile Developer', summary: 'Hi-G app: Flutter, Firebase, TypeScript and Web3 integrations.' },
+      { org: 'Giro26', role: 'Full-Stack Developer', period: '2023 — 2024', summary: 'Financial ERP, hexagonal architecture and SQL optimization.' },
+      { org: 'Hi-G', role: 'Web & Mobile Developer', period: '2024 — 2025', summary: 'Hi-G app: Flutter, Firebase, TypeScript and Web3 integrations.' },
     ],
   },
   commerce: {
@@ -616,11 +621,11 @@ const en: Dictionary = {
     downloadsTitle: 'Download as PDF',
     downloadsIntro: 'Pick the version that fits the role. All are A4 and up to date.',
     downloads: [
-      { file: '/cv/cv-ai-en.pdf', title: 'Applied AI', description: 'LLM agents & production AI integration.', lang: 'en', langLabel: 'English', size: '111 KB' },
-      { file: '/cv/cv-sr-en.pdf', title: 'Software engineer', description: 'Enterprise integrations, Azure & AI-assisted development.', lang: 'en', langLabel: 'English', size: '105 KB' },
-      { file: '/cv/cv-ai-es.pdf', title: 'IA aplicada', description: 'Agentes LLM e integración de IA en producción.', lang: 'es', langLabel: 'Español', size: '112 KB' },
-      { file: '/cv/cv-sr-es.pdf', title: 'Ingeniero de software', description: 'Integraciones empresariales, Azure y desarrollo asistido por IA.', lang: 'es', langLabel: 'Español', size: '106 KB' },
-      { file: '/cv/cv-fullstack-es.pdf', title: 'Full Stack', description: 'Python, JavaScript/TypeScript, React, APIs REST y SQL.', lang: 'es', langLabel: 'Español', size: '109 KB' },
+      { file: '/cv/cv-ai-en.pdf', title: 'Applied AI', description: 'LLM agents & production AI integration.', lang: 'en', langLabel: 'English', size: '113 KB' },
+      { file: '/cv/cv-sr-en.pdf', title: 'Software engineer', description: 'Enterprise integrations, Azure & AI-assisted development.', lang: 'en', langLabel: 'English', size: '107 KB' },
+      { file: '/cv/cv-ai-es.pdf', title: 'IA aplicada', description: 'Agentes LLM e integración de IA en producción.', lang: 'es', langLabel: 'Español', size: '114 KB' },
+      { file: '/cv/cv-sr-es.pdf', title: 'Ingeniero de software', description: 'Integraciones empresariales, Azure y desarrollo asistido por IA.', lang: 'es', langLabel: 'Español', size: '108 KB' },
+      { file: '/cv/cv-fullstack-es.pdf', title: 'Full Stack', description: 'Python, JavaScript/TypeScript, React, APIs REST y SQL.', lang: 'es', langLabel: 'Español', size: '111 KB' },
     ],
     summaryTitle: 'Professional summary',
     summary: [
@@ -663,6 +668,11 @@ const en: Dictionary = {
               'Receives Shopify webhooks and sends the data to the ERP over SOAP/XML.',
               'Inventory sync with scheduled jobs.',
             ],
+          },
+          {
+            name: 'Maratón',
+            context: 'Digital development for the classic Maratón trivia game',
+            bullets: [],
           },
           {
             name: 'Coco (internal project)',
@@ -755,9 +765,11 @@ const en: Dictionary = {
     },
     previousTitle: 'Previous experience',
     previous: [
-      { org: 'Giro26', role: 'Full-Stack Developer', summary: 'Financial ERP, hexagonal architecture and SQL optimization.' },
-      { org: 'Hi-G', role: 'Web & Mobile Developer', summary: 'Hi-G app: Flutter, Firebase, TypeScript and Web3 integrations.' },
+      { org: 'Giro26', role: 'Full-Stack Developer', period: '2023 — 2024', summary: 'Financial ERP, hexagonal architecture and SQL optimization.' },
+      { org: 'Hi-G', role: 'Web & Mobile Developer', period: '2024 — 2025', summary: 'Hi-G app: Flutter, Firebase, TypeScript and Web3 integrations.' },
     ],
+    educationTitle: 'Education',
+    education: 'Graduate of the Instituto Tecnológico de La Paz.',
     productsTitle: 'Personal products',
     products: [
       { name: 'PMCRM', text: 'Workspace for managing projects, files, notes, clients and collaboration from a single platform.', repo: 'https://github.com/OsmarLG/pm-crm-elroi' },

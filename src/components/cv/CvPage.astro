@@ -116,11 +116,13 @@ const structuredData = buildStructuredData(dict, pageUrl, dict.meta.cvTitle, dic
                   <div class="cv-project">
                     <h4 class="cv-project__name">{project.name}</h4>
                     <p class="cv-project__context">{project.context}</p>
-                    <ul class="cv-list">
-                      {project.bullets.map((bullet) => (
-                        <li>{bullet}</li>
-                      ))}
-                    </ul>
+                    {project.bullets.length > 0 && (
+                      <ul class="cv-list">
+                        {project.bullets.map((bullet) => (
+                          <li>{bullet}</li>
+                        ))}
+                      </ul>
+                    )}
                   </div>
                 ))}
               </article>
@@ -148,11 +150,16 @@ const structuredData = buildStructuredData(dict, pageUrl, dict.meta.cvTitle, dic
             {
               cvPage.previous.map((item) => (
                 <li>
-                  <strong>{item.org}</strong> · {item.role}: {item.summary}
+                  <strong>{item.org}</strong> · {item.role} ({item.period}): {item.summary}
                 </li>
               ))
             }
           </ul>
+        </section>
+
+        <section class="cv-block" aria-labelledby="cv-education">
+          <h2 class="cv-section-title" id="cv-education">{cvPage.educationTitle}</h2>
+          <p class="cv-text">{cvPage.education}</p>
         </section>
 
         <section class="cv-block" aria-labelledby="cv-products">
