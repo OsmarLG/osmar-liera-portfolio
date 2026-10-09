@@ -1,0 +1,563 @@
+---
+import { Picture } from 'astro:assets';
+import Icon from '../Icon.astro';
+import SocialLinks from '../SocialLinks.astro';
+import type { Dictionary } from '../../i18n';
+import { whatsappHref } from '../../i18n/profile';
+import portrait from '../../assets/photo/osmar-liera.webp';
+
+interface Props {
+  dict: Dictionary;
+}
+
+const { dict } = Astro.props;
+const { hero, run, ui } = dict;
+const waHref = whatsappHref(dict.contact.whatsappMessage);
+---
+
+<section class="hero" data-step="request" aria-labelledby="hero-title">
+  <div class="container hero__grid">
+    <div class="hero__copy">
+      <p class="hero__prompt mono" data-enter="1">
+        <span class="hero__prompt-label">› {hero.promptLabel}</span>
+        <span class="hero__prompt-text">{hero.prompt}</span>
+        <span class="hero__caret" aria-hidden="true"></span>
+      </p>
+
+      <h1 id="hero-title" class="hero__name" transition:name="person-name">
+        <span class="hero__first">Osmar</span>
+        <span class="hero__last">Liera</span>
+      </h1>
+
+      <p class="hero__role" data-enter="3">
+        <strong>{hero.role}</strong>
+        <span class="hero__role-sep" aria-hidden="true">·</span>
+        <span>{hero.roleSub}</span>
+      </p>
+
+      <p class="hero__lead" data-enter="4">{hero.lead}</p>
+
+      <ul class="hero__meta" role="list" data-enter="5">
+        <li><Icon name="pin" size={16} />{hero.location}</li>
+        <li><span class="hero__status" aria-hidden="true"></span>{hero.availability}</li>
+      </ul>
+
+      <div class="hero__actions" data-enter="6">
+        <a class="btn btn--primary" href={`#${dict.ids.cases}`}>
+          {hero.ctaCases}
+          <Icon name="arrow-down" class="icon-down" size={18} />
+        </a>
+        <a class="btn" href={dict.paths.cv}>
+          <Icon name="file" size={18} />
+          {hero.ctaCv}
+        </a>
+        <a class="btn" href={waHref} target="_blank" rel="noopener noreferrer">
+          <Icon name="whatsapp" size={18} />
+          {hero.ctaWhatsapp}
+          <span class="sr-only">{ui.newTab}</span>
+        </a>
+      </div>
+
+      <div data-enter="7">
+        <SocialLinks dict={dict} class="hero__social" />
+      </div>
+    </div>
+
+    <div class="hero__visual">
+      <div class="portrait">
+        <div class="portrait__frame" data-parallax>
+        <Picture
+          src={portrait}
+          formats={['avif', 'webp']}
+          fallbackFormat="webp"
+          widths={[360, 554]}
+          sizes="(min-width: 1000px) 440px, (min-width: 640px) 60vw, 82vw"
+          alt={hero.photoAlt}
+          loading="eager"
+          fetchpriority="high"
+          class="portrait__img"
+        />
+        <div class="portrait__detect" aria-hidden="true">
+          <span class="portrait__label mono">{hero.detectionLabel}</span>
+        </div>
+        </div>
+      </div>
+
+      <figure class="run-card" data-enter="8">
+        <div class="run-card__bar mono" aria-hidden="true">
+          <span class="run-card__dots"><i></i><i></i><i></i></span>
+          {run.title}
+        </div>
+        <ol class="run-card__lines" role="list">
+          {
+            run.lines.map((line) => (
+              <li class="run-line" data-step-key={line.step} data-state={line.state}>
+                <span class="run-line__step mono">{line.label}</span>
+                <span class="run-line__text">{line.text}</span>
+                {line.state === 'ok' && <Icon name="check" size={14} class="run-line__icon" />}
+                {line.state === 'done' && <Icon name="check" size={14} class="run-line__icon" />}
+                {line.state === 'wait' && <span class="run-line__wait" aria-hidden="true" />}
+              </li>
+            ))
+          }
+        </ol>
+        <figcaption class="run-card__caption">{run.caption}</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    padding-block: clamp(2.5rem, 6vw, 5rem) clamp(4rem, 8vw, 7rem);
+  }
+
+  .hero__grid {
+    display: grid;
+    gap: clamp(2.5rem, 5vw, 4rem);
+    align-items: center;
+  }
+
+  @media (min-width: 1000px) {
+    .hero__grid {
+      grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.9fr);
+    }
+  }
+
+  .hero__prompt {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.3rem 0.6rem;
+    max-width: 44rem;
+    margin-bottom: clamp(1.25rem, 3vw, 2rem);
+    padding: 0.6rem 0.9rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: rgb(12 22 30 / 0.7);
+    font-size: 0.85rem;
+    line-height: 1.45;
+    width: fit-content;
+  }
+
+  .hero__prompt-label {
+    color: var(--accent);
+  }
+
+  .hero__prompt-text {
+    color: var(--text-2);
+  }
+
+  .hero__caret {
+    width: 0.55em;
+    height: 1.1em;
+    background: var(--accent);
+  }
+
+  .hero__name {
+    display: flex;
+    flex-direction: column;
+    font-size: clamp(4.25rem, 13.5vw, 10rem);
+    font-weight: 750;
+    line-height: 0.84;
+    letter-spacing: -0.042em;
+    margin-left: -0.04em;
+  }
+
+  .hero__last {
+    color: var(--accent);
+    padding-left: clamp(0.4rem, 4vw, 2.4rem);
+  }
+
+  .hero__role {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.25rem 0.6rem;
+    margin-top: clamp(1.4rem, 3vw, 2rem);
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    line-height: 1.15;
+    letter-spacing: -0.015em;
+    color: var(--text-2);
+  }
+
+  .hero__role strong {
+    color: var(--text);
+    font-weight: 650;
+  }
+
+  .hero__role-sep {
+    color: var(--accent);
+  }
+
+  @media (max-width: 520px) {
+    .hero__role-sep {
+      display: none;
+    }
+
+    .hero__role span:last-child {
+      flex-basis: 100%;
+    }
+  }
+
+  .hero__lead {
+    max-width: 38rem;
+    margin-top: 1rem;
+    color: var(--text-2);
+    font-size: var(--step-1);
+    line-height: 1.55;
+  }
+
+  .hero__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    margin-top: 1.5rem;
+    padding: 0;
+    list-style: none;
+    color: var(--text-2);
+    font-size: 0.95rem;
+  }
+
+  .hero__meta li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .hero__meta :global(svg) {
+    color: var(--accent);
+  }
+
+  .hero__status {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 0 4px var(--green-soft);
+  }
+
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 2rem;
+  }
+
+  .hero__copy :global(.hero__social) {
+    margin-top: 1.5rem;
+  }
+
+  /* Visual ------------------------------------------------------------ */
+  .hero__visual {
+    position: relative;
+    display: grid;
+    justify-items: end;
+  }
+
+  .portrait {
+    position: relative;
+    width: min(100%, 440px);
+    aspect-ratio: 554 / 692;
+    margin-inline: auto 0;
+  }
+
+  .portrait__frame {
+    position: absolute;
+    inset: 0;
+  }
+
+  .portrait :global(.portrait__img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: var(--radius-l);
+    mask-image: linear-gradient(to right, transparent 0%, #000 24%), linear-gradient(to top, transparent 0%, #000 34%);
+    mask-composite: intersect;
+    -webkit-mask-composite: source-in;
+  }
+
+  .portrait::before {
+    content: '';
+    position: absolute;
+    inset: -6% -10% 0 0;
+    z-index: -1;
+    background: radial-gradient(circle at 60% 30%, rgb(47 201 230 / 0.16), transparent 62%);
+  }
+
+  .portrait__detect {
+    position: absolute;
+    left: 15%;
+    top: 3%;
+    width: 46%;
+    height: 37%;
+    border: 1px solid rgb(95 224 245 / 0.55);
+    border-radius: 4px;
+  }
+
+  .portrait__detect::before,
+  .portrait__detect::after {
+    content: '';
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border-color: var(--accent);
+    border-style: solid;
+  }
+
+  .portrait__detect::before {
+    top: -2px;
+    left: -2px;
+    border-width: 2px 0 0 2px;
+  }
+
+  .portrait__detect::after {
+    right: -2px;
+    bottom: -2px;
+    border-width: 0 2px 2px 0;
+  }
+
+  .portrait__label {
+    position: absolute;
+    left: -1px;
+    bottom: 100%;
+    margin-bottom: 4px;
+    padding: 0.1rem 0.45rem;
+    border-radius: 3px;
+    background: var(--accent);
+    color: var(--accent-ink);
+    font-size: 0.72rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .run-card {
+    position: relative;
+    width: min(100%, 430px);
+    margin-top: -5.5rem;
+    margin-right: auto;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius);
+    background: rgb(8 16 23 / 0.92);
+    box-shadow: 0 30px 60px -30px rgb(0 0 0 / 0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  @media (min-width: 1000px) {
+    .run-card {
+      margin-left: -3.5rem;
+    }
+  }
+
+  .run-card__bar {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6rem 0.9rem;
+    border-bottom: 1px solid var(--line);
+    color: var(--text-3);
+    font-size: 0.75rem;
+  }
+
+  .run-card__dots {
+    display: inline-flex;
+    gap: 5px;
+  }
+
+  .run-card__dots i {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--line-strong);
+  }
+
+  .run-card__lines {
+    display: grid;
+    gap: 0.15rem;
+    padding: 0.7rem 0.9rem 0.4rem;
+    list-style: none;
+  }
+
+  .run-line {
+    display: grid;
+    grid-template-columns: 4.6rem 1fr auto;
+    align-items: baseline;
+    gap: 0.6rem;
+    padding: 0.2rem 0;
+    font-size: 0.82rem;
+    line-height: 1.4;
+  }
+
+  .run-line__step {
+    font-size: 0.74rem;
+    color: var(--accent);
+  }
+
+  .run-line[data-step-key='approval'] .run-line__step {
+    color: var(--amber);
+  }
+
+  .run-line[data-step-key='result'] .run-line__step {
+    color: var(--green);
+  }
+
+  .run-line__text {
+    color: var(--text-2);
+  }
+
+  .run-line[data-step-key='tools'] .run-line__text {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--text);
+  }
+
+  .run-line :global(.run-line__icon) {
+    color: var(--green);
+    align-self: center;
+  }
+
+  .run-line__wait {
+    width: 8px;
+    height: 8px;
+    align-self: center;
+    border-radius: 50%;
+    background: var(--amber);
+  }
+
+  .run-card__caption {
+    padding: 0.5rem 0.9rem 0.75rem;
+    color: var(--text-3);
+    font-size: 0.76rem;
+    line-height: 1.4;
+  }
+
+  /* Entrance (CSS only, finite, disabled with reduced motion) */
+  @media (prefers-reduced-motion: no-preference) {
+    [data-enter],
+    .portrait,
+    .run-line {
+      animation: hero-enter 0.9s var(--ease-out) both;
+    }
+
+    /* The name stays opaque from the first paint (it is the LCP element); it only rises. */
+    .hero__name > span {
+      animation: name-rise 1s var(--ease-out) both;
+    }
+
+    .hero__first {
+      animation-delay: 0.08s;
+    }
+
+    .hero__last {
+      animation-delay: 0.16s;
+    }
+
+    [data-enter='3'] {
+      animation-delay: 0.26s;
+    }
+
+    [data-enter='4'] {
+      animation-delay: 0.34s;
+    }
+
+    [data-enter='5'] {
+      animation-delay: 0.42s;
+    }
+
+    [data-enter='6'] {
+      animation-delay: 0.5s;
+    }
+
+    [data-enter='7'] {
+      animation-delay: 0.58s;
+    }
+
+    .portrait {
+      animation-name: portrait-enter;
+      animation-duration: 1.2s;
+      animation-delay: 0.1s;
+    }
+
+    .portrait__detect {
+      animation: detect 1s var(--ease-out) 0.7s both;
+    }
+
+    [data-enter='8'] {
+      animation-delay: 0.55s;
+    }
+
+    .run-line:nth-child(1) {
+      animation-delay: 0.8s;
+    }
+
+    .run-line:nth-child(2) {
+      animation-delay: 1.05s;
+    }
+
+    .run-line:nth-child(3) {
+      animation-delay: 1.3s;
+    }
+
+    .run-line:nth-child(4) {
+      animation-delay: 1.55s;
+    }
+
+    .run-line:nth-child(5) {
+      animation-delay: 1.85s;
+    }
+
+    .run-line:nth-child(6) {
+      animation-delay: 2.6s;
+    }
+
+    .run-line__wait {
+      animation: wait-pulse 0.8s ease-in-out 2s 4 alternate both;
+    }
+
+    .hero__caret {
+      animation: caret 0.9s steps(1) 0s 6 both;
+    }
+  }
+
+  @keyframes hero-enter {
+    from {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+  }
+
+  @keyframes name-rise {
+    from {
+      transform: translateY(0.18em);
+    }
+  }
+
+  @keyframes portrait-enter {
+    from {
+      opacity: 0;
+      transform: scale(0.96) translateY(16px);
+    }
+  }
+
+  @keyframes detect {
+    from {
+      opacity: 0;
+      transform: scale(1.25);
+    }
+  }
+
+  @keyframes wait-pulse {
+    to {
+      box-shadow: 0 0 0 6px var(--amber-soft);
+    }
+  }
+
+  @keyframes caret {
+    50% {
+      opacity: 0;
+    }
+  }
+</style>

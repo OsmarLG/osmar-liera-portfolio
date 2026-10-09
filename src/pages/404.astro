@@ -1,0 +1,113 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import { getDictionary } from '../i18n';
+
+const dict = getDictionary('es');
+---
+
+<Base
+  dict={dict}
+  title="404 · Página no encontrada / Page not found · Osmar Liera"
+  description="Esta ruta no existe. This route does not exist."
+  path="/404/"
+  noindex
+  motion={false}
+>
+  <section class="not-found container" aria-labelledby="nf-title">
+    <p class="not-found__trace mono" aria-hidden="true">
+      <span class="not-found__step">tool_call</span> resolve_route(<span class="not-found__path">“?”</span>) →
+      <span class="not-found__err">404</span>
+    </p>
+    <h1 class="not-found__title" id="nf-title">
+      404 · <span lang="es">Esta ruta no existe.</span>
+      <span class="not-found__en" lang="en">This route does not exist.</span>
+    </h1>
+
+    <div class="not-found__cols">
+      <div lang="es">
+        <p>El agente buscó y no encontró nada aquí. Puede que la dirección haya cambiado con el nuevo sitio.</p>
+        <ul class="not-found__links" role="list">
+          <li><a class="btn btn--primary" href="/">Ir al inicio <Icon name="arrow-right" size={18} /></a></li>
+          <li><a class="btn" href="/cv/">Ver CV</a></li>
+        </ul>
+      </div>
+      <div lang="en">
+        <p>The agent looked and found nothing here. The address may have changed with the new site.</p>
+        <ul class="not-found__links" role="list">
+          <li><a class="btn btn--primary" href="/en/">Go to home <Icon name="arrow-right" size={18} /></a></li>
+          <li><a class="btn" href="/en/cv/">View résumé</a></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .not-found {
+    padding-block: clamp(4rem, 12vw, 9rem);
+  }
+
+  .not-found__trace {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    padding: 0.55rem 0.9rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--text-2);
+    font-size: 0.85rem;
+  }
+
+  .not-found__step {
+    color: var(--accent);
+  }
+
+  .not-found__path {
+    color: var(--text);
+  }
+
+  .not-found__err {
+    color: var(--amber);
+  }
+
+  .not-found__title {
+    margin-top: 1.75rem;
+    font-size: clamp(2.5rem, 7vw, 5.5rem);
+    font-weight: 750;
+    line-height: 0.95;
+    letter-spacing: -0.045em;
+    max-width: 16ch;
+  }
+
+  .not-found__en {
+    display: block;
+    margin-top: 0.4em;
+    color: var(--accent);
+    font-size: 0.55em;
+    letter-spacing: -0.03em;
+  }
+
+  .not-found__cols {
+    display: grid;
+    gap: 2rem;
+    margin-top: 2.5rem;
+    color: var(--text-2);
+  }
+
+  @media (min-width: 800px) {
+    .not-found__cols {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .not-found__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+    padding: 0;
+    list-style: none;
+  }
+</style>

@@ -1,0 +1,15 @@
+---
+interface Props {
+  num?: string;
+  text: string;
+  as?: 'p' | 'span';
+}
+
+const { num, text, as: Tag = 'p' } = Astro.props;
+---
+
+<Tag class="kicker">
+  {num && <span class="kicker__num">{num}</span>}
+  <span class="kicker__line" aria-hidden="true"></span>
+  <span>{text}</span>
+</Tag>

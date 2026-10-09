@@ -1,0 +1,167 @@
+---
+import Icon from '../Icon.astro';
+import SocialLinks from '../SocialLinks.astro';
+import type { Dictionary } from '../../i18n';
+import { person, whatsappHref } from '../../i18n/profile';
+
+interface Props {
+  dict: Dictionary;
+}
+
+const { dict } = Astro.props;
+const { contact, ui } = dict;
+const waHref = whatsappHref(contact.whatsappMessage);
+---
+
+<section class="section contact" id={dict.ids.contact} data-step="result" aria-labelledby="contact-title">
+  <div class="container contact__grid">
+    <div class="contact__main">
+      <p class="contact__status mono" data-reveal>
+        <span class="contact__dot" aria-hidden="true"></span>
+        {dict.hero.availability}
+      </p>
+      <h2 class="contact__title" id="contact-title" data-split-title>{contact.title}</h2>
+      <p class="section-intro" data-reveal>{contact.text}</p>
+
+      <div class="contact__actions" data-reveal>
+        <a class="btn btn--primary" href={waHref} target="_blank" rel="noopener noreferrer">
+          <Icon name="whatsapp" size={18} />
+          {contact.whatsapp}
+          <span class="sr-only">{ui.newTab}</span>
+        </a>
+        <a class="btn" href={`mailto:${person.email}`}>
+          <Icon name="mail" size={18} />
+          {contact.email}
+        </a>
+      </div>
+
+      <dl class="contact__details" data-reveal>
+        <div>
+          <dt class="mono">{contact.phoneLabel}</dt>
+          <dd>
+            <a href={`tel:${person.phoneE164}`}>{person.phoneDisplay}</a>
+          </dd>
+        </div>
+        <div>
+          <dt class="mono">{contact.emailLabel}</dt>
+          <dd>
+            <a href={`mailto:${person.email}`}>{person.email}</a>
+          </dd>
+        </div>
+      </dl>
+    </div>
+
+    <aside class="contact__side" aria-label={contact.cvTitle}>
+      <div class="cv-card" data-reveal>
+        <p class="cv-card__title">{contact.cvTitle}</p>
+        <p class="cv-card__text">{contact.cvText}</p>
+        <a class="btn btn--primary btn--small" href={dict.paths.cv}>
+          <Icon name="file" size={16} />
+          {contact.cvCta}
+        </a>
+      </div>
+      <div data-reveal>
+        <SocialLinks dict={dict} variant="list" includeCompany />
+      </div>
+    </aside>
+  </div>
+</section>
+
+<style>
+  .contact {
+    background:
+      radial-gradient(60rem 30rem at 80% 0%, rgb(47 201 230 / 0.1), transparent 60%),
+      transparent;
+  }
+
+  .contact__grid {
+    display: grid;
+    gap: clamp(2.5rem, 6vw, 4.5rem);
+  }
+
+  @media (min-width: 1000px) {
+    .contact__grid {
+      grid-template-columns: minmax(0, 1.3fr) minmax(0, 0.7fr);
+      align-items: start;
+    }
+  }
+
+  .contact__status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: var(--green);
+    font-size: 0.85rem;
+  }
+
+  .contact__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 0 4px var(--green-soft);
+  }
+
+  .contact__title {
+    margin-top: 1.25rem;
+    font-size: clamp(2.4rem, 5.6vw, 4.6rem);
+    font-weight: 700;
+    line-height: 0.95;
+    letter-spacing: -0.035em;
+    max-width: 16ch;
+  }
+
+  .contact__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 2rem;
+  }
+
+  .contact__details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem 2.5rem;
+    margin-top: 2.25rem;
+  }
+
+  .contact__details dt {
+    color: var(--text-3);
+    font-size: 0.78rem;
+  }
+
+  .contact__details dd a {
+    color: var(--text);
+    font-size: var(--step-1);
+    font-weight: 600;
+    text-decoration-color: rgb(95 224 245 / 0.4);
+  }
+
+  .contact__details dd a:hover {
+    color: var(--accent);
+  }
+
+  .contact__side {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .cv-card {
+    padding: 1.4rem;
+    border: 1px solid rgb(95 224 245 / 0.35);
+    border-radius: var(--radius);
+    background: linear-gradient(150deg, rgb(95 224 245 / 0.1), var(--surface) 60%);
+  }
+
+  .cv-card__title {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 650;
+  }
+
+  .cv-card__text {
+    margin-block: 0.4rem 1.1rem;
+    color: var(--text-2);
+    font-size: 0.95rem;
+  }
+</style>

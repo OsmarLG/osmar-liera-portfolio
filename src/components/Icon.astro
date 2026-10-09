@@ -1,0 +1,70 @@
+---
+/**
+ * Small inline SVG icon set (stroke icons, decorative by default).
+ */
+export type IconName =
+  | 'arrow-up-right'
+  | 'arrow-right'
+  | 'arrow-down'
+  | 'download'
+  | 'whatsapp'
+  | 'mail'
+  | 'github'
+  | 'linkedin'
+  | 'menu'
+  | 'close'
+  | 'file'
+  | 'expand'
+  | 'check'
+  | 'phone'
+  | 'pin'
+  | 'instagram'
+  | 'globe';
+
+interface Props {
+  name: IconName;
+  class?: string;
+  size?: number;
+}
+
+const { name, class: className, size = 20 } = Astro.props;
+
+const paths: Record<IconName, string> = {
+  'arrow-up-right': '<path d="M7 17 17 7"/><path d="M8 7h9v9"/>',
+  'arrow-right': '<path d="M5 12h14"/><path d="m13 6 6 6-6 6"/>',
+  'arrow-down': '<path d="M12 5v14"/><path d="m6 13 6 6 6-6"/>',
+  download: '<path d="M12 4v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/>',
+  whatsapp:
+    '<path d="M4 20l1.3-3.9A8 8 0 1 1 8 18.7L4 20Z"/><path d="M9.2 9.1c.2-.5.4-.6.8-.6h.5c.2 0 .4.1.5.4l.7 1.6c.1.2 0 .5-.1.6l-.5.6c.6 1.1 1.4 1.9 2.5 2.5l.6-.5c.2-.2.4-.2.6-.1l1.6.7c.3.1.4.3.4.5v.5c0 .4-.2.7-.6.8-.9.4-2.2.3-3.8-.7a9.6 9.6 0 0 1-3-3c-.9-1.6-1-2.8-.6-3.7Z"/>',
+  mail: '<rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m4 7 8 6 8-6"/>',
+  github:
+    '<path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/>',
+  linkedin:
+    '<rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 10v7"/><path d="M8 7v.01"/><path d="M12 17v-4a2.5 2.5 0 0 1 5 0v4"/><path d="M12 10v7"/>',
+  menu: '<path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h10"/>',
+  close: '<path d="M6 6l12 12"/><path d="M18 6 6 18"/>',
+  file: '<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5Z"/><path d="M14 3v5h5"/><path d="M9 13h6"/><path d="M9 17h4"/>',
+  expand: '<path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/>',
+  check: '<path d="m5 12 4.5 4.5L19 7"/>',
+  phone:
+    '<path d="M5 4h3l2 5-2.5 1.5a11 11 0 0 0 6 6L15 14l5 2v3a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2Z"/>',
+  instagram: '<rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5v.01"/>',
+  globe: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a14 14 0 0 1 0 18"/><path d="M12 3a14 14 0 0 0 0 18"/>',
+  pin: '<path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.5"/>',
+};
+---
+
+<svg
+  class={className}
+  width={size}
+  height={size}
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.8"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+  focusable="false"
+  set:html={paths[name]}
+/>

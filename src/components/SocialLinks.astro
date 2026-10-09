@@ -1,0 +1,166 @@
+---
+import Icon from './Icon.astro';
+import type { Dictionary } from '../i18n';
+import { company, socialProfiles } from '../i18n/social';
+
+interface Props {
+  dict: Dictionary;
+  /** "icons": compact icon buttons; "list": icon + network + handle. */
+  variant?: 'icons' | 'list';
+  /** Also list ELROI Labs (site + Instagram). */
+  includeCompany?: boolean;
+  /** With includeCompany, also list the ELROI Labs Instagram account. */
+  includeCompanyInstagram?: boolean;
+  class?: string;
+}
+
+const { dict, variant = 'icons', includeCompany = false, includeCompanyInstagram = true, class: className } = Astro.props;
+const lang = dict.lang;
+
+const items = [
+  ...socialProfiles.map((profile) => ({
+    key: profile.id,
+    href: profile.href,
+    icon: profile.icon,
+    network: profile.network,
+    handle: profile.handle,
+    label: profile.label[lang],
+  })),
+  ...(includeCompany
+    ? [
+        { key: 'elroi-site', href: company.url, icon: 'globe' as const, network: company.name, handle: company.domain, label: company.label[lang] },
+      ]
+    : []),
+  ...(includeCompany && includeCompanyInstagram
+    ? [
+        {
+          key: 'elroi-instagram',
+          href: company.instagram.href,
+          icon: 'instagram' as const,
+          network: `${company.name} · Instagram`,
+          handle: company.instagram.handle,
+          label: company.instagramLabel[lang],
+        },
+      ]
+    : []),
+];
+---
+
+<ul class:list={['social', `social--${variant}`, className]} role="list">
+  {
+    items.map((item) => (
+      <li>
+        {variant === 'icons' ? (
+          <a
+            class="social__icon"
+            href={item.href}
+            target="_blank"
+            rel="noopener noreferrer me"
+            aria-label={`${item.label} ${dict.ui.newTab}`}
+            title={item.network}
+          >
+            <Icon name={item.icon} size={20} />
+          </a>
+        ) : (
+          <a class="social__row" href={item.href} target="_blank" rel="noopener noreferrer">
+            <Icon name={item.icon} size={20} />
+            <span class="social__text">
+              <span class="social__network">{item.network}</span>
+              <span class="social__handle mono">{item.handle}</span>
+            </span>
+            <span class="sr-only">{dict.ui.newTab}</span>
+            <Icon name="arrow-up-right" size={16} class="social__arrow" />
+          </a>
+        )}
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .social {
+    list-style: none;
+    padding: 0;
+  }
+
+  .social--icons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .social__icon {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--line-strong);
+    border-radius: 50%;
+    color: var(--text-2);
+    transition:
+      color 0.2s ease,
+      border-color 0.2s ease,
+      transform 0.3s var(--ease-out);
+  }
+
+  .social__icon:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+
+  .social--list {
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .social__row {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    min-height: 56px;
+    padding: 0.65rem 1rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--text);
+    text-decoration: none;
+    transition:
+      border-color 0.2s ease,
+      background-color 0.2s ease;
+  }
+
+  .social__row:hover {
+    border-color: var(--accent);
+    background: var(--surface-2);
+  }
+
+  .social__row > :global(svg:first-child) {
+    color: var(--accent);
+  }
+
+  .social__text {
+    display: grid;
+    line-height: 1.25;
+  }
+
+  .social__network {
+    font-weight: 600;
+  }
+
+  .social__handle {
+    color: var(--text-3);
+    font-size: 0.82rem;
+  }
+
+  .social__row :global(.social__arrow) {
+    margin-left: auto;
+    color: var(--text-3);
+    transition: transform 0.3s var(--ease-out);
+  }
+
+  .social__row:hover :global(.social__arrow) {
+    transform: translate(2px, -2px);
+    color: var(--accent);
+  }
+</style>

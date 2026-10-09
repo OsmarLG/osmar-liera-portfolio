@@ -1,0 +1,274 @@
+---
+import type { Dictionary } from '../../i18n';
+
+interface Props {
+  dict: Dictionary;
+}
+
+const { dict } = Astro.props;
+const { stack, ui } = dict;
+---
+
+<section class="section stack" id={dict.ids.stack} data-step="result" aria-labelledby="stack-title">
+  <div class="container">
+    <header class="section-head">
+      <h2 class="section-title" id="stack-title" data-split-title>{stack.title}</h2>
+      <p class="section-intro" data-reveal>{stack.intro}</p>
+    </header>
+
+    <div class="stack-tabs" data-tabs data-reveal>
+      <div class="stack-tabs__list" role="tablist" aria-label={ui.stackTabsLabel} hidden>
+        {
+          stack.groups.map((group, index) => (
+            <button
+              class="stack-tab"
+              type="button"
+              role="tab"
+              id={`stack-tab-${group.id}`}
+              aria-controls={`stack-panel-${group.id}`}
+              aria-selected={index === 0 ? 'true' : 'false'}
+              tabindex={index === 0 ? 0 : -1}
+            >
+              <span class="stack-tab__num mono" aria-hidden="true">
+                {String(index + 1).padStart(2, '0')}
+              </span>
+              <span class="stack-tab__label">{group.label}</span>
+              <span class="stack-tab__count mono" aria-hidden="true">
+                {group.items.length}
+              </span>
+            </button>
+          ))
+        }
+      </div>
+
+      <div class="stack-tabs__panels">
+        {
+          stack.groups.map((group) => (
+            <div class="stack-panel" role="tabpanel" id={`stack-panel-${group.id}`} aria-labelledby={`stack-tab-${group.id}`} tabindex="0">
+              <h3 class="stack-panel__fallback" data-tab-fallback-heading>
+                {group.label}
+              </h3>
+              <table class="stack-table">
+                <caption class="sr-only">{group.label}</caption>
+                <thead class="sr-only">
+                  <tr>
+                    <th scope="col">{ui.technology}</th>
+                    <th scope="col">{ui.evidence}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {group.items.map((item) => (
+                    <tr>
+                      <th scope="row" class="stack-table__tech">
+                        {item.tech}
+                      </th>
+                      <td class="stack-table__evidence">
+                        <span class="stack-table__evidence-label mono" aria-hidden="true">
+                          {ui.evidence} →
+                        </span>
+                        <ul role="list">
+                          {item.evidence.map((evidence) => (
+                            <li class="chip chip--accent">{evidence}</li>
+                          ))}
+                        </ul>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .stack-tabs {
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  @media (min-width: 900px) {
+    .stack-tabs[data-tabs-ready] {
+      grid-template-columns: 17rem minmax(0, 1fr);
+      gap: 2.5rem;
+      align-items: start;
+    }
+  }
+
+  .stack-tabs__list {
+    display: flex;
+    gap: 0.4rem;
+    overflow-x: auto;
+    padding-bottom: 0.25rem;
+    scrollbar-width: thin;
+  }
+
+  .stack-tabs__list[hidden] {
+    display: none;
+  }
+
+  @media (min-width: 900px) {
+    .stack-tabs__list {
+      flex-direction: column;
+      overflow: visible;
+      position: sticky;
+      top: calc(var(--header-h) + 1.5rem);
+    }
+  }
+
+  .stack-tab {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex: none;
+    min-height: 48px;
+    padding: 0.6rem 1rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: transparent;
+    color: var(--text-2);
+    text-align: left;
+    font-weight: 600;
+    transition:
+      border-color 0.2s ease,
+      background-color 0.2s ease,
+      color 0.2s ease;
+  }
+
+  .stack-tab:hover {
+    border-color: var(--line-strong);
+    color: var(--text);
+  }
+
+  .stack-tab[aria-selected='true'] {
+    border-color: rgb(95 224 245 / 0.5);
+    background: var(--accent-soft);
+    color: var(--text);
+  }
+
+  .stack-tab__num {
+    color: var(--text-3);
+    font-size: 0.75rem;
+  }
+
+  .stack-tab[aria-selected='true'] .stack-tab__num {
+    color: var(--accent);
+  }
+
+  .stack-tab__count {
+    margin-left: auto;
+    color: var(--text-3);
+    font-size: 0.75rem;
+  }
+
+  .stack-tabs__panels {
+    display: grid;
+    gap: 2.5rem;
+  }
+
+  .stack-panel {
+    border-radius: var(--radius);
+  }
+
+  .stack-panel__fallback {
+    margin-bottom: 0.75rem;
+    font-size: var(--step-2);
+  }
+
+  .stack-table {
+    width: 100%;
+    border-collapse: collapse;
+    border-top: 1px solid var(--line);
+  }
+
+  .stack-table tr {
+    border-bottom: 1px solid var(--line);
+  }
+
+  .stack-table__tech {
+    padding: 1rem 1rem 1rem 0;
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 600;
+    text-align: left;
+    vertical-align: top;
+    letter-spacing: -0.01em;
+  }
+
+  .stack-table__evidence {
+    padding: 1rem 0;
+    vertical-align: top;
+  }
+
+  .stack-table__evidence-label {
+    display: none;
+  }
+
+  .stack-table__evidence ul {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.4rem;
+    list-style: none;
+    padding: 0;
+  }
+
+  @media (max-width: 640px) {
+    .stack-table tr {
+      display: grid;
+      padding: 0.9rem 0;
+    }
+
+    .stack-table__tech {
+      padding: 0 0 0.5rem;
+    }
+
+    .stack-table__evidence {
+      padding: 0;
+    }
+
+    .stack-table__evidence ul {
+      justify-content: flex-start;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .stack-panel:not([hidden]) .stack-table tr {
+      animation: row-in 0.5s var(--ease-out) both;
+    }
+
+    .stack-panel .stack-table tr:nth-child(2) {
+      animation-delay: 0.04s;
+    }
+
+    .stack-panel .stack-table tr:nth-child(3) {
+      animation-delay: 0.08s;
+    }
+
+    .stack-panel .stack-table tr:nth-child(4) {
+      animation-delay: 0.12s;
+    }
+
+    .stack-panel .stack-table tr:nth-child(5) {
+      animation-delay: 0.16s;
+    }
+
+    .stack-panel .stack-table tr:nth-child(6) {
+      animation-delay: 0.2s;
+    }
+
+    .stack-panel .stack-table tr:nth-child(7) {
+      animation-delay: 0.24s;
+    }
+  }
+
+  @keyframes row-in {
+    from {
+      opacity: 0;
+      transform: translateX(-10px);
+    }
+  }
+</style>

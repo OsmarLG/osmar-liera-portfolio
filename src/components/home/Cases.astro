@@ -1,0 +1,154 @@
+---
+import Kicker from '../Kicker.astro';
+import Flow from './Flow.astro';
+import type { Dictionary } from '../../i18n';
+
+interface Props {
+  dict: Dictionary;
+}
+
+const { dict } = Astro.props;
+const { cases } = dict;
+---
+
+<section class="section cases" id={dict.ids.cases} data-step="tools" aria-labelledby="cases-title">
+  <div class="container">
+    <header class="section-head">
+      <Kicker num="02" text={cases.kicker} />
+      <h2 class="section-title" id="cases-title" data-split-title>{cases.title}</h2>
+      <p class="section-intro" data-reveal>{cases.intro}</p>
+    </header>
+
+    <div class="cases__list">
+      {
+        cases.items.map((item) => (
+          <article class="case" id={item.id} aria-labelledby={`${item.id}-title`}>
+            <div class="case__head" data-reveal>
+              <p class="case__index mono" aria-hidden="true">
+                {item.index}
+              </p>
+              <div>
+                <p class="case__context mono">{item.context}</p>
+                <h3 class="case__title" id={`${item.id}-title`}>
+                  {item.title}
+                </h3>
+                <p class="case__summary">{item.summary}</p>
+              </div>
+            </div>
+
+            <div class="case__body">
+              <ul class="case__bullets" data-reveal-group>
+                {item.bullets.map((bullet) => (
+                  <li>{bullet}</li>
+                ))}
+              </ul>
+              <ul class="case__tags" role="list" data-reveal>
+                {item.tags.map((tag) => (
+                  <li class="chip">{tag}</li>
+                ))}
+              </ul>
+            </div>
+
+            <div class="case__diagram">
+              <Flow id={item.id} title={item.diagramTitle} summary={item.diagramSummary} columns={item.diagram} />
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .cases__list {
+    display: grid;
+    gap: clamp(4rem, 9vw, 7rem);
+  }
+
+  .case {
+    display: grid;
+    gap: 2rem;
+    scroll-margin-top: calc(var(--header-h) + 24px);
+  }
+
+  @media (min-width: 1000px) {
+    .case {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      column-gap: clamp(2rem, 5vw, 4.5rem);
+      row-gap: 2.5rem;
+    }
+
+    .case__diagram {
+      grid-column: 1 / -1;
+    }
+  }
+
+  .case__head {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1.25rem;
+    align-items: start;
+  }
+
+  .case__index {
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    border: 1px solid rgb(95 224 245 / 0.35);
+    border-radius: 50%;
+    color: var(--accent);
+    font-size: 0.9rem;
+  }
+
+  .case__context {
+    color: var(--text-3);
+    font-size: 0.8rem;
+  }
+
+  .case__title {
+    margin-top: 0.5rem;
+    font-size: var(--step-3);
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+  }
+
+  .case__summary {
+    margin-top: 0.9rem;
+    color: var(--text-2);
+    font-size: var(--step-1);
+    line-height: 1.5;
+  }
+
+  .case__bullets {
+    display: grid;
+    gap: 0.9rem;
+    padding: 0;
+    list-style: none;
+    color: var(--text-2);
+  }
+
+  .case__bullets li {
+    position: relative;
+    padding-left: 1.5rem;
+  }
+
+  .case__bullets li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.7em;
+    width: 0.65rem;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  .case__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin-top: 1.5rem;
+    padding: 0;
+    list-style: none;
+  }
+</style>

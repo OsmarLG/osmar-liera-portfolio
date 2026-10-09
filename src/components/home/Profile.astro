@@ -1,0 +1,175 @@
+---
+import Kicker from '../Kicker.astro';
+import type { Dictionary } from '../../i18n';
+
+interface Props {
+  dict: Dictionary;
+}
+
+const { dict } = Astro.props;
+const { profile, ui } = dict;
+---
+
+<section class="section profile" id={dict.ids.profile} data-step="agent" aria-labelledby="profile-title">
+  <div class="container profile__grid">
+    <div class="profile__intro">
+      <Kicker num="01" text={profile.kicker} />
+      <h2 class="section-title" id="profile-title" data-split-title>{profile.title}</h2>
+      <div class="profile__text" data-reveal>
+        {profile.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+      </div>
+    </div>
+
+    <div class="profile__side">
+      <h3 class="profile__subtitle mono">{profile.rolesTitle}</h3>
+      <ul class="roles" role="list" data-reveal-group>
+        {
+          profile.roles.map((role) => (
+            <li class="role">
+              <div class="role__head">
+                <p class="role__org">{role.org}</p>
+                <span class="badge-present">{ui.present}</span>
+              </div>
+              <p class="role__title">
+                {role.role}
+                {role.place && <span class="role__place"> · {role.place}</span>}
+              </p>
+              <p class="role__summary">{role.summary}</p>
+            </li>
+          ))
+        }
+      </ul>
+
+      <h3 class="profile__subtitle mono">{profile.languagesTitle}</h3>
+      <dl class="languages" data-reveal>
+        {
+          profile.languages.map((language) => (
+            <div class="languages__row">
+              <dt>{language.name}</dt>
+              <dd>{language.level}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </div>
+</section>
+
+<style>
+  .profile__grid {
+    display: grid;
+    gap: clamp(2.5rem, 6vw, 5rem);
+  }
+
+  @media (min-width: 1000px) {
+    .profile__grid {
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+      align-items: start;
+    }
+
+    .profile__side {
+      padding-top: 2.75rem;
+    }
+  }
+
+  .profile__text {
+    display: grid;
+    gap: 1.1rem;
+    margin-top: 2rem;
+    max-width: 62ch;
+    color: var(--text-2);
+    font-size: var(--step-1);
+    line-height: 1.6;
+  }
+
+  .profile__text p:first-child {
+    color: var(--text);
+  }
+
+  .profile__subtitle {
+    margin-bottom: 1rem;
+    color: var(--text-3);
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: lowercase;
+  }
+
+  .roles {
+    display: grid;
+    gap: 0.75rem;
+    margin-bottom: 2.5rem;
+    list-style: none;
+    padding: 0;
+  }
+
+  .role {
+    padding: 1.15rem 1.25rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+    transition:
+      border-color 0.25s ease,
+      transform 0.35s var(--ease-out);
+  }
+
+  .role:hover {
+    border-color: var(--line-strong);
+    transform: translateX(4px);
+  }
+
+  .role__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .role__org {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 650;
+    letter-spacing: -0.01em;
+  }
+
+  .role__title {
+    margin-top: 0.15rem;
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  .role__place {
+    color: var(--text-3);
+    font-weight: 500;
+  }
+
+  .role__summary {
+    margin-top: 0.5rem;
+    color: var(--text-2);
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+
+  .languages {
+    display: grid;
+    border-top: 1px solid var(--line);
+  }
+
+  .languages__row {
+    display: grid;
+    grid-template-columns: 7rem 1fr;
+    gap: 1rem;
+    padding: 0.85rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .languages dt {
+    font-weight: 600;
+  }
+
+  .languages dd {
+    color: var(--text-2);
+    font-size: 0.95rem;
+  }
+</style>

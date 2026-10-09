@@ -1,0 +1,286 @@
+---
+import Icon from './Icon.astro';
+import type { Dictionary } from '../i18n';
+
+interface Props {
+  dict: Dictionary;
+  altPath: string;
+}
+
+const { dict, altPath } = Astro.props;
+const otherLang = dict.lang === 'es' ? 'en' : 'es';
+---
+
+<header class="site-header" data-header>
+  <div class="container site-header__inner">
+    <a class="brand" href={dict.paths.home} aria-label={dict.ui.brandHome}>
+      <span class="brand__mark" aria-hidden="true">
+        <svg viewBox="0 0 512 512" width="30" height="30" focusable="false">
+          <path d="M136 160h96v48h-48v96h48v48h-96V160Zm240 0h-96v48h48v96h-48v48h96V160Z" fill="currentColor"></path>
+          <circle cx="256" cy="256" r="30" fill="var(--text)"></circle>
+        </svg>
+      </span>
+      <span class="brand__name" aria-hidden="true">Osmar Liera</span>
+    </a>
+
+    <nav class="site-nav" id="site-nav" aria-label={dict.ui.navLabel} data-nav>
+      <ul role="list">
+        {
+          dict.nav.map((item) => (
+            <li>
+              <a href={`${dict.paths.home}#${item.id}`} data-nav-link={item.id}>
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+        <li class="site-nav__cv">
+          <a href={dict.paths.cv}>{dict.ui.cvLabel}</a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="site-header__actions">
+      <a class="lang-switch" href={altPath} hreflang={otherLang} lang={otherLang} aria-label={`${dict.ui.switchLangShort} · ${dict.ui.switchLang}`}>
+        {dict.ui.switchLangShort}
+      </a>
+      <a class="btn btn--small btn--primary header-cv" href={dict.paths.cv}>
+        <Icon name="file" size={16} />
+        {dict.ui.cv}
+      </a>
+      <button
+        class="menu-button"
+        type="button"
+        aria-expanded="false"
+        aria-controls="site-nav"
+        data-menu-button
+        data-label-open={dict.ui.menuOpen}
+        data-label-close={dict.ui.menuClose}
+        hidden
+      >
+        <span class="sr-only" data-menu-label>{dict.ui.menuOpen}</span>
+        <Icon name="menu" class="menu-button__open" size={22} />
+        <Icon name="close" class="menu-button__close" size={22} />
+      </button>
+    </div>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    border-bottom: 1px solid transparent;
+    transition:
+      background-color 0.3s ease,
+      border-color 0.3s ease;
+  }
+
+  .site-header[data-scrolled],
+  .site-header[data-open] {
+    background: rgb(5 9 13 / 0.82);
+    border-bottom-color: var(--line);
+    backdrop-filter: saturate(140%) blur(14px);
+    -webkit-backdrop-filter: saturate(140%) blur(14px);
+  }
+
+  .site-header__inner {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    min-height: var(--header-h);
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    color: var(--text);
+    text-decoration: none;
+    font-family: var(--font-display);
+    font-weight: 650;
+    font-size: 1.05rem;
+    letter-spacing: -0.01em;
+  }
+
+  .brand__mark {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    border: 1px solid var(--line-strong);
+    border-radius: 11px;
+    background: var(--surface);
+    color: var(--accent);
+    transition: transform 0.4s var(--ease-out);
+  }
+
+  .brand:hover .brand__mark {
+    transform: rotate(-8deg);
+  }
+
+  .site-nav {
+    margin-left: auto;
+  }
+
+  .site-nav ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    list-style: none;
+    padding: 0;
+  }
+
+  .site-nav a {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0.5rem 0.8rem;
+    color: var(--text-2);
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-decoration: none;
+    border-radius: 999px;
+    transition: color 0.2s ease;
+  }
+
+  .site-nav a::after {
+    content: '';
+    position: absolute;
+    left: 0.8rem;
+    right: 0.8rem;
+    bottom: 8px;
+    height: 1px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.35s var(--ease-out);
+  }
+
+  .site-nav a:hover,
+  .site-nav a[aria-current='true'] {
+    color: var(--text);
+  }
+
+  .site-nav a:hover::after,
+  .site-nav a[aria-current='true']::after {
+    transform: scaleX(1);
+  }
+
+  .site-nav__cv {
+    display: none;
+  }
+
+  .site-header__actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .lang-switch {
+    display: inline-grid;
+    place-items: center;
+    min-width: 44px;
+    min-height: 40px;
+    padding: 0 0.6rem;
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition:
+      border-color 0.2s ease,
+      color 0.2s ease;
+  }
+
+  .lang-switch:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .menu-button {
+    display: none;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--line-strong);
+    border-radius: 50%;
+    background: transparent;
+  }
+
+  .menu-button :global(.menu-button__close) {
+    display: none;
+  }
+
+  .menu-button[aria-expanded='true'] :global(.menu-button__open) {
+    display: none;
+  }
+
+  .menu-button[aria-expanded='true'] :global(.menu-button__close) {
+    display: block;
+  }
+
+  @media (max-width: 920px) {
+    .site-header__inner {
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .site-header__actions {
+      margin-left: auto;
+    }
+
+    .header-cv {
+      display: none;
+    }
+
+    /* Without JS the nav is a scrollable row; with JS it becomes a disclosure. */
+    .site-nav {
+      order: 3;
+      width: 100%;
+      margin: 0 0 0.5rem;
+      overflow-x: auto;
+    }
+
+    .site-nav ul {
+      flex-wrap: nowrap;
+    }
+
+    .site-nav__cv {
+      display: block;
+    }
+
+    .site-header[data-menu-ready] .menu-button {
+      display: grid;
+    }
+
+    .site-header[data-menu-ready] .site-nav {
+      display: none;
+    }
+
+    .site-header[data-menu-ready][data-open] .site-nav {
+      display: block;
+      padding-bottom: 1rem;
+    }
+
+    .site-header[data-menu-ready][data-open] .site-nav ul {
+      flex-direction: column;
+    }
+
+    .site-header[data-menu-ready][data-open] .site-nav a {
+      width: 100%;
+      min-height: 52px;
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      color: var(--text);
+    }
+
+    .site-header[data-menu-ready][data-open] .site-nav a::after {
+      display: none;
+    }
+  }
+</style>

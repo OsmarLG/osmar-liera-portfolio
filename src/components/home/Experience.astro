@@ -1,0 +1,293 @@
+---
+import Kicker from '../Kicker.astro';
+import Icon from '../Icon.astro';
+import type { Dictionary } from '../../i18n';
+
+interface Props {
+  dict: Dictionary;
+}
+
+const { dict } = Astro.props;
+const { experience, commerce, ui } = dict;
+---
+
+<section class="section experience" id={dict.ids.experience} data-step="result" aria-labelledby="experience-title">
+  <div class="container">
+    <header class="section-head">
+      <Kicker num="04" text={experience.kicker} />
+      <h2 class="section-title" id="experience-title" data-split-title>{experience.title}</h2>
+      <p class="section-intro" data-reveal>{experience.intro}</p>
+    </header>
+
+    <ol class="orgs" role="list">
+      {
+        experience.orgs.map((org) => (
+          <li class="org" data-reveal>
+            <div class="org__aside">
+              <span class="badge-present">{org.period}</span>
+              <h3 class="org__name">{org.org}</h3>
+              <p class="org__role">{org.role}</p>
+              {org.place && <p class="org__place">{org.place}</p>}
+            </div>
+            <div class="org__main">
+              <p class="org__summary">{org.summary}</p>
+              <ul class="org__projects" role="list">
+                {org.projects.map((project) => (
+                  <li class="project">
+                    <h4 class="project__name">{project.name}</h4>
+                    <p class="project__summary">{project.summary}</p>
+                    <ul class="project__bullets">
+                      {project.bullets.map((bullet) => (
+                        <li>{bullet}</li>
+                      ))}
+                    </ul>
+                    {project.caseLink && (
+                      <a class="link link-arrow project__link" href={project.caseLink.href}>
+                        {project.caseLink.label}
+                        <Icon name="arrow-right" size={16} />
+                      </a>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+
+    <section class="commerce" aria-labelledby="commerce-title">
+      <div class="commerce__intro" data-reveal>
+        <h3 class="commerce__title" id="commerce-title">{commerce.title}</h3>
+        <p>{commerce.text}</p>
+        <p class="commerce__note">{commerce.note}</p>
+      </div>
+      <ul class="commerce__sites" role="list" data-reveal-group>
+        {
+          commerce.sites.map((site) => (
+            <li>
+              <a class="site-card" href={site.href} target="_blank" rel="noopener noreferrer">
+                <span class="site-card__market mono" aria-hidden="true">
+                  {site.market}
+                </span>
+                <span class="site-card__body">
+                  <span class="site-card__label mono">{ui.contributionLabel}</span>
+                  <span class="site-card__name">{site.name}</span>
+                  <span class="site-card__domain">
+                    {site.domain} · {site.marketLabel}
+                  </span>
+                </span>
+                <span class="sr-only">{ui.newTab}</span>
+                <Icon name="arrow-up-right" class="site-card__arrow" size={20} />
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+  </div>
+</section>
+
+<style>
+  .orgs {
+    display: grid;
+    list-style: none;
+    padding: 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .org {
+    display: grid;
+    gap: 1.5rem;
+    padding-block: clamp(2rem, 5vw, 3.5rem);
+    border-bottom: 1px solid var(--line);
+  }
+
+  @media (min-width: 900px) {
+    .org {
+      grid-template-columns: minmax(0, 0.42fr) minmax(0, 1fr);
+      gap: clamp(2rem, 5vw, 4rem);
+    }
+
+    .org__aside {
+      position: sticky;
+      top: calc(var(--header-h) + 2rem);
+      align-self: start;
+    }
+  }
+
+  .org__name {
+    margin-top: 0.75rem;
+    font-size: var(--step-3);
+    letter-spacing: -0.03em;
+  }
+
+  .org__role {
+    margin-top: 0.4rem;
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .org__place {
+    color: var(--text-3);
+    font-size: 0.9rem;
+  }
+
+  .org__summary {
+    color: var(--text);
+    font-size: var(--step-1);
+    line-height: 1.5;
+  }
+
+  .org__projects {
+    display: grid;
+    gap: 1rem;
+    margin-top: 1.75rem;
+    list-style: none;
+    padding: 0;
+  }
+
+  .project {
+    padding: 1.25rem 1.35rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+
+  .project__name {
+    font-size: 1.2rem;
+    letter-spacing: -0.015em;
+  }
+
+  .project__summary {
+    margin-top: 0.3rem;
+    color: var(--text-3);
+    font-size: 0.92rem;
+  }
+
+  .project__bullets {
+    display: grid;
+    gap: 0.5rem;
+    margin-top: 0.9rem;
+    padding-left: 1.1rem;
+    color: var(--text-2);
+    font-size: 0.97rem;
+  }
+
+  .project__bullets li::marker {
+    color: var(--accent);
+  }
+
+  .project__link {
+    margin-top: 0.9rem;
+    font-size: 0.95rem;
+  }
+
+  /* Commerce ------------------------------------------------------- */
+  .commerce {
+    display: grid;
+    gap: 2rem;
+    margin-top: clamp(3.5rem, 8vw, 6rem);
+    padding: clamp(1.5rem, 4vw, 2.75rem);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-l);
+    background: linear-gradient(140deg, var(--surface-2), var(--bg-elev) 60%);
+  }
+
+  @media (min-width: 900px) {
+    .commerce {
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+      align-items: center;
+    }
+  }
+
+  .commerce__title {
+    font-size: var(--step-3);
+    letter-spacing: -0.03em;
+    margin-bottom: 0.9rem;
+  }
+
+  .commerce__intro p {
+    color: var(--text-2);
+  }
+
+  .commerce__intro .commerce__note {
+    margin-top: 0.75rem;
+    color: var(--text-3);
+    font-size: 0.9rem;
+  }
+
+  .commerce__sites {
+    display: grid;
+    gap: 0.75rem;
+    list-style: none;
+    padding: 0;
+  }
+
+  .site-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.15rem;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius);
+    background: rgb(5 9 13 / 0.6);
+    color: var(--text);
+    text-decoration: none;
+    transition:
+      border-color 0.25s ease,
+      transform 0.35s var(--ease-out);
+  }
+
+  .site-card:hover {
+    border-color: var(--accent);
+    transform: translateX(4px);
+  }
+
+  .site-card__market {
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    flex: none;
+    border-radius: 12px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .site-card__body {
+    display: grid;
+    gap: 0.1rem;
+  }
+
+  .site-card__label {
+    color: var(--text-3);
+    font-size: 0.72rem;
+  }
+
+  .site-card__name {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    font-weight: 650;
+    letter-spacing: -0.01em;
+  }
+
+  .site-card__domain {
+    color: var(--text-2);
+    font-size: 0.88rem;
+  }
+
+  .site-card :global(.site-card__arrow) {
+    margin-left: auto;
+    color: var(--text-3);
+    transition:
+      transform 0.3s var(--ease-out),
+      color 0.2s ease;
+  }
+
+  .site-card:hover :global(.site-card__arrow) {
+    color: var(--accent);
+    transform: translate(2px, -2px);
+  }
+</style>

@@ -1,0 +1,196 @@
+---
+import Kicker from '../Kicker.astro';
+import Icon from '../Icon.astro';
+import type { Dictionary } from '../../i18n';
+
+interface Props {
+  dict: Dictionary;
+}
+
+const { dict } = Astro.props;
+const { principles } = dict;
+---
+
+<section class="section principles" id={dict.ids.principles} data-step="approval" aria-labelledby="principles-title">
+  <div class="container principles__grid">
+    <div>
+      <Kicker num="03" text={principles.kicker} />
+      <h2 class="section-title" id="principles-title" data-split-title>{principles.title}</h2>
+      <p class="section-intro" data-reveal>{principles.intro}</p>
+
+      <div class="approval" aria-hidden="true" data-approval data-state="waiting" data-reveal>
+        <div class="approval__head mono">
+          <span class="approval__tool">{principles.approval.tool}</span>
+          <span class="approval__status" data-approval-status data-approved={principles.approval.approved}>
+            {principles.approval.waiting}
+          </span>
+        </div>
+        <p class="approval__meta">{principles.approval.meta}</p>
+        <div class="approval__draft">
+          <span></span><span></span><span></span>
+        </div>
+        <div class="approval__actions">
+          <span class="approval__btn approval__btn--primary" data-approval-approve>
+            <Icon name="check" size={16} />
+            {principles.approval.approve}
+          </span>
+          <span class="approval__btn">{principles.approval.edit}</span>
+        </div>
+      </div>
+    </div>
+
+    <ol class="principles__list" role="list" data-reveal-group>
+      {
+        principles.items.map((item, index) => (
+          <li class="principle">
+            <span class="principle__num mono" aria-hidden="true">
+              {String(index + 1).padStart(2, '0')}
+            </span>
+            <div>
+              <h3 class="principle__title">{item.title}</h3>
+              <p class="principle__text">{item.text}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .principles {
+    background:
+      radial-gradient(50rem 30rem at 0% 100%, rgb(255 197 107 / 0.06), transparent 60%),
+      transparent;
+  }
+
+  .principles :global(.kicker) {
+    color: var(--amber);
+  }
+
+  .principles__grid {
+    display: grid;
+    gap: clamp(2.5rem, 6vw, 5rem);
+  }
+
+  @media (min-width: 1000px) {
+    .principles__grid {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      align-items: start;
+    }
+  }
+
+  .approval {
+    max-width: 26rem;
+    margin-top: 2.5rem;
+    padding: 1.1rem 1.2rem 1.2rem;
+    border: 1px solid rgb(255 197 107 / 0.35);
+    border-radius: var(--radius);
+    background: linear-gradient(160deg, rgb(255 197 107 / 0.07), var(--surface) 55%);
+    transition: border-color 0.4s ease;
+  }
+
+  .approval[data-state='approved'] {
+    border-color: rgb(116 232 173 / 0.5);
+  }
+
+  .approval__head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.5rem;
+    font-size: 0.78rem;
+  }
+
+  .approval__tool {
+    color: var(--text);
+  }
+
+  .approval__status {
+    color: var(--amber);
+  }
+
+  .approval[data-state='approved'] .approval__status {
+    color: var(--green);
+  }
+
+  .approval__meta {
+    margin-top: 0.6rem;
+    color: var(--text-3);
+    font-size: 0.85rem;
+  }
+
+  .approval__draft {
+    display: grid;
+    gap: 0.45rem;
+    margin-block: 0.9rem 1.1rem;
+  }
+
+  .approval__draft span {
+    height: 8px;
+    border-radius: 4px;
+    background: var(--surface-3);
+  }
+
+  .approval__draft span:nth-child(2) {
+    width: 86%;
+  }
+
+  .approval__draft span:nth-child(3) {
+    width: 58%;
+  }
+
+  .approval__actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .approval__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.45rem 0.9rem;
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+    color: var(--text-2);
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  .approval__btn--primary {
+    border-color: var(--green);
+    background: var(--green);
+    color: #04140c;
+  }
+
+  .principles__list {
+    display: grid;
+    list-style: none;
+    padding: 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .principle {
+    display: grid;
+    grid-template-columns: 2.5rem 1fr;
+    gap: 1rem;
+    padding: 1.4rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .principle__num {
+    padding-top: 0.3rem;
+    color: var(--amber);
+    font-size: 0.8rem;
+  }
+
+  .principle__title {
+    font-size: var(--step-2);
+    letter-spacing: -0.02em;
+  }
+
+  .principle__text {
+    margin-top: 0.35rem;
+    color: var(--text-2);
+  }
+</style>

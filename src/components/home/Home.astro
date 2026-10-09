@@ -1,0 +1,46 @@
+---
+import Base from '../../layouts/Base.astro';
+import TraceRail from './TraceRail.astro';
+import Hero from './Hero.astro';
+import Signals from './Signals.astro';
+import Profile from './Profile.astro';
+import Cases from './Cases.astro';
+import Principles from './Principles.astro';
+import Experience from './Experience.astro';
+import Products from './Products.astro';
+import Stack from './Stack.astro';
+import Contact from './Contact.astro';
+import { getDictionary, type Lang } from '../../i18n';
+import { SITE_URL } from '../../i18n/profile';
+import { buildStructuredData } from '../../lib/structured-data';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const dict = getDictionary(lang);
+const pageUrl = new URL(dict.paths.home, SITE_URL).href;
+const structuredData = buildStructuredData(dict, pageUrl, dict.meta.homeTitle, dict.meta.homeDescription);
+---
+
+<Base
+  dict={dict}
+  title={dict.meta.homeTitle}
+  description={dict.meta.homeDescription}
+  path={dict.paths.home}
+  altPath={dict.altPaths.home}
+  structuredData={structuredData}
+  ogType="profile"
+>
+  <TraceRail dict={dict} />
+  <Hero dict={dict} />
+  <Signals dict={dict} />
+  <Profile dict={dict} />
+  <Cases dict={dict} />
+  <Principles dict={dict} />
+  <Experience dict={dict} />
+  <Products dict={dict} />
+  <Stack dict={dict} />
+  <Contact dict={dict} />
+</Base>

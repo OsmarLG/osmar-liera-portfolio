@@ -1,0 +1,225 @@
+---
+import type { DiagramColumn } from '../../i18n/types';
+
+interface Props {
+  id: string;
+  title: string;
+  summary: string;
+  columns: DiagramColumn[];
+}
+
+const { id, title, summary, columns } = Astro.props;
+---
+
+<figure class="flow" data-flow aria-labelledby={`${id}-diagram-title`}>
+  <figcaption class="flow__caption">
+    <span class="flow__title mono" id={`${id}-diagram-title`}>{title}</span>
+    <span class="sr-only">{summary}</span>
+  </figcaption>
+  <ol class="flow__columns" role="list" data-cols={columns.length}>
+    {
+      columns.map((column, index) => (
+        <li class="flow__column" data-flow-column>
+          <p class="flow__label mono">
+            <span aria-hidden="true">{String(index + 1).padStart(2, '0')} </span>
+            {column.label}
+          </p>
+          <ul class="flow__nodes" role="list">
+            {column.nodes.map((node) => (
+              <li class="flow__node" data-kind={node.kind ?? 'default'} data-flow-node>
+                <span class="flow__node-title">{node.title}</span>
+                {node.detail && <span class="flow__node-detail">{node.detail}</span>}
+              </li>
+            ))}
+          </ul>
+          {index < columns.length - 1 && (
+            <span class="flow__link" data-flow-link aria-hidden="true">
+              <span class="flow__packet" data-flow-packet />
+            </span>
+          )}
+        </li>
+      ))
+    }
+  </ol>
+</figure>
+
+<style>
+  .flow {
+    --gap: 2.75rem;
+    position: relative;
+    padding: clamp(1.25rem, 3vw, 2rem);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-l);
+    background:
+      radial-gradient(circle at 1px 1px, rgb(147 169 181 / 0.1) 1px, transparent 0) 0 0 / 18px 18px,
+      linear-gradient(180deg, var(--surface), var(--bg-elev));
+  }
+
+  .flow__caption {
+    display: flex;
+    margin-bottom: 1.5rem;
+  }
+
+  .flow__title {
+    color: var(--text-3);
+    font-size: 0.78rem;
+  }
+
+  .flow__columns {
+    display: grid;
+    gap: var(--gap);
+    list-style: none;
+    padding: 0;
+  }
+
+  @media (min-width: 820px) {
+    .flow__columns[data-cols='3'] {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .flow__columns[data-cols='4'] {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  .flow__column {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .flow__label {
+    color: var(--accent);
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    text-transform: lowercase;
+  }
+
+  .flow__nodes {
+    display: grid;
+    gap: 0.5rem;
+    flex: 1;
+    align-content: center;
+    list-style: none;
+    padding: 0;
+  }
+
+  .flow__node {
+    position: relative;
+    display: grid;
+    gap: 0.15rem;
+    padding: 0.65rem 0.8rem 0.7rem 1rem;
+    border: 1px solid var(--line-strong);
+    border-radius: 10px;
+    background: rgb(5 9 13 / 0.75);
+    line-height: 1.3;
+  }
+
+  .flow__node::before {
+    content: '';
+    position: absolute;
+    left: -1px;
+    top: 10px;
+    bottom: 10px;
+    width: 2px;
+    border-radius: 2px;
+    background: var(--line-strong);
+  }
+
+  .flow__node[data-kind='model']::before {
+    background: var(--accent);
+  }
+
+  .flow__node[data-kind='model'] {
+    border-color: rgb(95 224 245 / 0.45);
+    background: linear-gradient(135deg, rgb(95 224 245 / 0.1), rgb(5 9 13 / 0.75) 70%);
+  }
+
+  .flow__node[data-kind='gate']::before {
+    background: var(--amber);
+  }
+
+  .flow__node[data-kind='gate'] {
+    border-color: rgb(255 197 107 / 0.4);
+  }
+
+  .flow__node[data-kind='store']::before {
+    background: var(--green);
+  }
+
+  .flow__node-title {
+    font-weight: 600;
+    font-size: 0.92rem;
+    color: var(--text);
+  }
+
+  .flow__node-detail {
+    color: var(--text-3);
+    font-size: 0.8rem;
+  }
+
+  /* Connectors: vertical on small screens, horizontal on wide screens. */
+  .flow__link {
+    --draw: 1;
+    position: absolute;
+    left: 1.5rem;
+    top: 100%;
+    width: 1px;
+    height: var(--gap);
+    background: linear-gradient(var(--accent), rgb(95 224 245 / 0.25));
+    transform: scaleY(var(--draw));
+    transform-origin: top center;
+  }
+
+  .flow__link::after {
+    content: '';
+    position: absolute;
+    left: -4px;
+    bottom: 2px;
+    width: 9px;
+    height: 9px;
+    border-right: 1px solid var(--accent);
+    border-bottom: 1px solid var(--accent);
+    transform: rotate(45deg);
+    opacity: var(--draw);
+  }
+
+  .flow__packet {
+    --travel: 0;
+    position: absolute;
+    left: -3px;
+    top: calc(var(--travel) * 100%);
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--text);
+    box-shadow: 0 0 12px 2px var(--accent);
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  @media (min-width: 820px) {
+    .flow__link {
+      left: 100%;
+      top: calc(50% + 0.75rem);
+      width: var(--gap);
+      height: 1px;
+      background: linear-gradient(90deg, var(--accent), rgb(95 224 245 / 0.25));
+      transform: scaleX(var(--draw));
+      transform-origin: left center;
+    }
+
+    .flow__link::after {
+      left: auto;
+      right: 2px;
+      bottom: -4px;
+      transform: rotate(-45deg);
+    }
+
+    .flow__packet {
+      left: calc(var(--travel) * 100%);
+      top: -3px;
+    }
+  }
+</style>

@@ -1,0 +1,91 @@
+---
+import SocialLinks from './SocialLinks.astro';
+import type { Dictionary } from '../i18n';
+import { person } from '../i18n/profile';
+
+interface Props {
+  dict: Dictionary;
+  altPath: string;
+}
+
+const { dict, altPath } = Astro.props;
+const otherLang = dict.lang === 'es' ? 'en' : 'es';
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container site-footer__inner">
+    <div class="site-footer__id">
+      <p class="site-footer__name">{person.fullName}</p>
+      <p>{dict.ui.footerNote}</p>
+      <p class="site-footer__meta mono">© {year} · {dict.ui.footerBuilt}</p>
+    </div>
+    <div class="site-footer__links">
+      <SocialLinks dict={dict} includeCompany includeCompanyInstagram={false} />
+      <p class="site-footer__nav">
+        <a href={dict.paths.cv}>{dict.ui.cvLabel}</a>
+        <span aria-hidden="true">·</span>
+        <a href={altPath} hreflang={otherLang} lang={otherLang}>{dict.ui.switchLangName}</a>
+        <span aria-hidden="true">·</span>
+        <a href="#contenido">{dict.ui.backToTop}</a>
+      </p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    border-top: 1px solid var(--line);
+    padding-block: 3rem 3.5rem;
+    color: var(--text-2);
+    font-size: 0.95rem;
+  }
+
+  .site-footer__inner {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+
+  .site-footer__name {
+    color: var(--text);
+    font-family: var(--font-display);
+    font-weight: 650;
+    font-size: 1.15rem;
+    margin-bottom: 0.35rem;
+  }
+
+  .site-footer__meta {
+    margin-top: 0.75rem;
+    color: var(--text-3);
+    font-size: 0.8rem;
+  }
+
+  .site-footer__links {
+    display: grid;
+    gap: 1rem;
+    justify-items: start;
+  }
+
+  .site-footer__nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+
+  .site-footer__nav a {
+    color: var(--text-2);
+    text-underline-offset: 0.25em;
+  }
+
+  .site-footer__nav a:hover {
+    color: var(--accent);
+  }
+
+  @media (min-width: 720px) {
+    .site-footer__links {
+      justify-items: end;
+    }
+  }
+</style>
