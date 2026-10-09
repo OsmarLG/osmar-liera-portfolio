@@ -1,0 +1,33 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# The old Vite build served a single sitemap.xml; Astro now writes sitemap-index.xml.
+[[redirects]]
+  from = "/sitemap.xml"
+  to = "/sitemap-index.xml"
+  status = 301
+
+# Previous CV file names.
+[[redirects]]
+  from = "/cv/osmar-liera-fullstack.pdf"
+  to = "/cv/cv-fullstack-es.pdf"
+  status = 301
+
+[[redirects]]
+  from = "/cv/osmar-liera-backend.pdf"
+  to = "/cv/cv-sr-es.pdf"
+  status = 301
+
+[[redirects]]
+  from = "/cv/osmar-liera-frontend.pdf"
+  to = "/cv/cv-fullstack-es.pdf"
+  status = 301
+
+[[redirects]]
+  from = "/og-image.png"
+  to = "/og/og-es.jpg"
+  status = 301

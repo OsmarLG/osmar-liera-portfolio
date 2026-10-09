@@ -1,0 +1,47 @@
+# Osmar Liera — Applied AI Engineer · Backend / Full-Stack
+
+> Osmar Alejandro Liera Gómez is a software engineer based in La Paz, Baja California Sur, Mexico, focused on putting AI to work inside real business systems: LLM agents with tool calling, MCP servers, structured outputs (JSON Schema), human-in-the-loop approval and evaluation against ground truth. Backend in Python (FastAPI) and Laravel (PHP); full-stack with React and TypeScript. 4 years of professional experience. Open to remote or hybrid roles.
+
+Site in Spanish (default) and English. Facts below come from his current résumés.
+
+## Current positions (all present)
+
+- Founder & Technical Lead, ELROI Labs (La Paz, BCS) — software, integration and applied-AI studio: https://labs.elroi.cloud
+- Full-Stack Developer, Tangramx — enterprise applications for insurers, healthcare institutions and logistics operators (primary stack: Python / FastAPI)
+- Instructor, Applied AI for Business — Instituto Tecnológico de La Paz
+
+## AI work in production
+
+- OS CRM MCP server (ELROI Labs): 23 tools, 3 prompts and a playbook resource so AI assistants can search leads, plan the day, log follow-ups, schedule tasks, import leads and generate reports. Agents run with the token owner's permissions, every change is audited, and outbound WhatsApp messages require explicit human approval.
+- LLM agents with structured outputs (JSON Schema): lead-contact assistant, project planner (tasks with acceptance criteria and estimates) and a WhatsApp writer grounded in the real conversation. Guardrails: supplied data only, ask instead of assuming, no prices or commitments, per-agent temperature and token limits.
+- OpenAI-compatible model gateway with model-catalog discovery, caching and fallback across providers (OpenAI, Anthropic, Gemini, Azure and others).
+- LLM-based OCR at Tangramx (Vitase / Paciente Integral): OpenAI Vision for Mexican INE ID cards, a deterministic CURP validation layer, and evaluation on 25 real ID cards with 100% name accuracy before rollout.
+
+## Other experience and products
+
+- Shopify and Magento integrations; professional contribution to SHASA Mexico, SHASA USA and Hypsters.
+- Tangramx: Compass WMS (server-side pagination, race-condition fix in multi-file upload, client-portal admin preview), ATC / ATCSMART (statement-parser fixes, Excel exports).
+- Own products with public code: PMCRM (https://github.com/OsmarLG/pm-crm-elroi), AVT multitenant SaaS for land sales (https://github.com/OsmarLG/api-avt-l12), NopalGreen operations platform for tortilla producers (https://github.com/OsmarLG/nopalgreen).
+
+## Languages
+
+- Spanish: native
+- English: intermediate (B1–B2), daily technical reading and written communication
+
+## Pages
+
+- [Portfolio (Spanish)](https://osmarlg.elroi.cloud/)
+- [Portfolio (English)](https://osmarlg.elroi.cloud/en/)
+- [Résumé in HTML (Spanish)](https://osmarlg.elroi.cloud/cv/)
+- [Résumé in HTML (English)](https://osmarlg.elroi.cloud/en/cv/)
+- [Applied AI résumé PDF (English)](https://osmarlg.elroi.cloud/cv/cv-ai-en.pdf)
+- [CV IA aplicada PDF (español)](https://osmarlg.elroi.cloud/cv/cv-ai-es.pdf)
+
+## Contact
+
+- Email: lieragomezosmaralejandro@gmail.com
+- Phone / WhatsApp: +52 615 155 9659 (https://wa.me/5216151559659)
+- GitHub: https://github.com/OsmarLG
+- LinkedIn: https://linkedin.com/in/osmar-lg
+- Instagram: https://www.instagram.com/soyosmarlg/
+- ELROI Labs: https://labs.elroi.cloud · https://www.instagram.com/elroi.labs/

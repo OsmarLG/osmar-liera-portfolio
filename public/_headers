@@ -2,16 +2,60 @@
   X-Content-Type-Options: nosniff
   X-Frame-Options: DENY
   Referrer-Policy: strict-origin-when-cross-origin
-  Permissions-Policy: camera=(), microphone=(), geolocation=()
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
+  Cross-Origin-Opener-Policy: same-origin
+  Strict-Transport-Security: max-age=31536000
 
-/assets/*
+/_astro/*
   Cache-Control: public, max-age=31536000, immutable
 
 /images/*
-  Cache-Control: public, max-age=31536000, immutable
-
-/cv/*
   Cache-Control: public, max-age=604800
 
-/og-image.png
+/og/*
   Cache-Control: public, max-age=86400
+
+/cv/cv-ai-es.pdf
+  Cache-Control: public, max-age=86400, must-revalidate
+  Content-Type: application/pdf
+
+/cv/cv-ai-en.pdf
+  Cache-Control: public, max-age=86400, must-revalidate
+  Content-Type: application/pdf
+
+/cv/cv-sr-es.pdf
+  Cache-Control: public, max-age=86400, must-revalidate
+  Content-Type: application/pdf
+
+/cv/cv-sr-en.pdf
+  Cache-Control: public, max-age=86400, must-revalidate
+  Content-Type: application/pdf
+
+/cv/cv-fullstack-es.pdf
+  Cache-Control: public, max-age=86400, must-revalidate
+  Content-Type: application/pdf
+
+/site.webmanifest
+  Content-Type: application/manifest+json; charset=utf-8
+  Cache-Control: public, max-age=86400
+
+/llms.txt
+  Content-Type: text/plain; charset=utf-8
+
+/icon-192.png
+  Cache-Control: public, max-age=604800
+
+/icon-512.png
+  Cache-Control: public, max-age=604800
+
+/icon-maskable-512.png
+  Cache-Control: public, max-age=604800
+
+/apple-touch-icon.png
+  Cache-Control: public, max-age=604800
+
+/favicon-48.png
+  Cache-Control: public, max-age=604800
+
+/favicon.svg
+  Cache-Control: public, max-age=604800
