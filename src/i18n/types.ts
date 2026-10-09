@@ -91,9 +91,14 @@ export interface Product {
   features: string[];
   stack: string[];
   stackNote: string;
-  repo: string;
-  repoLabel: string;
+  /** Public repository; omitted for private products. */
+  repo?: string;
+  repoLabel?: string;
+  /** Shown instead of the repository link, e.g. "Private · in production". */
+  status?: string;
   images: { key: ProjectImageKey; alt: string; label: string }[];
+  /** Architecture map shown instead of screenshots (private products). */
+  diagram?: { title: string; summary: string; columns: DiagramColumn[] };
 }
 
 export interface StackItem {
@@ -170,6 +175,8 @@ export interface Dictionary {
     stackTabsLabel: string;
     evidence: string;
     technology: string;
+    pauseAnimation: string;
+    playAnimation: string;
     downloadPdf: string;
     contributionLabel: string;
   };
@@ -284,7 +291,7 @@ export interface Dictionary {
     teachingTitle: string;
     teaching: { role: string; org: string; period: string; bullets: string[] };
     productsTitle: string;
-    products: { name: string; text: string; repo: string }[];
+    products: { name: string; text: string; repo?: string }[];
     languagesTitle: string;
     languages: string[];
     closing: string;

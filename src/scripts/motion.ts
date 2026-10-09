@@ -101,40 +101,132 @@ function initCounters(): void {
 }
 
 /** Architecture diagrams: columns light up in order and a packet travels each link. */
+interface FlowLoop {
+  flow: HTMLElement;
+  loop: gsap.core.Timeline;
+  trigger: ScrollTrigger;
+  entered: boolean;
+  userPaused: boolean;
+}
+
+const flowLoops: FlowLoop[] = [];
+
+/** Plays a diagram's loop only while it is on screen, the tab is visible and the user has not paused it. */
+function syncLoop(item: FlowLoop): void {
+  const shouldRun = item.entered && !item.userPaused && item.trigger.isActive && document.visibilityState === 'visible';
+  if (shouldRun) {
+    item.loop.play();
+  } else {
+    item.loop.pause();
+  }
+}
+
+/**
+ * Architecture diagrams.
+ * - Entrance (single play): columns light up in order and the links draw.
+ * - Loop (continuous): packets travel every link and each column's nodes light up as a packet
+ *   reaches them. It plays while the diagram is in the viewport, pauses when it leaves, and
+ *   resumes on re-entry in either scroll direction. A button lets visitors pause it (WCAG 2.2.2).
+ */
 function initDiagrams(): void {
   gsap.utils.toArray<HTMLElement>('[data-flow]').forEach((flow) => {
-    const columns = flow.querySelectorAll<HTMLElement>('[data-flow-column]');
-    const timeline = gsap.timeline({
-      paused: true,
-      defaults: { ease: 'power2.out' },
-    });
+    const columns = [...flow.querySelectorAll<HTMLElement>('[data-flow-column]')];
+    const packets = [...flow.querySelectorAll<HTMLElement>('[data-flow-packet]')];
+    const toggle = flow.querySelector<HTMLButtonElement>('[data-flow-toggle]');
 
+    const entrance = gsap.timeline({ paused: true, defaults: { ease: 'power2.out' } });
     columns.forEach((column, index) => {
       const nodes = column.querySelectorAll<HTMLElement>('[data-flow-node]');
-      timeline.from(nodes, { opacity: 0.15, y: 14, duration: 0.45, stagger: 0.07 }, index === 0 ? 0 : '>-0.1');
+      entrance.fromTo(nodes, { opacity: 0.15, y: 14 }, { opacity: 1, y: 0, duration: 0.45, stagger: 0.07, immediateRender: false }, index === 0 ? 0 : '>-0.1');
       const link = column.querySelector<HTMLElement>('[data-flow-link]');
       if (link) {
-        timeline.fromTo(link, { '--draw': 0 }, { '--draw': 1, duration: 0.45, ease: 'power1.inOut' }, '>-0.15');
+        entrance.fromTo(link, { '--draw': 0 }, { '--draw': 1, duration: 0.45, ease: 'power1.inOut', immediateRender: false }, '>-0.15');
       }
     });
 
-    const packets = flow.querySelectorAll<HTMLElement>('[data-flow-packet]');
-    if (packets.length > 0) {
-      timeline.fromTo(
-        packets,
-        { '--travel': 0, autoAlpha: 1 },
-        { '--travel': 1, duration: 1.1, ease: 'power1.inOut', stagger: 0.35, repeat: 2, repeatDelay: 0.4 },
-        '>',
-      );
-      timeline.to(packets, { autoAlpha: 0, duration: 0.3 });
+    const step = 0.9;
+    gsap.set(packets, { visibility: 'visible', opacity: 0 });
+    const loop = gsap.timeline({ paused: true, repeat: -1, repeatDelay: 0.3 });
+    columns.forEach((column, index) => {
+      const nodes = column.querySelectorAll<HTMLElement>('[data-flow-node]');
+      loop.call(() => nodes.forEach((node) => node.classList.add('is-hot')), [], index * step);
+      loop.call(() => nodes.forEach((node) => node.classList.remove('is-hot')), [], index * step + step * 0.9);
+      const packet = column.querySelector<HTMLElement>('[data-flow-packet]');
+      if (packet) {
+        loop.to(
+          packet,
+          { keyframes: { '--travel': [0, 1], opacity: [0, 1, 1, 0] }, duration: step * 0.85, ease: 'power1.inOut' },
+          index * step + step * 0.15,
+        );
+      }
+    });
+    if (packets.length === 0) {
+      loop.to({}, { duration: step });
     }
 
-    ScrollTrigger.create({
-      trigger: flow,
-      start: 'top 75%',
-      once: true,
-      onEnter: () => timeline.play(),
-    });
+    const item: FlowLoop = {
+      flow,
+      loop,
+      entered: false,
+      userPaused: false,
+      trigger: ScrollTrigger.create({
+        trigger: flow,
+        start: 'top 85%',
+        end: 'bottom 15%',
+        onToggle: () => syncLoop(item),
+        onEnter: () => {
+          if (!item.entered) {
+            entrance.play().then(() => {
+              item.entered = true;
+              syncLoop(item);
+            });
+          }
+        },
+        onEnterBack: () => {
+          if (!item.entered) {
+            entrance.progress(1);
+            item.entered = true;
+          }
+          syncLoop(item);
+        },
+      }),
+    };
+
+    if (toggle) {
+      toggle.hidden = false;
+      toggle.addEventListener('click', () => {
+        item.userPaused = !item.userPaused;
+        const label = item.userPaused ? toggle.dataset.labelPlay : toggle.dataset.labelPause;
+        toggle.querySelector('[data-flow-toggle-label]')!.textContent = label ?? '';
+        if (item.userPaused) {
+          toggle.dataset.paused = '';
+        } else {
+          delete toggle.dataset.paused;
+        }
+        if (item.userPaused) {
+          flow.querySelectorAll('.is-hot').forEach((node) => node.classList.remove('is-hot'));
+          gsap.set(packets, { opacity: 0 });
+        }
+        syncLoop(item);
+      });
+    }
+
+    flowLoops.push(item);
+  });
+
+  const resync = (): void => flowLoops.forEach(syncLoop);
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+      ScrollTrigger.update();
+    }
+    resync();
+  });
+  // Restored from the back/forward cache (e.g. back from the CV page): re-measure and resume.
+  window.addEventListener('pageshow', (event) => {
+    if (event.persisted) {
+      ScrollTrigger.refresh();
+      resync();
+    }
   });
 }
 

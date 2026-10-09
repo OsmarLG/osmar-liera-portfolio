@@ -6,9 +6,11 @@ interface Props {
   title: string;
   summary: string;
   columns: DiagramColumn[];
+  pauseLabel: string;
+  playLabel: string;
 }
 
-const { id, title, summary, columns } = Astro.props;
+const { id, title, summary, columns, pauseLabel, playLabel } = Astro.props;
 ---
 
 <figure class="flow" data-flow aria-labelledby={`${id}-diagram-title`}>
@@ -16,6 +18,10 @@ const { id, title, summary, columns } = Astro.props;
     <span class="flow__title mono" id={`${id}-diagram-title`}>{title}</span>
     <span class="sr-only">{summary}</span>
   </figcaption>
+  <button class="flow__toggle mono" type="button" data-flow-toggle data-label-pause={pauseLabel} data-label-play={playLabel} hidden>
+    <span class="flow__toggle-icon" aria-hidden="true"></span>
+    <span data-flow-toggle-label>{pauseLabel}</span>
+  </button>
   <ol class="flow__columns" role="list" data-cols={columns.length}>
     {
       columns.map((column, index) => (
@@ -58,6 +64,60 @@ const { id, title, summary, columns } = Astro.props;
   .flow__caption {
     display: flex;
     margin-bottom: 1.5rem;
+    padding-right: 11rem;
+  }
+
+  .flow__toggle {
+    position: absolute;
+    top: clamp(0.9rem, 2.5vw, 1.6rem);
+    right: clamp(0.9rem, 2.5vw, 1.6rem);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    min-height: 32px;
+    padding: 0.3rem 0.75rem;
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+    background: var(--bg-elev);
+    color: var(--text-2);
+    font-size: 0.72rem;
+  }
+
+  .flow__toggle[hidden] {
+    display: none;
+  }
+
+  .flow__toggle:hover {
+    border-color: var(--accent);
+    color: var(--text);
+  }
+
+  .flow__toggle-icon {
+    width: 8px;
+    height: 9px;
+    border-left: 3px solid currentColor;
+    border-right: 3px solid currentColor;
+  }
+
+  .flow__toggle[data-paused] .flow__toggle-icon {
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 5px 0 5px 8px;
+    border-color: transparent transparent transparent currentColor;
+  }
+
+  @media (max-width: 560px) {
+    .flow__caption {
+      padding-right: 0;
+      margin-bottom: 3rem;
+    }
+
+    .flow__toggle {
+      top: 3rem;
+      right: auto;
+      left: clamp(1.25rem, 3vw, 2rem);
+    }
   }
 
   .flow__title {
@@ -146,6 +206,17 @@ const { id, title, summary, columns } = Astro.props;
 
   .flow__node[data-kind='store']::before {
     background: var(--green);
+  }
+
+  .flow__node {
+    transition:
+      border-color 0.3s ease,
+      box-shadow 0.3s ease;
+  }
+
+  .flow__node:global(.is-hot) {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft), 0 0 24px -6px rgb(95 224 245 / 0.6);
   }
 
   .flow__node-title {

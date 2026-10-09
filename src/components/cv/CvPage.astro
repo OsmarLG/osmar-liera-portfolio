@@ -149,10 +149,14 @@ const structuredData = buildStructuredData(dict, pageUrl, dict.meta.cvTitle, dic
               cvPage.products.map((product) => (
                 <div>
                   <dt>
-                    <a href={product.repo} target="_blank" rel="noopener noreferrer">
-                      {product.name}
-                      <span class="sr-only">{ui.newTab}</span>
-                    </a>
+                    {product.repo ? (
+                      <a href={product.repo} target="_blank" rel="noopener noreferrer">
+                        {product.name}
+                        <span class="sr-only">{ui.newTab}</span>
+                      </a>
+                    ) : (
+                      <span class="cv-products__private">{product.name}</span>
+                    )}
                   </dt>
                   <dd>{product.text}</dd>
                 </div>
@@ -445,7 +449,8 @@ const structuredData = buildStructuredData(dict, pageUrl, dict.meta.cvTitle, dic
     gap: 0.9rem;
   }
 
-  .cv-products dt a {
+  .cv-products dt a,
+  .cv-products__private {
     color: var(--text);
     font-family: var(--font-display);
     font-weight: 650;

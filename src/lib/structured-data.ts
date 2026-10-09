@@ -55,6 +55,7 @@ export function buildStructuredData(dict: Dictionary, pageUrl: string, pageName:
           addressCountry: person.country,
         },
         worksFor: [
+          { '@type': 'Organization', name: 'Nuts Marketing' },
           {
             '@type': 'Organization',
             name: company.name,
@@ -66,6 +67,7 @@ export function buildStructuredData(dict: Dictionary, pageUrl: string, pageName:
           { '@type': 'Organization', name: 'Tangramx' },
         ],
         hasOccupation: [
+          { '@type': 'Occupation', name: isEs ? 'Desarrollador Full-Stack (Nuts Marketing)' : 'Full-Stack Developer (Nuts Marketing)' },
           { '@type': 'Occupation', name: isEs ? 'Fundador y líder técnico (ELROI Labs)' : 'Founder & Technical Lead (ELROI Labs)' },
           { '@type': 'Occupation', name: isEs ? 'Desarrollador Full-Stack (Tangramx)' : 'Full-Stack Developer (Tangramx)' },
           {
@@ -100,9 +102,14 @@ export function buildStructuredData(dict: Dictionary, pageUrl: string, pageName:
           'TypeScript',
           'REST APIs',
           'Shopify',
+          'Shopify Admin API',
           'Magento',
+          'Microsoft Dynamics 365',
+          'SOAP',
+          'Laravel Nova',
+          'Filament',
           'WhatsApp messaging API',
-          'Microsoft Azure',
+          'Azure App Service',
           'SQL',
         ],
         knowsLanguage: [

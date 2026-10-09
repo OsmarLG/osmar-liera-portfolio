@@ -2,6 +2,7 @@
 import { Picture, getImage } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
 import Icon from '../Icon.astro';
+import Flow from './Flow.astro';
 import type { Dictionary } from '../../i18n';
 import type { ProjectImageKey } from '../../i18n/types';
 import pmcrmDashboard from '../../assets/projects/pmcrm-dashboard.png';
@@ -69,14 +70,30 @@ const fullSize = Object.fromEntries(
                       <li class="chip">{tech}</li>
                     ))}
                   </ul>
-                  <a class="btn btn--small product__repo" href={product.repo} target="_blank" rel="noopener noreferrer">
-                    <Icon name="github" size={16} />
-                    {ui.viewRepo}
-                    <span class="product__repo-name mono">{product.repoLabel}</span>
-                    <span class="sr-only">{ui.newTab}</span>
-                  </a>
+                  {product.repo ? (
+                    <a class="btn btn--small product__repo" href={product.repo} target="_blank" rel="noopener noreferrer">
+                      <Icon name="github" size={16} />
+                      {ui.viewRepo}
+                      <span class="product__repo-name mono">{product.repoLabel}</span>
+                      <span class="sr-only">{ui.newTab}</span>
+                    </a>
+                  ) : (
+                    product.status && (
+                      <p class="product__status mono">
+                        <span class="product__status-dot" aria-hidden="true" />
+                        {product.status}
+                      </p>
+                    )
+                  )}
                 </div>
 
+                {product.diagram && (
+                  <div class="product__diagram">
+                    <Flow id={`product-${index}`} title={product.diagram.title} summary={product.diagram.summary} columns={product.diagram.columns} pauseLabel={ui.pauseAnimation} playLabel={ui.playAnimation} />
+                  </div>
+                )}
+
+                {product.images.length > 0 && (
                 <div class:list={['product__shots', { 'product__shots--pair': product.images.length > 1 }]}>
                   {product.images.map((image, imageIndex) => {
                     const full = fullSize[image.key];
@@ -120,6 +137,7 @@ const fullSize = Object.fromEntries(
                     );
                   })}
                 </div>
+                )}
               </div>
             </article>
           </li>
@@ -220,6 +238,35 @@ const fullSize = Object.fromEntries(
 
   .product__repo {
     margin-top: 1.5rem;
+  }
+
+  .product__status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    margin-top: 1.5rem;
+    padding: 0.45rem 0.9rem;
+    border: 1px solid rgb(116 232 173 / 0.4);
+    border-radius: 999px;
+    color: var(--green);
+    font-size: 0.82rem;
+  }
+
+  .product__status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 0 4px var(--green-soft);
+  }
+
+  /* The diagram needs the full width: copy on top, map below. */
+  .product__grid:has(.product__diagram) {
+    grid-template-columns: 1fr;
+  }
+
+  .product__grid:has(.product__diagram) .product__copy {
+    order: 0;
   }
 
   .product__repo-name {

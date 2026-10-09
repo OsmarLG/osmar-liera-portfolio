@@ -48,6 +48,8 @@ const es: Dictionary = {
     stackTabsLabel: 'Categorías del stack',
     evidence: 'Evidencia',
     technology: 'Tecnología',
+    pauseAnimation: 'Pausar animación',
+    playAnimation: 'Reanudar animación',
     downloadPdf: 'Descargar PDF',
     contributionLabel: 'Contribución profesional',
   },
@@ -105,11 +107,16 @@ const es: Dictionary = {
     title: 'Software que pone a la IA a trabajar dentro del negocio.',
     paragraphs: [
       'Soy ingeniero de software con 4 años de experiencia construyendo, integrando y operando aplicaciones de negocio en producción para almacenes, retail, seguros y salud.',
-      'Hoy trabajo en tres frentes: en Tangramx desarrollo a diario con Python (FastAPI), donde llevé a producción un OCR basado en LLM y lo evalué contra datos verificados antes de liberarlo; en ELROI Labs, como fundador y líder técnico, construí la capa de IA de nuestro CRM; y en el Instituto Tecnológico de La Paz imparto capacitación en IA aplicada a negocios.',
+      'Hoy trabajo en cuatro frentes: en Nuts Marketing desarrollo middleware de integración entre tiendas Shopify y ERPs Microsoft Dynamics 365 y atiendo las plataformas de Shasa (México y Estados Unidos) e Hypsters; en Tangramx trabajo con Python (FastAPI), donde llevé a producción un OCR basado en LLM y lo evalué contra datos verificados antes de liberarlo; en ELROI Labs, como fundador y líder técnico, construí la capa de IA de nuestro CRM; y en el Instituto Tecnológico de La Paz imparto capacitación en IA aplicada a negocios.',
       'Mi flujo de desarrollo es asistido por IA de principio a fin con Claude Code: implementación, pruebas, refactorización y revisión de código.',
     ],
     rolesTitle: 'Dónde trabajo hoy',
     roles: [
+      {
+        org: 'Nuts Marketing',
+        role: 'Desarrollador Full-Stack',
+        summary: 'Middleware entre tiendas Shopify y ERPs Microsoft Dynamics 365, y las plataformas de Shasa (México y Estados Unidos) e Hypsters.',
+      },
       {
         org: 'Tangramx',
         role: 'Desarrollador Full-Stack',
@@ -308,8 +315,45 @@ const es: Dictionary = {
   experience: {
     kicker: 'resultado',
     title: 'Experiencia: sistemas en producción para negocios reales.',
-    intro: 'Tres posiciones activas. Sin adornos: lo que construí, lo que corregí y cómo lo validé.',
+    intro: 'Cuatro posiciones activas. Sin adornos: lo que construí, lo que corregí y cómo lo validé.',
     orgs: [
+      {
+        org: 'Nuts Marketing',
+        role: 'Desarrollador Full-Stack',
+        period: '2024 — Actualidad',
+        summary: 'Middleware de integración entre tiendas Shopify y ERPs Microsoft Dynamics 365, y las plataformas de Shasa (México y Estados Unidos) e Hypsters. Stack: Laravel, Laravel Nova, Filament, Shopify Admin API (GraphQL y webhooks), SOAP y Azure App Service con WebJobs.',
+        projects: [
+          {
+            name: 'Macadamia (proyecto interno) — Shopify ↔ Dynamics 365 Finance & Operations',
+            summary: 'Middleware para un retailer con Dynamics 365.',
+            bullets: [
+              'Sincronización de pedidos y clientes, recolección en tienda por ubicación y mapeo de métodos de pago.',
+              'Reportes de conciliación Shopify ↔ middleware ↔ Finance & Operations.',
+            ],
+          },
+          {
+            name: 'El Asturiano — Shopify ↔ Business Central + LS Central',
+            summary: 'Integración con Dynamics 365 Business Central y LS Central sobre SOAP/XML.',
+            bullets: [
+              'Recepción de webhooks de Shopify y envío de la información al ERP por SOAP/XML.',
+              'Sincronización de inventario con tareas programadas.',
+            ],
+          },
+          {
+            name: 'Coco (proyecto interno)',
+            summary: 'Nueva aplicación en Laravel + Nova sobre Azure App Service, en arranque.',
+            bullets: ['Arranque de la aplicación en Laravel y Laravel Nova, desplegada en Azure App Service.'],
+          },
+          {
+            name: 'Shasa (México y Estados Unidos) e Hypsters',
+            summary: 'Retail de moda con catálogos amplios en dos mercados.',
+            bullets: [
+              'Desarrollo backend e integraciones en Shopify y Magento para sincronizar catálogos, inventarios, pedidos y clientes.',
+              'Pases de Apple Wallet y tarjetas de regalo para Shasa.',
+            ],
+          },
+        ],
+      },
       {
         org: 'ELROI Labs',
         role: 'Fundador y líder técnico',
@@ -329,12 +373,8 @@ const es: Dictionary = {
           },
           {
             name: 'Proyectos para clientes',
-            summary: 'IA aplicada e integraciones de e-commerce.',
-            bullets: [
-              'IA aplicada a atención al cliente, precalificación de leads y automatización de seguimiento.',
-              'Desarrollo backend e integraciones en Shopify y Magento para sincronizar catálogos, inventarios, pedidos y clientes con sistemas internos.',
-              'Contribución profesional a SHASA México, SHASA USA e Hypsters.',
-            ],
+            summary: 'IA aplicada.',
+            bullets: ['IA aplicada a atención al cliente, precalificación de leads y automatización de seguimiento.'],
           },
         ],
       },
@@ -393,7 +433,7 @@ const es: Dictionary = {
   commerce: {
     title: 'E-commerce en dos mercados',
     text: 'Backend e integraciones en Shopify y Magento para retail de moda con catálogos amplios en México y Estados Unidos: catálogos, inventarios, pedidos y clientes sincronizados con sistemas internos.',
-    note: 'Contribución profesional dentro de un equipo; las marcas y plataformas pertenecen a sus dueños.',
+    note: 'Trabajo realizado como parte del equipo de Nuts Marketing. La propiedad de marca y producto corresponde a Shasa.',
     sites: [
       { name: 'SHASA México', market: 'MX', marketLabel: 'México', href: 'https://shasa.com/', domain: 'shasa.com' },
       { name: 'SHASA USA', market: 'US', marketLabel: 'Estados Unidos', href: 'https://us.shasa.com/', domain: 'us.shasa.com' },
@@ -402,8 +442,33 @@ const es: Dictionary = {
   },
   products: {
     title: 'Productos propios',
-    intro: 'Tres productos personales con código público. Cada uno resuelve una operación distinta.',
+    intro: 'Cuatro productos propios. Cada uno resuelve una operación distinta.',
     items: [
+      {
+        name: 'OS CRM',
+        tagline: 'CRM con capa de IA',
+        summary: 'El CRM de ELROI Labs, en producción: leads, pipeline, tareas con recordatorios, clientes y proyectos.',
+        features: [
+          'WhatsApp integrado (Evolution API) con borradores redactados por IA y aprobación humana antes de enviar',
+          'Servidor MCP con 23 herramientas para que agentes de IA lo operen, con permisos y auditoría',
+          'Webhook de Postiz para registrar publicaciones en redes y formularios web que crean leads',
+        ],
+        stack: ['Laravel 13', 'Inertia', 'React', 'Evolution API', 'Laravel MCP', 'Coolify'],
+        stackNote: 'Desplegado en Coolify',
+        status: 'Privado · en producción',
+        images: [],
+        diagram: {
+          title: 'Mapa de OS CRM',
+          summary:
+            'Los leads entran por formularios web, el webhook de Postiz registra publicaciones en redes y WhatsApp llega por Evolution API. OS CRM gestiona leads, pipeline, tareas con recordatorios, clientes y proyectos. Los borradores de IA esperan aprobación humana antes de enviarse, y los agentes operan el CRM por un servidor MCP de 23 herramientas con permisos y auditoría.',
+          columns: [
+            { label: 'entradas', nodes: [{ title: 'Formularios web', detail: 'crean leads' }, { title: 'Webhook de Postiz', detail: 'publicaciones en redes' }, { title: 'WhatsApp', detail: 'Evolution API' }] },
+            { label: 'os crm', nodes: [{ title: 'Leads y pipeline', kind: 'model' }, { title: 'Tareas', detail: 'con recordatorios' }, { title: 'Clientes y proyectos' }] },
+            { label: 'control', nodes: [{ title: 'Borradores de IA', detail: 'aprobación humana antes de enviar', kind: 'gate' }, { title: 'Permisos y auditoría', kind: 'store' }] },
+            { label: 'agentes', nodes: [{ title: 'Servidor MCP', detail: '23 herramientas', kind: 'model' }] },
+          ],
+        },
+      },
       {
         name: 'PMCRM',
         tagline: 'Centro de trabajo',
@@ -468,9 +533,10 @@ const es: Dictionary = {
         items: [
           { tech: 'Python · FastAPI', evidence: ['Tangramx: Vitase, ATC, Compass WMS'] },
           { tech: 'SQLAlchemy · Alembic', evidence: ['Tangramx'] },
-          { tech: 'Laravel (PHP)', evidence: ['OS CRM', 'PMCRM', 'AVT', 'NopalGreen'] },
+          { tech: 'Laravel (PHP)', evidence: ['Nuts Marketing', 'OS CRM', 'PMCRM', 'AVT', 'NopalGreen'] },
+          { tech: 'Laravel Nova · Filament', evidence: ['Nuts Marketing: Coco y middleware'] },
           { tech: 'APIs REST', evidence: ['Tangramx (FastAPI)', 'AVT (API con Sanctum)'] },
-          { tech: 'Colas de trabajo y webhooks', evidence: ['OS CRM: notificaciones y recordatorios'] },
+          { tech: 'Colas, tareas programadas y webhooks', evidence: ['Nuts Marketing: webhooks de Shopify e inventario', 'OS CRM: notificaciones y recordatorios'] },
           { tech: 'Autenticación con 2FA', evidence: ['PMCRM', 'NopalGreen'] },
         ],
       },
@@ -478,8 +544,13 @@ const es: Dictionary = {
         id: 'integraciones',
         label: 'Integraciones',
         items: [
-          { tech: 'Shopify · Magento', evidence: ['SHASA México', 'SHASA USA', 'Hypsters'] },
-          { tech: 'API de mensajería de WhatsApp', evidence: ['OS CRM'] },
+          { tech: 'Shopify Admin API (GraphQL y webhooks)', evidence: ['Nuts Marketing: Shasa, Hypsters, El Asturiano, Macadamia'] },
+          { tech: 'Microsoft Dynamics 365 (Finance & Operations, Business Central + LS Central)', evidence: ['Nuts Marketing: Macadamia, El Asturiano'] },
+          { tech: 'SOAP / XML', evidence: ['Nuts Marketing: El Asturiano'] },
+          { tech: 'Magento', evidence: ['Nuts Marketing: Shasa, Hypsters'] },
+          { tech: 'Apple Wallet (pases y tarjetas de regalo)', evidence: ['Nuts Marketing: Shasa'] },
+          { tech: 'WhatsApp vía Evolution API', evidence: ['OS CRM'] },
+          { tech: 'Webhooks de Postiz y formularios web', evidence: ['OS CRM'] },
           { tech: 'Google Maps', evidence: ['AVT'] },
         ],
       },
@@ -507,8 +578,8 @@ const es: Dictionary = {
         id: 'operacion',
         label: 'Nube y operación',
         items: [
-          { tech: 'Microsoft Azure (App Service, Functions, VMs, Storage, Azure SQL)', evidence: ['Trabajo diario · Tangramx'] },
-          { tech: 'Contenedores · Linux', evidence: ['Despliegue de OS CRM'] },
+          { tech: 'Azure App Service y WebJobs', evidence: ['Nuts Marketing: en producción, Coco'] },
+          { tech: 'Coolify · contenedores · Linux', evidence: ['OS CRM en producción'] },
           { tech: 'CI con GitHub Actions', evidence: ['OS CRM: pruebas y análisis estático'] },
           { tech: 'Pruebas automatizadas (Pest)', evidence: ['OS CRM'] },
           { tech: 'Claude Code · Git/GitHub con ramas, PR y code review', evidence: ['OS CRM', 'Desarrollo diario'] },
@@ -536,17 +607,17 @@ const es: Dictionary = {
     downloadsTitle: 'Descargar en PDF',
     downloadsIntro: 'Elige la versión según el puesto. Todas son A4 y están actualizadas.',
     downloads: [
-      { file: '/cv/cv-ai-es.pdf', title: 'IA aplicada', description: 'Agentes LLM e integración de IA en producción.', lang: 'es', langLabel: 'Español', size: '104 KB' },
-      { file: '/cv/cv-ai-en.pdf', title: 'Applied AI', description: 'LLM agents & production AI integration.', lang: 'en', langLabel: 'English', size: '104 KB' },
-      { file: '/cv/cv-sr-es.pdf', title: 'Ingeniero de software', description: 'Integraciones empresariales, Azure y desarrollo asistido por IA.', lang: 'es', langLabel: 'Español', size: '99 KB' },
-      { file: '/cv/cv-sr-en.pdf', title: 'Software engineer', description: 'Enterprise integrations, Azure & AI-assisted development.', lang: 'en', langLabel: 'English', size: '99 KB' },
-      { file: '/cv/cv-fullstack-es.pdf', title: 'Full Stack', description: 'Python, JavaScript/TypeScript, React, APIs REST y SQL.', lang: 'es', langLabel: 'Español', size: '101 KB' },
+      { file: '/cv/cv-ai-es.pdf', title: 'IA aplicada', description: 'Agentes LLM e integración de IA en producción.', lang: 'es', langLabel: 'Español', size: '109 KB' },
+      { file: '/cv/cv-ai-en.pdf', title: 'Applied AI', description: 'LLM agents & production AI integration.', lang: 'en', langLabel: 'English', size: '109 KB' },
+      { file: '/cv/cv-sr-es.pdf', title: 'Ingeniero de software', description: 'Integraciones empresariales, Azure y desarrollo asistido por IA.', lang: 'es', langLabel: 'Español', size: '102 KB' },
+      { file: '/cv/cv-sr-en.pdf', title: 'Software engineer', description: 'Enterprise integrations, Azure & AI-assisted development.', lang: 'en', langLabel: 'English', size: '101 KB' },
+      { file: '/cv/cv-fullstack-es.pdf', title: 'Full Stack', description: 'Python, JavaScript/TypeScript, React, APIs REST y SQL.', lang: 'es', langLabel: 'Español', size: '106 KB' },
     ],
     summaryTitle: 'Perfil profesional',
     summary: [
       'Ingeniero de software enfocado en llevar la IA a sistemas de negocio reales, con 4 años de experiencia profesional construyendo, integrando y operando aplicaciones en producción para almacenes, retail, seguros y salud.',
       'Diseño y pongo en producción agentes LLM con tool calling, salidas estructuradas y aprobación humana, integrados con datos y APIs empresariales. En ELROI Labs construí la capa de IA de nuestro CRM: un servidor MCP con 23 herramientas que permite a asistentes de IA consultar el pipeline, planear seguimientos y operar sobre los registros con los permisos del propio usuario, con cada acción auditada.',
-      'En Tangramx trabajo a diario con Python (FastAPI), donde llevé a producción un OCR basado en LLM y lo evalué contra datos verificados antes de liberarlo. También imparto capacitación en IA aplicada a negocios en el Instituto Tecnológico de La Paz.',
+      'En Nuts Marketing desarrollo middleware de integración entre tiendas Shopify y ERPs Microsoft Dynamics 365 y atiendo las plataformas de Shasa (México y Estados Unidos) e Hypsters. En Tangramx trabajo con Python (FastAPI), donde llevé a producción un OCR basado en LLM y lo evalué contra datos verificados antes de liberarlo. También imparto capacitación en IA aplicada a negocios en el Instituto Tecnológico de La Paz.',
     ],
     skillsTitle: 'Habilidades técnicas',
     skills: [
@@ -554,14 +625,52 @@ const es: Dictionary = {
       { label: 'LLMs', value: 'OpenAI (Vision, Responses API), salidas estructuradas con JSON Schema, diseño de prompts y guardrails' },
       { label: 'Evaluación', value: 'Validación contra datos verificados, post-procesamiento determinista de la salida del modelo, análisis de calidad de datos' },
       { label: 'Python', value: 'FastAPI, SQLAlchemy, Alembic, APIs REST, JWT + 2FA' },
-      { label: 'Integración', value: 'APIs REST, webhooks, colas de trabajo, gateways de modelos compatibles con OpenAI, API de mensajería de WhatsApp, Shopify, Magento' },
+      { label: 'Integración', value: 'APIs REST, webhooks, colas de trabajo, SOAP/XML, Shopify Admin API (GraphQL y webhooks), Magento, Microsoft Dynamics 365 (Finance & Operations, Business Central + LS Central), Apple Wallet, gateways de modelos compatibles con OpenAI, API de mensajería de WhatsApp' },
       { label: 'Datos', value: 'SQL, MySQL, SQLite, modelado relacional, migraciones versionadas, Google Document AI' },
-      { label: 'Además', value: 'Laravel (PHP), React, TypeScript, Vite, Tailwind CSS, pruebas automatizadas' },
-      { label: 'Nube / Ops', value: 'Microsoft Azure (App Service, Functions, VMs, Storage, Azure SQL), Docker, Linux, Git/GitHub, CI/CD' },
+      { label: 'Además', value: 'Laravel (PHP), Laravel Nova, Filament, React, TypeScript, Vite, Tailwind CSS, pruebas automatizadas' },
+      { label: 'Nube / Ops', value: 'Microsoft Azure (App Service con WebJobs, Functions, VMs, Storage, Azure SQL), Docker, Linux, Git/GitHub, CI/CD' },
       { label: 'Asistido por IA', value: 'Claude Code en el desarrollo diario; Git/GitHub con ramas, pull requests y revisión de código' },
     ],
     experienceTitle: 'Experiencia profesional',
     experience: [
+      {
+        role: 'Desarrollador Full-Stack',
+        org: 'Nuts Marketing',
+        period: '2024 — Actualidad',
+        summary: 'Middleware de integración entre tiendas Shopify y ERPs Microsoft Dynamics 365, y las plataformas de Shasa (México y Estados Unidos) e Hypsters. Stack: Laravel, Laravel Nova, Filament, Shopify Admin API (GraphQL y webhooks), SOAP y Azure App Service con WebJobs.',
+        projects: [
+          {
+            name: 'Macadamia (proyecto interno) — Shopify ↔ Dynamics 365 Finance & Operations',
+            context: 'Middleware para un retailer con Dynamics 365',
+            bullets: [
+              'Sincronización de pedidos y clientes, recolección en tienda por ubicación y mapeo de métodos de pago.',
+              'Reportes de conciliación Shopify ↔ middleware ↔ Finance & Operations.',
+            ],
+          },
+          {
+            name: 'El Asturiano — Shopify ↔ Dynamics 365 Business Central + LS Central',
+            context: 'Integración sobre SOAP/XML',
+            bullets: [
+              'Recepción de webhooks de Shopify y envío de la información al ERP por SOAP/XML.',
+              'Sincronización de inventario con tareas programadas.',
+            ],
+          },
+          {
+            name: 'Coco (proyecto interno)',
+            context: 'Nueva aplicación en Laravel + Nova sobre Azure App Service, en arranque',
+            bullets: ['Arranque de la aplicación en Laravel y Laravel Nova, desplegada en Azure App Service.'],
+          },
+          {
+            name: 'Shasa (México y Estados Unidos) e Hypsters',
+            context: 'Retail de moda con catálogos amplios en México y Estados Unidos',
+            bullets: [
+              'Desarrollo backend e integraciones en Shopify y Magento para sincronizar catálogos, inventarios, pedidos y clientes.',
+              'Pases de Apple Wallet y tarjetas de regalo para Shasa.',
+              'Trabajo realizado como parte del equipo de Nuts Marketing. La propiedad de marca y producto corresponde a Shasa.',
+            ],
+          },
+        ],
+      },
       {
         role: 'Fundador y líder técnico',
         org: 'ELROI Labs',
@@ -584,12 +693,8 @@ const es: Dictionary = {
           },
           {
             name: 'Proyectos para clientes',
-            context: 'IA aplicada e integraciones de e-commerce en dos mercados',
-            bullets: [
-              'IA aplicada a atención al cliente, precalificación de leads y automatización de seguimiento.',
-              'Desarrollo backend e integraciones en Shopify y Magento para sincronizar catálogos, inventarios, pedidos y clientes con sistemas internos.',
-              'Contribución profesional a las plataformas de SHASA México, SHASA USA e Hypsters: retail de moda con catálogos amplios en México y Estados Unidos.',
-            ],
+            context: 'IA aplicada',
+            bullets: ['IA aplicada a atención al cliente, precalificación de leads y automatización de seguimiento.'],
           },
         ],
       },
