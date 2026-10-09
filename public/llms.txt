@@ -14,7 +14,7 @@ Site in Spanish (default) and English. Facts below come from his current résum�
 ## Previous experience
 
 - Giro26 (2023–2024) — Full-Stack Developer: financial ERP, hexagonal architecture and SQL optimization
-- Hi-G (2024–2025) — Web & Mobile Developer: Hi-G app with Flutter, Firebase, TypeScript and Web3 integrations
+- Hi-G (2024–2025) — Web & Mobile Developer: Hi-G, Karol G's app, with Flutter, Firebase, TypeScript and Web3 integrations
 
 ## AI work in production
 
@@ -32,7 +32,7 @@ Site in Spanish (default) and English. Facts below come from his current résum�
 
 ## Education
 
-- Graduate of the Instituto Tecnológico de La Paz
+- B.S. in Computer Systems Engineering (Ingeniería en Sistemas Computacionales), Instituto Tecnológico de La Paz — Software Development specialization: web development, mobile apps and video games
 
 ## Languages
 

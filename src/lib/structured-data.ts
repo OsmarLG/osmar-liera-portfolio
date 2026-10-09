@@ -83,6 +83,16 @@ export function buildStructuredData(dict: Dictionary, pageUrl: string, pageName:
               : 'Teacher, final semester of the software development programs (Instituto Tecnológico de La Paz)',
           },
         ],
+        hasCredential: {
+          '@type': 'EducationalOccupationalCredential',
+          credentialCategory: 'degree',
+          name: isEs ? 'Ingeniería en Sistemas Computacionales' : 'B.S. in Computer Systems Engineering',
+          alternateName: isEs ? 'B.S. in Computer Systems Engineering' : 'Ingeniería en Sistemas Computacionales',
+          description: isEs
+            ? 'Especialidad en Desarrollo de Software: desarrollo web, aplicaciones móviles y videojuegos.'
+            : 'Software Development specialization: web development, mobile apps and video games.',
+          recognizedBy: { '@type': 'CollegeOrUniversity', name: 'Instituto Tecnológico de La Paz' },
+        },
         alumniOf: {
           '@type': 'CollegeOrUniversity',
           name: 'Instituto Tecnológico de La Paz',

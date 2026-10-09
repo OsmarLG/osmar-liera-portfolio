@@ -421,7 +421,7 @@ const es: Dictionary = {
         org: 'Instituto Tecnológico de La Paz',
         role: 'Programador de sistemas institucionales · Docente',
         period: 'Actualidad',
-        summary: 'Egresado del Tec; hoy trabajo ahí en dos roles: desarrollo de sus sistemas institucionales y docencia.',
+        summary: 'Egresado del Tec como Ingeniero en Sistemas Computacionales (especialidad en Desarrollo de Software); hoy trabajo ahí en dos roles: desarrollo de sus sistemas institucionales y docencia.',
         projects: [
           {
             name: 'Programador de sistemas institucionales',
@@ -441,7 +441,7 @@ const es: Dictionary = {
     previousTitle: 'Experiencia anterior',
     previous: [
       { org: 'Giro26', role: 'Desarrollador Full-Stack', period: '2023 — 2024', summary: 'ERP financiero, arquitectura hexagonal y optimización SQL.' },
-      { org: 'Hi-G', role: 'Desarrollador Web y Mobile', period: '2024 — 2025', summary: 'App Hi-G: Flutter, Firebase, TypeScript e integraciones Web3.' },
+      { org: 'Hi-G', role: 'Desarrollador Web y Mobile', period: '2024 — 2025', summary: 'App Hi-G para Karol G: Flutter, Firebase, TypeScript e integraciones Web3.' },
     ],
   },
   commerce: {
@@ -621,11 +621,11 @@ const es: Dictionary = {
     downloadsTitle: 'Descargar en PDF',
     downloadsIntro: 'Elige la versión según el puesto. Todas son A4 y están actualizadas.',
     downloads: [
-      { file: '/cv/cv-ai-es.pdf', title: 'IA aplicada', description: 'Agentes LLM e integración de IA en producción.', lang: 'es', langLabel: 'Español', size: '114 KB' },
-      { file: '/cv/cv-ai-en.pdf', title: 'Applied AI', description: 'LLM agents & production AI integration.', lang: 'en', langLabel: 'English', size: '113 KB' },
-      { file: '/cv/cv-sr-es.pdf', title: 'Ingeniero de software', description: 'Integraciones empresariales, Azure y desarrollo asistido por IA.', lang: 'es', langLabel: 'Español', size: '108 KB' },
-      { file: '/cv/cv-sr-en.pdf', title: 'Software engineer', description: 'Enterprise integrations, Azure & AI-assisted development.', lang: 'en', langLabel: 'English', size: '107 KB' },
-      { file: '/cv/cv-fullstack-es.pdf', title: 'Full Stack', description: 'Python, JavaScript/TypeScript, React, APIs REST y SQL.', lang: 'es', langLabel: 'Español', size: '111 KB' },
+      { file: '/cv/cv-ai-es.pdf', title: 'IA aplicada', description: 'Agentes LLM e integración de IA en producción.', lang: 'es', langLabel: 'Español', size: '115 KB' },
+      { file: '/cv/cv-ai-en.pdf', title: 'Applied AI', description: 'LLM agents & production AI integration.', lang: 'en', langLabel: 'English', size: '114 KB' },
+      { file: '/cv/cv-sr-es.pdf', title: 'Ingeniero de software', description: 'Integraciones empresariales, Azure y desarrollo asistido por IA.', lang: 'es', langLabel: 'Español', size: '109 KB' },
+      { file: '/cv/cv-sr-en.pdf', title: 'Software engineer', description: 'Enterprise integrations, Azure & AI-assisted development.', lang: 'en', langLabel: 'English', size: '108 KB' },
+      { file: '/cv/cv-fullstack-es.pdf', title: 'Full Stack', description: 'Python, JavaScript/TypeScript, React, APIs REST y SQL.', lang: 'es', langLabel: 'Español', size: '112 KB' },
     ],
     summaryTitle: 'Perfil profesional',
     summary: [
@@ -766,10 +766,10 @@ const es: Dictionary = {
     previousTitle: 'Experiencia anterior',
     previous: [
       { org: 'Giro26', role: 'Desarrollador Full-Stack', period: '2023 — 2024', summary: 'ERP financiero, arquitectura hexagonal y optimización SQL.' },
-      { org: 'Hi-G', role: 'Desarrollador Web y Mobile', period: '2024 — 2025', summary: 'App Hi-G: Flutter, Firebase, TypeScript e integraciones Web3.' },
+      { org: 'Hi-G', role: 'Desarrollador Web y Mobile', period: '2024 — 2025', summary: 'App Hi-G para Karol G: Flutter, Firebase, TypeScript e integraciones Web3.' },
     ],
     educationTitle: 'Formación',
-    education: 'Egresado del Instituto Tecnológico de La Paz.',
+    education: 'Ingeniería en Sistemas Computacionales, Instituto Tecnológico de La Paz. Especialidad en Desarrollo de Software: desarrollo web, aplicaciones móviles y videojuegos.',
     productsTitle: 'Productos propios',
     products: [
       { name: 'PMCRM', text: 'Centro de trabajo para administrar proyectos, archivos, notas, clientes y colaboración en una sola plataforma.', repo: 'https://github.com/OsmarLG/pm-crm-elroi' },
