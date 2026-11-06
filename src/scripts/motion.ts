@@ -50,26 +50,25 @@ function revealOnFocus(): void {
 /** Only content below the first screen is hidden, so nothing visible ever flashes. */
 const belowFold = (element: HTMLElement): boolean => element.getBoundingClientRect().top > window.innerHeight;
 
+/** Hides what is below the fold and reveals it in batches as it scrolls in. */
+function revealBatch(elements: HTMLElement[], from: gsap.TweenVars, to: gsap.TweenVars, start: string): void {
+  if (elements.length === 0) {
+    return;
+  }
+  gsap.set(elements, from);
+  ScrollTrigger.batch(elements, { start, once: true, onEnter: (batch) => gsap.to(batch, { ...to, overwrite: true }) });
+}
+
 function initReveals(): void {
   // One batched set of triggers instead of one ScrollTrigger per element.
   const blocks = [
     ...gsap.utils.toArray<HTMLElement>('[data-reveal], [data-split-title]'),
     ...gsap.utils.toArray<HTMLElement>('[data-reveal-group] > *'),
   ].filter(belowFold);
-  gsap.set(blocks, { opacity: 0, y: 32 });
-  ScrollTrigger.batch(blocks, {
-    start: 'top 88%',
-    once: true,
-    onEnter: (batch) => gsap.to(batch, { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out', stagger: 0.07, overwrite: true }),
-  });
+  revealBatch(blocks, { opacity: 0, y: 32 }, { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out', stagger: 0.07 }, 'top 88%');
 
   const lines = gsap.utils.toArray<HTMLElement>('.kicker__line').filter(belowFold);
-  gsap.set(lines, { scaleX: 0 });
-  ScrollTrigger.batch(lines, {
-    start: 'top 90%',
-    once: true,
-    onEnter: (batch) => gsap.to(batch, { scaleX: 1, duration: 0.9, ease: 'power2.out', overwrite: true }),
-  });
+  revealBatch(lines, { scaleX: 0 }, { scaleX: 1, duration: 0.9, ease: 'power2.out' }, 'top 90%');
 }
 
 function initTraceRail(): void {
@@ -402,13 +401,7 @@ function initProcess(): void {
   });
 
   mm.add('(max-width: 999px), (max-height: 659px)', () => {
-    const below = steps.filter(belowFold);
-    gsap.set(below, { opacity: 0, y: 32 });
-    ScrollTrigger.batch(below, {
-      start: 'top 88%',
-      once: true,
-      onEnter: (batch) => gsap.to(batch, { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out', stagger: 0.08, overwrite: true }),
-    });
+    revealBatch(steps.filter(belowFold), { opacity: 0, y: 32 }, { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out', stagger: 0.08 }, 'top 88%');
   });
 }
 

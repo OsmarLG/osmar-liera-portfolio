@@ -20,6 +20,18 @@ export const categoryDescriptions: Record<BlogCategory, string> = {
   guias: 'Guías prácticas para mejorar las ventas, las redes y los procesos de tu negocio.',
 };
 
+/** Copy of a category page (also used by the in-page filter of the blog index). */
+export function categoryPageCopy(category: BlogCategory): { title: string; heading: string; description: string; intro: string; kicker: string } {
+  const label = categoryLabels[category];
+  return {
+    title: `${label} · Blog de Osmar Liera`,
+    heading: label,
+    description: `${categoryDescriptions[category]} Artículos de Osmar Liera en la categoría ${label}.`,
+    intro: categoryDescriptions[category],
+    kicker: `blog · ${label.toLowerCase()}`,
+  };
+}
+
 export const blogPath = '/blog/';
 export const postPath = (post: Post): string => `/blog/${post.id}/`;
 export const categoryPath = (category: BlogCategory): string => `/blog/categoria/${category}/`;

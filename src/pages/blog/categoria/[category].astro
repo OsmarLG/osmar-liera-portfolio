@@ -1,7 +1,7 @@
 ---
 import type { GetStaticPaths, InferGetStaticPropsType } from 'astro';
 import BlogList from '../../../components/blog/BlogList.astro';
-import { categoryDescriptions, categoryLabels, getPosts, usedCategories } from '../../../lib/blog';
+import { categoryPageCopy, getPosts, usedCategories } from '../../../lib/blog';
 
 /** One page per category that has published posts. */
 export const getStaticPaths = (async () => {
@@ -15,15 +15,7 @@ export const getStaticPaths = (async () => {
 type Props = InferGetStaticPropsType<typeof getStaticPaths>;
 
 const { category, allPosts, posts } = Astro.props as Props;
-const label = categoryLabels[category];
+const copy = categoryPageCopy(category);
 ---
 
-<BlogList
-  posts={posts}
-  allPosts={allPosts}
-  category={category}
-  title={`${label} · Blog de Osmar Liera`}
-  heading={label}
-  description={`${categoryDescriptions[category]} Artículos de Osmar Liera en la categoría ${label}.`}
-  intro={categoryDescriptions[category]}
-/>
+<BlogList posts={posts} allPosts={allPosts} category={category} title={copy.title} heading={copy.heading} description={copy.description} intro={copy.intro} />

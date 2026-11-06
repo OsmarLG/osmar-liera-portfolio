@@ -34,7 +34,20 @@ export const getStaticPaths = (async () => {
 type Props = InferGetStaticPropsType<typeof getStaticPaths>;
 
 const { post, related } = Astro.props as Props;
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
+/** Table of contents: only for articles with 3 or more sections (H2). */
+const toc = headings
+  .filter((heading) => heading.depth === 2)
+  .map((heading, index) => {
+    // Headings that are already numbered ("2. Que las fotos…") keep their own number.
+    const numbered = /^(\d+)[.)]\s+(.+)$/.exec(heading.text);
+    return {
+      slug: heading.slug,
+      num: String(numbered ? Number(numbered[1]) : index + 1).padStart(2, '0'),
+      text: numbered ? numbered[2] : heading.text,
+    };
+  });
+const showToc = toc.length >= 3;
 const dict = getDictionary('es');
 const { title, description, category, date, updated, cover, coverAlt, tags, faq, draft } = post.data;
 const path = postPath(post);
@@ -64,6 +77,10 @@ const waMessage = `Hola Osmar, leí tu artículo «${title}» y me gustaría pla
   }}
   structuredData={structuredData}
 >
+  <div class="read-progress" aria-hidden="true">
+    <span data-read-progress></span>
+  </div>
+
   <article class="post container" aria-labelledby="post-title">
     <nav class="crumbs mono" aria-label="Migas de pan">
       <a href="/">Inicio</a>
@@ -99,12 +116,36 @@ const waMessage = `Hola Osmar, leí tu artículo «${title}» y me gustaría pla
       </p>
     </header>
 
-    <figure class="post__cover">
+    <figure class="post__cover" data-cover>
       <img src={cover} alt={coverAlt} width={coverSize.width} height={coverSize.height} loading="eager" fetchpriority="high" decoding="async" />
     </figure>
 
-    <div class="post__body prose">
-      <Content components={mdxComponents} />
+    <div class="post__layout" data-toc={showToc ? '' : undefined}>
+      {
+        showToc && (
+          <nav class="toc" aria-labelledby="toc-title">
+            <p class="toc__title mono" id="toc-title">
+              En este artículo
+            </p>
+            <ol class="toc__list" role="list">
+              {toc.map((heading) => (
+                <li>
+                  <a href={`#${heading.slug}`} data-toc-link={heading.slug}>
+                    <span class="toc__num mono" aria-hidden="true">
+                      {heading.num}
+                    </span>
+                    <span>{heading.text}</span>
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </nav>
+        )
+      }
+
+      <div class="post__body prose" data-article-body>
+        <Content components={mdxComponents} />
+      </div>
     </div>
 
     {
@@ -186,7 +227,31 @@ const waMessage = `Hola Osmar, leí tu artículo «${title}» y me gustaría pla
   }
 </Base>
 
+<script>
+  import { initArticle } from '../../scripts/article';
+
+  initArticle();
+</script>
+
 <style>
+  /* Reading progress (filled by scripts/article.ts) */
+  .read-progress {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 60;
+    height: 3px;
+    pointer-events: none;
+  }
+
+  .read-progress span {
+    display: block;
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-strong), var(--accent));
+    box-shadow: 0 0 12px rgb(95 224 245 / 0.55);
+    transform: scaleX(0);
+    transform-origin: left center;
+  }
+
   .post {
     --measure: 44rem;
     padding-block: clamp(2rem, 5vw, 3.5rem) clamp(3rem, 7vw, 5rem);
@@ -211,7 +276,6 @@ const waMessage = `Hola Osmar, leí tu artículo «${title}» y me gustaría pla
   }
 
   .post__head,
-  .post__body,
   .post__faq,
   .post__tags,
   .post__author,
@@ -268,16 +332,150 @@ const waMessage = `Hola Osmar, leí tu artículo «${title}» y me gustaría pla
   }
 
   .post__cover {
+    --rx: 0deg;
+    --ry: 0deg;
+    --shift: 0px;
+    position: relative;
     max-width: 60rem;
     margin: clamp(1.75rem, 4vw, 2.75rem) auto;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-l);
+    background: var(--surface);
+    transform: perspective(1200px) rotateX(var(--rx)) rotateY(var(--ry));
+    transition: transform 0.8s var(--ease-out);
   }
 
   .post__cover img {
     width: 100%;
     height: auto;
+  }
+
+  /* Parallax and tilt (scripts/article.ts; never with reduced motion). */
+  .post__cover[data-parallax] img {
+    transform: translateY(var(--shift)) scale(1.07);
+    transition: transform 0.6s var(--ease-out);
+  }
+
+  .post__cover[data-tilting] {
+    transition: transform 0.15s linear;
+  }
+
+  .post__cover::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(600px circle at var(--mx, 50%) var(--my, 0%), rgb(255 255 255 / 0.1), transparent 45%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+
+  .post__cover[data-tilting]::after {
+    opacity: 1;
+  }
+
+  /* Table of contents: a box above the text; a sticky rail beside it on wide screens. */
+  .post__layout {
+    max-width: var(--measure);
+    margin-inline: auto;
+  }
+
+  .toc {
+    margin-bottom: 2.25rem;
+    padding: 1rem 1.15rem;
     border: 1px solid var(--line);
-    border-radius: var(--radius-l);
+    border-radius: var(--radius);
     background: var(--surface);
+  }
+
+  .toc__title {
+    color: var(--text-3);
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+  }
+
+  .toc__list {
+    display: grid;
+    gap: 0.1rem;
+    margin-top: 0.6rem;
+  }
+
+  .toc__list a {
+    position: relative;
+    display: flex;
+    gap: 0.6rem;
+    padding: 0.3rem 0;
+    color: var(--text-2);
+    font-size: 0.92rem;
+    line-height: 1.35;
+    text-decoration: none;
+    transition: color 0.25s ease;
+  }
+
+  .toc__list a:hover {
+    color: var(--text);
+  }
+
+  .toc__num {
+    flex: none;
+    padding-top: 0.12em;
+    color: var(--text-3);
+    font-size: 0.72rem;
+    transition: color 0.25s ease;
+  }
+
+  .toc__list a[aria-current] {
+    color: var(--text);
+  }
+
+  .toc__list a[aria-current] .toc__num {
+    color: var(--accent);
+  }
+
+  @media (min-width: 1240px) {
+    .post__layout[data-toc] {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) var(--measure) minmax(0, 1fr);
+      column-gap: clamp(2rem, 3vw, 3.5rem);
+      max-width: none;
+    }
+
+    .post__layout[data-toc] .post__body {
+      grid-column: 2;
+      grid-row: 1;
+    }
+
+    .post__layout[data-toc] .toc {
+      position: sticky;
+      top: calc(var(--header-h) + 2rem);
+      grid-column: 3;
+      grid-row: 1;
+      align-self: start;
+      max-width: 17rem;
+      margin: 0;
+      padding: 0 0 0 1.1rem;
+      border: 0;
+      border-left: 1px solid var(--line);
+      border-radius: 0;
+      background: none;
+    }
+
+    .post__layout[data-toc] .toc__list a::before {
+      content: '';
+      position: absolute;
+      left: calc(-1.1rem - 1px);
+      top: 0.3rem;
+      bottom: 0.3rem;
+      width: 2px;
+      background: var(--accent);
+      transform: scaleY(0);
+      transition: transform 0.35s var(--ease-out);
+    }
+
+    .post__layout[data-toc] .toc__list a[aria-current]::before {
+      transform: scaleY(1);
+    }
   }
 
   /* Article body ---------------------------------------------------------- */

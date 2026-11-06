@@ -7,14 +7,16 @@ interface Props {
   headingLevel?: 'h2' | 'h3';
   /** The first card of a list can load its cover eagerly. */
   eager?: boolean;
+  /** Name for view transitions (blog list filter), unique per page. */
+  transitionName?: string;
 }
 
-const { post, headingLevel: Heading = 'h3', eager = false } = Astro.props;
+const { post, headingLevel: Heading = 'h3', eager = false, transitionName } = Astro.props;
 const { title, description, category, date, cover, draft } = post.data;
 const minutes = readingMinutes(post.body);
 ---
 
-<article class="post-card">
+<article class="post-card" data-tilt="7" style={transitionName ? `view-transition-name: ${transitionName}` : undefined}>
   <div class="post-card__media">
     <img
       src={cover}
@@ -41,8 +43,16 @@ const minutes = readingMinutes(post.body);
   </div>
 </article>
 
+<script>
+  import { initTilt } from '../../scripts/tilt';
+
+  initTilt();
+</script>
+
 <style>
   .post-card {
+    --rx: 0deg;
+    --ry: 0deg;
     position: relative;
     display: flex;
     flex-direction: column;
@@ -52,11 +62,40 @@ const minutes = readingMinutes(post.body);
     border: 1px solid var(--line);
     border-radius: var(--radius-l);
     background: var(--surface);
-    transition: border-color 0.25s ease;
+    transform: perspective(900px) rotateX(var(--rx)) rotateY(var(--ry));
+    transition:
+      border-color 0.25s ease,
+      box-shadow 0.4s ease,
+      transform 0.7s var(--ease-out);
   }
 
   .post-card:hover {
     border-color: var(--line-strong);
+  }
+
+  /* Tilt (fine pointers, see scripts/tilt.ts) and a spotlight that follows the pointer. */
+  .post-card.is-tilting {
+    border-color: rgb(95 224 245 / 0.35);
+    box-shadow: 0 30px 60px -35px rgb(0 0 0 / 0.9);
+    transition:
+      border-color 0.25s ease,
+      box-shadow 0.4s ease,
+      transform 0.12s linear;
+  }
+
+  .post-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background: radial-gradient(380px circle at var(--mx, 50%) var(--my, 0%), rgb(95 224 245 / 0.13), transparent 50%);
+    opacity: 0;
+    transition: opacity 0.35s ease;
+  }
+
+  .post-card.is-tilting::before {
+    opacity: 1;
   }
 
   .post-card__media {

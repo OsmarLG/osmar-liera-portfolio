@@ -4,7 +4,7 @@ import Icon from '../Icon.astro';
 import Kicker from '../Kicker.astro';
 import PostCard from './PostCard.astro';
 import { getDictionary } from '../../i18n';
-import { blogPath, categoryLabels, categoryPath, usedCategories, type BlogCategory, type Post } from '../../lib/blog';
+import { blogPath, categoryLabels, categoryPageCopy, categoryPath, usedCategories, type BlogCategory, type Post } from '../../lib/blog';
 import { buildBlogListData } from '../../lib/blog-structured-data';
 import { whatsappHref } from '../../i18n/profile';
 
@@ -25,6 +25,9 @@ const path = category ? categoryPath(category) : blogPath;
 const categories = usedCategories(allPosts);
 const structuredData = buildBlogListData(posts, { path, name: heading, description, category });
 const waMessage = 'Hola Osmar, vi tu blog y me gustaría platicar de mi negocio.';
+const kicker = category ? categoryPageCopy(category).kicker : 'blog';
+/** The index lists every post, so its filter can work in place (the URL still changes). */
+const filtersInPlace = !category;
 ---
 
 <Base
@@ -55,27 +58,51 @@ const waMessage = 'Hola Osmar, vi tu blog y me gustaría platicar de mi negocio.
     </nav>
 
     <header class="blog-list__head">
-      <Kicker text={category ? `blog · ${categoryLabels[category].toLowerCase()}` : 'blog'} />
-      <h1 class="blog-list__title" id="blog-title">{heading}</h1>
-      <p class="section-intro">{intro}</p>
+      <div data-blog-kicker>
+        <Kicker text={kicker} />
+      </div>
+      <h1 class="blog-list__title" id="blog-title" data-blog-heading>{heading}</h1>
+      <p class="section-intro" data-blog-intro>{intro}</p>
     </header>
 
     {
       categories.length > 1 && (
-        <nav class="filters" aria-label="Categorías del blog">
+        <nav class="filters" aria-label="Categorías del blog" data-blog-filters>
+          <span class="filters__pill" data-filter-pill aria-hidden="true" />
           <ul role="list">
             <li>
-              <a class="chip" href={blogPath} aria-current={!category ? 'page' : undefined}>
+              <a
+                class="chip"
+                href={blogPath}
+                aria-current={!category ? 'page' : undefined}
+                data-filter="all"
+                data-title={filtersInPlace ? title : undefined}
+                data-heading={filtersInPlace ? heading : undefined}
+                data-intro={filtersInPlace ? intro : undefined}
+                data-kicker="blog"
+              >
                 Todos
               </a>
             </li>
-            {categories.map((item) => (
-              <li>
-                <a class="chip" href={categoryPath(item)} aria-current={item === category ? 'page' : undefined}>
-                  {categoryLabels[item]}
-                </a>
-              </li>
-            ))}
+            {categories.map((item) => {
+              const copy = categoryPageCopy(item);
+              return (
+                <li>
+                  <a
+                    class="chip"
+                    href={categoryPath(item)}
+                    aria-current={item === category ? 'page' : undefined}
+                    data-filter={item}
+                    data-title={copy.title}
+                    data-heading={copy.heading}
+                    data-intro={copy.intro}
+                    data-kicker={copy.kicker}
+                  >
+                    {categoryLabels[item]}
+                  </a>
+                </li>
+              );
+            })}
           </ul>
         </nav>
       )
@@ -83,10 +110,10 @@ const waMessage = 'Hola Osmar, vi tu blog y me gustaría platicar de mi negocio.
 
     {
       posts.length > 0 ? (
-        <ul class="blog-list__grid" role="list" data-reveal-group>
+        <ul class="blog-list__grid" role="list" data-reveal-group data-blog-grid data-in-place={filtersInPlace ? '' : undefined}>
           {posts.map((post, index) => (
-            <li>
-              <PostCard post={post} headingLevel="h2" eager={index === 0} />
+            <li data-category={post.data.category}>
+              <PostCard post={post} headingLevel="h2" eager={index === 0} transitionName={`post-${post.id}`} />
             </li>
           ))}
         </ul>
@@ -99,6 +126,8 @@ const waMessage = 'Hola Osmar, vi tu blog y me gustaría platicar de mi negocio.
         </div>
       )
     }
+
+    <p class="sr-only" aria-live="polite" data-blog-status></p>
 
     <aside class="blog-list__cta" aria-label="Contacto">
       <p class="blog-list__cta-title">¿Quieres aplicar algo de esto en tu negocio?</p>
@@ -122,6 +151,12 @@ const waMessage = 'Hola Osmar, vi tu blog y me gustaría platicar de mi negocio.
     </aside>
   </section>
 </Base>
+
+<script>
+  import { initBlogFilter } from '../../scripts/blog-filter';
+
+  initBlogFilter();
+</script>
 
 <style>
   .blog-list {
@@ -155,11 +190,48 @@ const waMessage = 'Hola Osmar, vi tu blog y me gustaría platicar de mi negocio.
     max-width: 18ch;
   }
 
+  .filters {
+    position: relative;
+  }
+
   .filters ul {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
     margin-bottom: 2rem;
+  }
+
+  .filters li {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Sliding indicator behind the active chip (placed by scripts/blog-filter.ts). */
+  .filters__pill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 0;
+    border: 1px solid rgb(95 224 245 / 0.45);
+    border-radius: 999px;
+    background: var(--accent-soft);
+    box-shadow: 0 0 24px -6px rgb(95 224 245 / 0.45);
+    opacity: 0;
+    pointer-events: none;
+    view-transition-name: blog-filter-pill;
+  }
+
+  .filters[data-pill-ready] .filters__pill {
+    opacity: 1;
+    transition:
+      transform 0.5s var(--ease-out),
+      width 0.5s var(--ease-out),
+      height 0.5s var(--ease-out);
+  }
+
+  .filters[data-pill-ready] .chip[aria-current='page'] {
+    border-color: transparent;
+    background: transparent;
   }
 
   .filters .chip {
