@@ -1,0 +1,40 @@
+---
+/**
+ * <Figure src alt caption? width height /> — image from public/ (e.g. /blog/<slug>/foto.webp).
+ */
+interface Props {
+  src: string;
+  alt: string;
+  caption?: string;
+  width: number | string;
+  height: number | string;
+}
+
+const { src, alt, caption, width, height } = Astro.props;
+---
+
+<figure class="post-figure">
+  <img src={src} alt={alt} width={width} height={height} loading="lazy" decoding="async" />
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>
+
+<style>
+  .post-figure {
+    margin-block: 2rem;
+  }
+
+  .post-figure img {
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+
+  .post-figure figcaption {
+    margin-top: 0.6rem;
+    color: var(--text-3);
+    font-size: 0.9rem;
+    line-height: 1.45;
+  }
+</style>

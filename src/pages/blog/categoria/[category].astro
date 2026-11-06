@@ -1,0 +1,29 @@
+---
+import type { GetStaticPaths, InferGetStaticPropsType } from 'astro';
+import BlogList from '../../../components/blog/BlogList.astro';
+import { categoryDescriptions, categoryLabels, getPosts, usedCategories } from '../../../lib/blog';
+
+/** One page per category that has published posts. */
+export const getStaticPaths = (async () => {
+  const posts = await getPosts();
+  return usedCategories(posts).map((category) => ({
+    params: { category },
+    props: { category, allPosts: posts, posts: posts.filter((post) => post.data.category === category) },
+  }));
+}) satisfies GetStaticPaths;
+
+type Props = InferGetStaticPropsType<typeof getStaticPaths>;
+
+const { category, allPosts, posts } = Astro.props as Props;
+const label = categoryLabels[category];
+---
+
+<BlogList
+  posts={posts}
+  allPosts={allPosts}
+  category={category}
+  title={`${label} · Blog de Osmar Liera`}
+  heading={label}
+  description={`${categoryDescriptions[category]} Artículos de Osmar Liera en la categoría ${label}.`}
+  intro={categoryDescriptions[category]}
+/>

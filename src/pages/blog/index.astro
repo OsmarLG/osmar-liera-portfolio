@@ -1,0 +1,15 @@
+---
+import BlogList from '../../components/blog/BlogList.astro';
+import { getPosts } from '../../lib/blog';
+
+const posts = await getPosts();
+---
+
+<BlogList
+  posts={posts}
+  allPosts={posts}
+  title="Blog de Osmar Liera · Emprender, marketing y tecnología para negocios"
+  heading="Blog"
+  description="Artículos de Osmar Liera sobre emprender en La Paz, Baja California Sur, marketing, tiendas en línea, automatización e IA aplicada a negocios."
+  intro="Lo que voy aprendiendo al emprender, vender y construir: marketing, tiendas en línea, automatización e IA para negocios, escrito desde La Paz, Baja California Sur, México."
+/>

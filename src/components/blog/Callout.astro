@@ -1,0 +1,67 @@
+---
+/**
+ * <Callout type="tip|info|warning" title?>markdown</Callout>
+ */
+interface Props {
+  type?: 'tip' | 'info' | 'warning';
+  title?: string;
+}
+
+const { type = 'info', title } = Astro.props;
+const labels: Record<NonNullable<Props['type']>, string> = { tip: 'Consejo', info: 'Nota', warning: 'Atención' };
+---
+
+<aside class:list={['callout', `callout--${type}`]} aria-label={title ?? labels[type]}>
+  <p class="callout__label mono" aria-hidden="true">{labels[type]}</p>
+  {title && <p class="callout__title">{title}</p>}
+  <div class="callout__body">
+    <slot />
+  </div>
+</aside>
+
+<style>
+  .callout {
+    --callout: var(--accent);
+    --callout-soft: var(--accent-soft);
+    margin-block: 2rem;
+    padding: 1.1rem 1.25rem 1.2rem;
+    border: 1px solid color-mix(in srgb, var(--callout) 40%, transparent);
+    border-left-width: 3px;
+    border-radius: var(--radius);
+    background: linear-gradient(150deg, var(--callout-soft), var(--surface) 70%);
+  }
+
+  .callout--tip {
+    --callout: var(--green);
+    --callout-soft: var(--green-soft);
+  }
+
+  .callout--warning {
+    --callout: var(--amber);
+    --callout-soft: var(--amber-soft);
+  }
+
+  .callout__label {
+    color: var(--callout);
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    text-transform: lowercase;
+  }
+
+  .callout__title {
+    margin-top: 0.2rem;
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 650;
+    line-height: 1.25;
+  }
+
+  .callout__body {
+    margin-top: 0.5rem;
+    color: var(--text-2);
+  }
+
+  .callout__body > :global(* + *) {
+    margin-top: 0.75rem;
+  }
+</style>

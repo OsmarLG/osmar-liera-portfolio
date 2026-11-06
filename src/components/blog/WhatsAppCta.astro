@@ -1,0 +1,39 @@
+---
+/**
+ * <WhatsAppCta label message /> — WhatsApp button. The href is a plain wa.me link
+ * (works without JS); on click it goes through the tracked labs.elroi.cloud/wa link.
+ */
+import Icon from '../Icon.astro';
+import { whatsappHref } from '../../i18n/profile';
+
+interface Props {
+  label: string;
+  message: string;
+  /** Section reported in the whatsapp_click event. */
+  location?: string;
+}
+
+const { label, message, location = 'articulo' } = Astro.props;
+---
+
+<p class="wa-cta">
+  <a
+    class="btn btn--primary"
+    href={whatsappHref(message)}
+    target="_blank"
+    rel="noopener noreferrer"
+    data-wa
+    data-wa-message={message}
+    data-wa-location={location}
+  >
+    <Icon name="whatsapp" size={18} />
+    {label}
+    <span class="sr-only">(se abre en una pestaña nueva)</span>
+  </a>
+</p>
+
+<style>
+  .wa-cta {
+    margin-block: 2rem;
+  }
+</style>

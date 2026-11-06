@@ -1,0 +1,504 @@
+---
+import type { GetStaticPaths, InferGetStaticPropsType } from 'astro';
+import { render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+import AuthorBox from '../../components/blog/AuthorBox.astro';
+import PostCard from '../../components/blog/PostCard.astro';
+import { mdxComponents } from '../../components/blog/mdx-components';
+import { getDictionary } from '../../i18n';
+import { SITE_URL, whatsappHref } from '../../i18n/profile';
+import {
+  blogPath,
+  categoryLabels,
+  categoryPath,
+  formatDate,
+  getPosts,
+  isoDate,
+  postPath,
+  readingMinutes,
+  relatedPosts,
+  wordCount,
+} from '../../lib/blog';
+import { buildPostData } from '../../lib/blog-structured-data';
+import { publicImageSize } from '../../lib/media';
+
+export const getStaticPaths = (async () => {
+  const posts = await getPosts();
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post, related: relatedPosts(post, posts) },
+  }));
+}) satisfies GetStaticPaths;
+
+type Props = InferGetStaticPropsType<typeof getStaticPaths>;
+
+const { post, related } = Astro.props as Props;
+const { Content } = await render(post);
+const dict = getDictionary('es');
+const { title, description, category, date, updated, cover, coverAlt, tags, faq, draft } = post.data;
+const path = postPath(post);
+const coverSize = (await publicImageSize(cover)) ?? { width: 1600, height: 900 };
+const ogImage = `${path}og.jpg`;
+const structuredData = buildPostData(post, new URL(ogImage, SITE_URL).href, wordCount(post.body));
+const minutes = readingMinutes(post.body);
+const waMessage = `Hola Osmar, leí tu artículo «${title}» y me gustaría platicar de mi negocio.`;
+---
+
+<Base
+  dict={dict}
+  title={`${title} · Osmar Liera`}
+  description={description}
+  path={path}
+  altPath={dict.altPaths.home}
+  translated={false}
+  noindex={draft}
+  motion={false}
+  ogType="article"
+  image={{ src: ogImage, alt: coverAlt, width: 1200, height: 630, type: 'image/jpeg' }}
+  article={{
+    publishedTime: isoDate(date),
+    modifiedTime: updated ? isoDate(updated) : undefined,
+    section: categoryLabels[category],
+    tags,
+  }}
+  structuredData={structuredData}
+>
+  <article class="post container" aria-labelledby="post-title">
+    <nav class="crumbs mono" aria-label="Migas de pan">
+      <a href="/">Inicio</a>
+      <span aria-hidden="true">/</span>
+      <a href={blogPath}>Blog</a>
+      <span aria-hidden="true">/</span>
+      <a href={categoryPath(category)}>{categoryLabels[category]}</a>
+    </nav>
+
+    <header class="post__head">
+      {draft && <p class="post__draft mono">Borrador · solo visible en desarrollo</p>}
+      <a class="chip chip--accent post__category" href={categoryPath(category)}>{categoryLabels[category]}</a>
+      <h1 class="post__title" id="post-title">{title}</h1>
+      <p class="post__lead">{description}</p>
+      <p class="post__meta mono">
+        <span>
+          Por <a href="/">Osmar Liera</a>
+        </span>
+        <span aria-hidden="true">·</span>
+        <time datetime={isoDate(date)}>{formatDate(date)}</time>
+        {
+          updated && (
+            <>
+              <span aria-hidden="true">·</span>
+              <span>
+                Actualizado el <time datetime={isoDate(updated)}>{formatDate(updated)}</time>
+              </span>
+            </>
+          )
+        }
+        <span aria-hidden="true">·</span>
+        <span>{minutes} min de lectura</span>
+      </p>
+    </header>
+
+    <figure class="post__cover">
+      <img src={cover} alt={coverAlt} width={coverSize.width} height={coverSize.height} loading="eager" fetchpriority="high" decoding="async" />
+    </figure>
+
+    <div class="post__body prose">
+      <Content components={mdxComponents} />
+    </div>
+
+    {
+      faq && faq.length > 0 && (
+        <section class="post__faq" aria-labelledby="faq-title">
+          <h2 id="faq-title">Preguntas frecuentes</h2>
+          <dl>
+            {faq.map((item) => (
+              <div class="faq-item">
+                <dt>{item.q}</dt>
+                <dd>{item.a}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+      )
+    }
+
+    {
+      tags && tags.length > 0 && (
+        <ul class="post__tags" role="list" aria-label="Etiquetas">
+          {tags.map((tag) => (
+            <li class="chip">#{tag}</li>
+          ))}
+        </ul>
+      )
+    }
+
+    <div class="post__author">
+      <AuthorBox />
+    </div>
+
+    <aside class="post__cta" aria-labelledby="post-cta-title">
+      <p class="post__cta-title" id="post-cta-title">¿Lo platicamos para tu negocio?</p>
+      <p>
+        Cuéntame en una línea a qué se dedica tu negocio y qué te gustaría mejorar. Si quieres empezar con orden, el
+        <a href="/#servicios">Diagnóstico Digital</a> te da un plan con 3 a 5 prioridades.
+      </p>
+      <div class="post__cta-actions">
+        <a
+          class="btn btn--primary"
+          href={whatsappHref(waMessage)}
+          target="_blank"
+          rel="noopener noreferrer"
+          data-wa
+          data-wa-message={waMessage}
+          data-wa-location="articulo-final"
+        >
+          <Icon name="whatsapp" size={18} />
+          Escríbeme por WhatsApp
+          <span class="sr-only">{dict.ui.newTab}</span>
+        </a>
+        <a class="btn" href="/#servicios">Ver servicios</a>
+      </div>
+    </aside>
+  </article>
+
+  {
+    related.length > 0 && (
+      <section class="related container" aria-labelledby="related-title">
+        <h2 class="related__title" id="related-title">
+          Sigue leyendo
+        </h2>
+        <ul class="related__list" role="list">
+          {related.map((item) => (
+            <li>
+              <PostCard post={item} />
+            </li>
+          ))}
+        </ul>
+        <p class="related__all">
+          <a class="link link-arrow" href={blogPath}>
+            Ver todos los artículos
+            <Icon name="arrow-right" size={18} />
+          </a>
+        </p>
+      </section>
+    )
+  }
+</Base>
+
+<style>
+  .post {
+    --measure: 44rem;
+    padding-block: clamp(2rem, 5vw, 3.5rem) clamp(3rem, 7vw, 5rem);
+  }
+
+  .crumbs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    max-width: var(--measure);
+    margin-inline: auto;
+    color: var(--text-3);
+    font-size: 0.8rem;
+  }
+
+  .crumbs a {
+    color: var(--text-2);
+  }
+
+  .crumbs a:hover {
+    color: var(--accent);
+  }
+
+  .post__head,
+  .post__body,
+  .post__faq,
+  .post__tags,
+  .post__author,
+  .post__cta {
+    max-width: var(--measure);
+    margin-inline: auto;
+  }
+
+  .post__head {
+    margin-top: clamp(1.5rem, 4vw, 2.5rem);
+  }
+
+  .post__draft {
+    display: inline-block;
+    margin-bottom: 1rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 6px;
+    background: var(--amber-soft);
+    color: var(--amber);
+    font-size: 0.8rem;
+  }
+
+  .post__category {
+    text-decoration: none;
+  }
+
+  .post__title {
+    margin-top: 1rem;
+    font-size: clamp(2.1rem, 1.5rem + 3vw, 3.6rem);
+    font-weight: 700;
+    line-height: 1.02;
+    letter-spacing: -0.03em;
+    overflow-wrap: break-word;
+  }
+
+  .post__lead {
+    margin-top: 1rem;
+    color: var(--text-2);
+    font-size: var(--step-1);
+    line-height: 1.55;
+  }
+
+  .post__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem 0.6rem;
+    margin-top: 1.25rem;
+    color: var(--text-3);
+    font-size: 0.8rem;
+  }
+
+  .post__meta a {
+    color: var(--text-2);
+  }
+
+  .post__cover {
+    max-width: 60rem;
+    margin: clamp(1.75rem, 4vw, 2.75rem) auto;
+  }
+
+  .post__cover img {
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-l);
+    background: var(--surface);
+  }
+
+  /* Article body ---------------------------------------------------------- */
+  .prose {
+    color: var(--text-2);
+    font-size: 1.075rem;
+    line-height: 1.75;
+    overflow-wrap: break-word;
+  }
+
+  .prose > :global(* + *) {
+    margin-top: 1.15rem;
+  }
+
+  .prose :global(h2) {
+    margin-top: 2.75rem;
+    color: var(--text);
+    font-size: var(--step-3);
+    line-height: 1.08;
+  }
+
+  .prose :global(h3) {
+    margin-top: 2rem;
+    color: var(--text);
+    font-size: var(--step-2);
+    line-height: 1.15;
+  }
+
+  .prose :global(h2 + *),
+  .prose :global(h3 + *) {
+    margin-top: 0.75rem;
+  }
+
+  .prose :global(strong) {
+    color: var(--text);
+    font-weight: 650;
+  }
+
+  .prose :global(a) {
+    color: var(--accent);
+    text-decoration-color: rgb(95 224 245 / 0.4);
+  }
+
+  .prose :global(a:hover) {
+    text-decoration-color: currentColor;
+  }
+
+  .prose :global(ul),
+  .prose :global(ol) {
+    display: grid;
+    gap: 0.5rem;
+    padding-left: 1.3rem;
+  }
+
+  .prose :global(li::marker) {
+    color: var(--accent);
+  }
+
+  .prose :global(blockquote) {
+    padding-left: 1.1rem;
+    border-left: 3px solid var(--accent);
+    color: var(--text);
+    font-size: var(--step-1);
+  }
+
+  .prose :global(code) {
+    padding: 0.1em 0.35em;
+    border-radius: 5px;
+    background: var(--surface-2);
+    font-family: var(--font-mono);
+    font-size: 0.88em;
+  }
+
+  .prose :global(pre) {
+    max-width: 100%;
+    overflow-x: auto;
+    padding: 1rem 1.1rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  .prose :global(pre code) {
+    padding: 0;
+    background: none;
+  }
+
+  .prose :global(table) {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+  }
+
+  .prose :global(th),
+  .prose :global(td) {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--line);
+    text-align: left;
+  }
+
+  .prose :global(hr) {
+    margin-block: 2.5rem;
+    border: 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .prose :global(img) {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* FAQ, tags, author, CTA ---------------------------------------------- */
+  .post__faq {
+    margin-top: 3rem;
+  }
+
+  .post__faq h2 {
+    font-size: var(--step-3);
+  }
+
+  .post__faq dl {
+    display: grid;
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+  }
+
+  .faq-item {
+    padding: 1rem 1.15rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+
+  .faq-item dt {
+    color: var(--text);
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 650;
+    line-height: 1.25;
+  }
+
+  .faq-item dd {
+    margin-top: 0.4rem;
+    color: var(--text-2);
+  }
+
+  .post__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 2.5rem;
+  }
+
+  .post__tags .chip {
+    white-space: normal;
+  }
+
+  .post__author {
+    margin-top: 2.5rem;
+  }
+
+  .post__cta {
+    margin-top: 1.25rem;
+    padding: clamp(1.4rem, 4vw, 2rem);
+    border: 1px solid rgb(95 224 245 / 0.35);
+    border-radius: var(--radius-l);
+    background: linear-gradient(150deg, rgb(95 224 245 / 0.1), var(--surface) 60%);
+    color: var(--text-2);
+  }
+
+  .post__cta a:not(.btn) {
+    color: var(--accent);
+  }
+
+  .post__cta-title {
+    margin-bottom: 0.4rem;
+    color: var(--text);
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    font-weight: 650;
+    line-height: 1.15;
+  }
+
+  .post__cta-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+  }
+
+  /* Related ---------------------------------------------------------------- */
+  .related {
+    padding-bottom: clamp(4rem, 8vw, 6rem);
+  }
+
+  .related__title {
+    margin-bottom: 1.5rem;
+    font-size: var(--step-3);
+  }
+
+  .related__list {
+    display: grid;
+    gap: 1rem;
+  }
+
+  @media (min-width: 720px) {
+    .related__list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1000px) {
+    .related__list {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .related__all {
+    margin-top: 1.5rem;
+  }
+</style>

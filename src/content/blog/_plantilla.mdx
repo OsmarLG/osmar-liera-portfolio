@@ -1,0 +1,63 @@
+---
+# PLANTILLA para el equipo de contenido. Este archivo no se publica nunca (empieza con "_").
+# Para un artículo nuevo: copia este archivo como src/content/blog/<slug>.mdx
+# (el nombre del archivo es la URL: /blog/<slug>/) y pon sus imágenes y videos en public/blog/<slug>/.
+title: "Título del artículo (máx. ~60 caracteres para Google)"
+description: "Resumen de 140–160 caracteres. Sale en Google, en redes al compartir y en la lista del blog."
+# Una de: emprender | aprendizajes | opinion | guias
+category: guias
+# Fecha de publicación (AAAA-MM-DD). Si es futura, no sale en el sitio hasta que se vuelva a construir ese día o después.
+date: 2026-11-05
+# Opcional: fecha de la última actualización importante.
+updated: 2026-11-06
+# true = borrador: se ve en `npm run dev`, nunca en producción. Cámbialo a false para publicar.
+draft: true
+author: osmar
+# Portada 1600×900 (16:9) en webp, dentro de public/blog/<slug>/. También es la imagen al compartir.
+cover: /blog/mi-articulo/portada.webp
+coverAlt: "Describe la portada para quien no la ve"
+# Opcional, máximo 5, en minúsculas y con guiones.
+tags: [ventas, redes-sociales]
+# Opcional; este sitio lo ignora (lo usa labs.elroi.cloud).
+service: diagnostico
+# Opcional: preguntas frecuentes. Salen al final del artículo y en Google (FAQPage).
+faq:
+  - q: "¿Pregunta que la gente sí hace?"
+    a: "Respuesta corta y directa, en una o dos frases."
+  - q: "¿Otra pregunta?"
+    a: "Otra respuesta."
+---
+
+Primer párrafo: **responde la pregunta del título en 2–3 frases**. Es lo que leen Google, la IA y quien tiene prisa.
+
+## Subtítulo (H2): una idea por sección
+
+Texto normal en Markdown: **negritas**, *cursivas*, [enlaces a otro artículo](/blog/vender-y-programar-a-la-vez/) o [a los servicios](/#servicios).
+
+### Sub-subtítulo (H3)
+
+- Listas con guion
+- Cortas y concretas
+
+1. Listas numeradas
+2. Para pasos
+
+## Componentes (no hace falta importarlos)
+
+<Callout type="tip" title="Título opcional">
+Texto con **Markdown**. Tipos: `tip` (verde), `info` (azul) o `warning` (ámbar).
+</Callout>
+
+<Figure src="/blog/mi-articulo/foto.webp" alt="Qué se ve en la foto" caption="Pie de foto opcional" width="1600" height="900" />
+
+<Video src="/blog/mi-articulo/demo.mp4" poster="/blog/mi-articulo/demo-poster.webp" title="Qué muestra el video" />
+
+<Video src="/blog/mi-articulo/loop.mp4" poster="/blog/mi-articulo/loop-poster.webp" title="Animación corta" loop />
+
+<YouTube id="dQw4w9WgXcQ" title="Título del video de YouTube" start={30} />
+
+<Reveal>
+Este bloque aparece con una animación suave al hacer scroll.
+</Reveal>
+
+<WhatsAppCta label="Texto del botón" message="Hola Osmar, leí tu artículo de … y quiero platicar" />

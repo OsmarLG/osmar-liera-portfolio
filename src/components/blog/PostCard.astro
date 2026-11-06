@@ -1,0 +1,141 @@
+---
+import { categoryLabels, categoryPath, formatDate, isoDate, postPath, readingMinutes, type Post } from '../../lib/blog';
+
+interface Props {
+  post: Post;
+  /** Heading level of the card title. */
+  headingLevel?: 'h2' | 'h3';
+  /** The first card of a list can load its cover eagerly. */
+  eager?: boolean;
+}
+
+const { post, headingLevel: Heading = 'h3', eager = false } = Astro.props;
+const { title, description, category, date, cover, draft } = post.data;
+const minutes = readingMinutes(post.body);
+---
+
+<article class="post-card">
+  <div class="post-card__media">
+    <img
+      src={cover}
+      alt=""
+      width="1600"
+      height="900"
+      loading={eager ? 'eager' : 'lazy'}
+      decoding="async"
+    />
+  </div>
+  <div class="post-card__body">
+    <p class="post-card__meta mono">
+      <a href={categoryPath(category)}>{categoryLabels[category]}</a>
+      <span aria-hidden="true">·</span>
+      <time datetime={isoDate(date)}>{formatDate(date)}</time>
+      <span aria-hidden="true">·</span>
+      <span>{minutes} min</span>
+      {draft && <span class="post-card__draft">borrador</span>}
+    </p>
+    <Heading class="post-card__title">
+      <a href={postPath(post)}>{title}</a>
+    </Heading>
+    <p class="post-card__text">{description}</p>
+  </div>
+</article>
+
+<style>
+  .post-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    height: 100%;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-l);
+    background: var(--surface);
+    transition: border-color 0.25s ease;
+  }
+
+  .post-card:hover {
+    border-color: var(--line-strong);
+  }
+
+  .post-card__media {
+    display: block;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-bottom: 1px solid var(--line);
+    background: var(--surface-2);
+  }
+
+  .post-card__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s var(--ease-out);
+  }
+
+  .post-card:hover .post-card__media img {
+    transform: scale(1.03);
+  }
+
+  .post-card__body {
+    display: grid;
+    gap: 0.55rem;
+    padding: 1.1rem 1.25rem 1.35rem;
+  }
+
+  .post-card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.25rem 0.5rem;
+    color: var(--text-3);
+    font-size: 0.76rem;
+  }
+
+  .post-card__meta a {
+    position: relative;
+    z-index: 2;
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .post-card__meta a:hover {
+    text-decoration: underline;
+  }
+
+  .post-card__draft {
+    padding: 0 0.4rem;
+    border-radius: 4px;
+    background: var(--amber-soft);
+    color: var(--amber);
+  }
+
+  .post-card__title {
+    font-size: 1.35rem;
+    line-height: 1.15;
+  }
+
+  .post-card__title a {
+    color: var(--text);
+    text-decoration: none;
+  }
+
+  /* The whole card is clickable through the title link. */
+  .post-card__title a::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+  }
+
+  .post-card__title a:hover {
+    color: var(--accent);
+  }
+
+  .post-card__text {
+    color: var(--text-2);
+    font-size: 0.97rem;
+    line-height: 1.55;
+  }
+</style>

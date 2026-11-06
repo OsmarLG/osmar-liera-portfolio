@@ -1,0 +1,236 @@
+---
+import Base from '../../layouts/Base.astro';
+import Icon from '../Icon.astro';
+import Kicker from '../Kicker.astro';
+import PostCard from './PostCard.astro';
+import { getDictionary } from '../../i18n';
+import { blogPath, categoryLabels, categoryPath, usedCategories, type BlogCategory, type Post } from '../../lib/blog';
+import { buildBlogListData } from '../../lib/blog-structured-data';
+import { whatsappHref } from '../../i18n/profile';
+
+interface Props {
+  posts: Post[];
+  /** Every published post (for the filter links). */
+  allPosts: Post[];
+  category?: BlogCategory;
+  title: string;
+  heading: string;
+  description: string;
+  intro: string;
+}
+
+const { posts, allPosts, category, title, heading, description, intro } = Astro.props;
+const dict = getDictionary('es');
+const path = category ? categoryPath(category) : blogPath;
+const categories = usedCategories(allPosts);
+const structuredData = buildBlogListData(posts, { path, name: heading, description, category });
+const waMessage = 'Hola Osmar, vi tu blog y me gustaría platicar de mi negocio.';
+---
+
+<Base
+  dict={dict}
+  title={title}
+  description={description}
+  path={path}
+  altPath={dict.altPaths.home}
+  translated={false}
+  structuredData={structuredData}
+>
+  <section class="blog-list container" aria-labelledby="blog-title">
+    <nav class="crumbs mono" aria-label="Migas de pan">
+      <a href="/">Inicio</a>
+      <span aria-hidden="true">/</span>
+      {
+        category ? (
+          <>
+            <a href={blogPath}>Blog</a>
+            <span aria-hidden="true">/</span>
+            <span aria-current="page">{categoryLabels[category]}</span>
+          </>
+        ) : (
+          <span aria-current="page">Blog</span>
+        )
+      }
+    </nav>
+
+    <header class="blog-list__head">
+      <Kicker text={category ? `blog · ${categoryLabels[category].toLowerCase()}` : 'blog'} />
+      <h1 class="blog-list__title" id="blog-title">{heading}</h1>
+      <p class="section-intro">{intro}</p>
+    </header>
+
+    {
+      categories.length > 1 && (
+        <nav class="filters" aria-label="Categorías del blog">
+          <ul role="list">
+            <li>
+              <a class="chip" href={blogPath} aria-current={!category ? 'page' : undefined}>
+                Todos
+              </a>
+            </li>
+            {categories.map((item) => (
+              <li>
+                <a class="chip" href={categoryPath(item)} aria-current={item === category ? 'page' : undefined}>
+                  {categoryLabels[item]}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )
+    }
+
+    {
+      posts.length > 0 ? (
+        <ul class="blog-list__grid" role="list" data-reveal-group>
+          {posts.map((post, index) => (
+            <li>
+              <PostCard post={post} headingLevel="h2" eager={index === 0} />
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <div class="blog-list__empty">
+          <p>Muy pronto: los primeros artículos están en camino.</p>
+          <p>
+            Mientras tanto, conoce mis <a href={`/#${dict.ids.services}`}>servicios</a> o escríbeme.
+          </p>
+        </div>
+      )
+    }
+
+    <aside class="blog-list__cta" aria-label="Contacto">
+      <p class="blog-list__cta-title">¿Quieres aplicar algo de esto en tu negocio?</p>
+      <p>Empezamos con un Diagnóstico Digital: reviso tus redes, tu sitio y tu proceso de venta, y te entrego un plan con prioridades.</p>
+      <div class="blog-list__cta-actions">
+        <a
+          class="btn btn--primary"
+          href={whatsappHref(waMessage)}
+          target="_blank"
+          rel="noopener noreferrer"
+          data-wa
+          data-wa-message={waMessage}
+          data-wa-location="blog"
+        >
+          <Icon name="whatsapp" size={18} />
+          Escríbeme por WhatsApp
+          <span class="sr-only">{dict.ui.newTab}</span>
+        </a>
+        <a class="btn" href={`/#${dict.ids.services}`}>Ver servicios</a>
+      </div>
+    </aside>
+  </section>
+</Base>
+
+<style>
+  .blog-list {
+    padding-block: clamp(2rem, 5vw, 3.5rem) clamp(4rem, 8vw, 6rem);
+  }
+
+  .crumbs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    color: var(--text-3);
+    font-size: 0.8rem;
+  }
+
+  .crumbs a {
+    color: var(--text-2);
+  }
+
+  .crumbs a:hover {
+    color: var(--accent);
+  }
+
+  .blog-list__head {
+    margin-block: clamp(1.75rem, 4vw, 2.75rem) 2rem;
+  }
+
+  .blog-list__title {
+    font-size: var(--step-4);
+    line-height: 1;
+    letter-spacing: -0.026em;
+    max-width: 18ch;
+  }
+
+  .filters ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .filters .chip {
+    min-height: 36px;
+    padding-inline: 0.9rem;
+    text-decoration: none;
+    transition:
+      border-color 0.2s ease,
+      color 0.2s ease;
+  }
+
+  .filters .chip:hover {
+    border-color: var(--accent);
+    color: var(--text);
+  }
+
+  .filters .chip[aria-current='page'] {
+    border-color: rgb(95 224 245 / 0.35);
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+
+  .blog-list__grid {
+    display: grid;
+    gap: 1rem;
+  }
+
+  @media (min-width: 720px) {
+    .blog-list__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1000px) {
+    .blog-list__grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .blog-list__empty {
+    padding: 2rem;
+    border: 1px dashed var(--line-strong);
+    border-radius: var(--radius-l);
+    color: var(--text-2);
+  }
+
+  .blog-list__empty a {
+    color: var(--accent);
+  }
+
+  .blog-list__cta {
+    margin-top: clamp(3rem, 7vw, 5rem);
+    padding: clamp(1.4rem, 4vw, 2.25rem);
+    border: 1px solid rgb(95 224 245 / 0.35);
+    border-radius: var(--radius-l);
+    background: linear-gradient(150deg, rgb(95 224 245 / 0.1), var(--surface) 60%);
+    color: var(--text-2);
+  }
+
+  .blog-list__cta-title {
+    margin-bottom: 0.4rem;
+    color: var(--text);
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    font-weight: 650;
+    line-height: 1.15;
+  }
+
+  .blog-list__cta-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+  }
+</style>

@@ -1,0 +1,91 @@
+---
+import { Picture } from 'astro:assets';
+import portrait from '../../assets/photo/osmar-perfil.webp';
+import { socialProfiles } from '../../i18n/social';
+
+const instagram = socialProfiles.find((profile) => profile.id === 'instagram');
+---
+
+<aside class="author" aria-label="Sobre el autor">
+  <a class="author__photo" href="/" tabindex="-1" aria-hidden="true">
+    <Picture src={portrait} formats={['avif', 'webp']} fallbackFormat="webp" widths={[72, 144]} sizes="72px" alt="" loading="lazy" />
+  </a>
+  <div>
+    <p class="author__label mono">escrito por</p>
+    <p class="author__name"><a href="/">Osmar Liera</a></p>
+    <p class="author__text">
+      Consultor en marketing y tecnología en La Paz, Baja California Sur, México. Diagnostico, recomiendo e implemento: redes, páginas, tiendas en línea,
+      automatización y sistemas a la medida. <a href="/#servicios">Conoce mis servicios</a>{
+        instagram && (
+          <>
+            {' '}o sígueme en{' '}
+            <a href={instagram.href} target="_blank" rel="noopener noreferrer me">
+              Instagram ({instagram.handle})
+            </a>
+          </>
+        )
+      }.
+    </p>
+  </div>
+</aside>
+
+<style>
+  .author {
+    display: grid;
+    grid-template-columns: 72px minmax(0, 1fr);
+    gap: 1.1rem;
+    align-items: start;
+    padding: 1.25rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-l);
+    background: var(--surface);
+  }
+
+  .author__photo {
+    display: block;
+    width: 72px;
+    height: 72px;
+    overflow: hidden;
+    border-radius: 50%;
+    background: radial-gradient(circle at 50% 50%, var(--accent-strong) 0%, #0b6f86 62%, #083846 100%);
+  }
+
+  .author__photo :global(img) {
+    width: 72px;
+    height: 72px;
+    object-fit: cover;
+    object-position: 50% 20%;
+  }
+
+  .author__label {
+    color: var(--accent);
+    font-size: 0.75rem;
+  }
+
+  .author__name {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    font-weight: 650;
+    line-height: 1.2;
+  }
+
+  .author__name a {
+    color: var(--text);
+    text-decoration: none;
+  }
+
+  .author__name a:hover {
+    color: var(--accent);
+  }
+
+  .author__text {
+    margin-top: 0.35rem;
+    color: var(--text-2);
+    font-size: 0.97rem;
+    line-height: 1.55;
+  }
+
+  .author__text a {
+    color: var(--accent);
+  }
+</style>

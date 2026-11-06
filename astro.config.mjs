@@ -1,5 +1,8 @@
 // @ts-check
 import { defineConfig, fontProviders } from 'astro/config';
+import { existsSync, readdirSync, rmSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 
 /**
@@ -31,6 +34,29 @@ const latin = [
   'U+FFFD',
 ];
 
+/**
+ * public/blog/<slug>/ is copied to dist as-is. After the build, remove the media of
+ * posts that were not built (drafts and future dates), so nothing unpublished ships.
+ * @returns {import('astro').AstroIntegration}
+ */
+const pruneUnpublishedBlogMedia = () => ({
+  name: 'prune-unpublished-blog-media',
+  hooks: {
+    'astro:build:done': ({ dir, logger }) => {
+      const blogDir = fileURLToPath(new URL('blog/', dir));
+      if (!existsSync(blogDir)) {
+        return;
+      }
+      for (const entry of readdirSync(blogDir, { withFileTypes: true })) {
+        if (entry.isDirectory() && entry.name !== 'categoria' && !existsSync(`${blogDir}${entry.name}/index.html`)) {
+          rmSync(`${blogDir}${entry.name}`, { recursive: true, force: true });
+          logger.info(`removed media of unpublished post: /blog/${entry.name}/`);
+        }
+      }
+    },
+  },
+});
+
 export default defineConfig({
   site: 'https://osmarlg.elroi.cloud',
   trailingSlash: 'always',
@@ -49,6 +75,8 @@ export default defineConfig({
     },
   },
   integrations: [
+    mdx(),
+    pruneUnpublishedBlogMedia(),
     sitemap({
       filter: (page) => !page.includes('/404'),
       lastmod: new Date(),

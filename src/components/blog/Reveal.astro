@@ -1,0 +1,60 @@
+---
+/**
+ * <Reveal>children</Reveal> — fades and slides its content in when it scrolls into view,
+ * with the same distance and easing as the site's motion layer. Lightweight (no GSAP);
+ * content stays visible without JS and with prefers-reduced-motion.
+ */
+---
+
+<div class="reveal" data-blog-reveal>
+  <slot />
+</div>
+
+<script>
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const blocks = [...document.querySelectorAll<HTMLElement>('[data-blog-reveal]')];
+  if (!reduce && 'IntersectionObserver' in window && blocks.length > 0) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            (entry.target as HTMLElement).dataset.revealed = '';
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { rootMargin: '0px 0px -12% 0px' },
+    );
+    // Only what is below the first screen is hidden, so nothing visible ever flashes.
+    blocks
+      .filter((block) => block.getBoundingClientRect().top > window.innerHeight)
+      .forEach((block) => {
+        block.dataset.revealPending = '';
+        observer.observe(block);
+      });
+    // Keyboard users: focusing something inside completes its reveal at once.
+    document.addEventListener('focusin', (event) => {
+      const host = (event.target as HTMLElement).closest<HTMLElement>('[data-reveal-pending]');
+      if (host) {
+        host.dataset.revealed = '';
+      }
+    });
+  }
+</script>
+
+<style>
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal[data-reveal-pending] {
+      opacity: 0;
+      transform: translateY(32px);
+      transition:
+        opacity 0.9s var(--ease-out),
+        transform 0.9s var(--ease-out);
+    }
+
+    .reveal[data-reveal-pending][data-revealed] {
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>

@@ -1,0 +1,50 @@
+---
+/**
+ * <Video src poster title loop? /> — MP4 from public/.
+ * With `loop`: autoplay, muted, loop, playsinline and no controls (like a GIF).
+ * Without it: controls and preload="none" (nothing downloads until play).
+ * The poster's size gives the player its aspect ratio, so the page never shifts.
+ */
+import { publicImageSize } from '../../lib/media';
+
+interface Props {
+  src: string;
+  poster: string;
+  title: string;
+  loop?: boolean;
+}
+
+const { src, poster, title, loop = false } = Astro.props;
+const size = await publicImageSize(poster);
+const width = size?.width ?? 1600;
+const height = size?.height ?? 900;
+---
+
+<figure class="post-video" style={`--ratio: ${width} / ${height}`}>
+  {
+    loop ? (
+      <video src={src} poster={poster} width={width} height={height} autoplay muted loop playsinline preload="metadata" aria-label={title} title={title} />
+    ) : (
+      <video src={src} poster={poster} width={width} height={height} controls preload="none" playsinline aria-label={title} title={title} />
+    )
+  }
+</figure>
+
+<style>
+  .post-video {
+    margin-block: 2rem;
+  }
+
+  .post-video video {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: var(--ratio);
+    max-height: 80vh;
+    margin-inline: auto;
+    object-fit: contain;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+</style>

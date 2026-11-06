@@ -42,6 +42,10 @@
 /llms.txt
   Content-Type: text/plain; charset=utf-8
 
+/blog/rss.xml
+  Content-Type: application/rss+xml; charset=utf-8
+  Cache-Control: public, max-age=3600
+
 /icon-192.png
   Cache-Control: public, max-age=604800
 
