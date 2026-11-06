@@ -31,7 +31,7 @@ export function createRandom(seed: number): () => number {
 
 /**
  * Turns the cut-out portrait into points: one per opaque pixel of a down-scaled copy,
- * clipped to the same disc the static photo uses, with the flat top edge thinned out.
+ * with the flat top and bottom edges thinned out like the static photo's mask.
  * Depth comes from luminance plus a gentle bulge, so the bust has volume when it turns.
  */
 export function samplePortrait(image: HTMLImageElement, columns: number): PortraitSample | null {
@@ -49,12 +49,6 @@ export function samplePortrait(image: HTMLImageElement, columns: number): Portra
   const random = createRandom(7);
   const aspect = width / height;
 
-  // The static portrait is clipped to circle(128px at 140px 170px) of a 280 x 300 box,
-  // with the 220 px photo placed at (30, 86). In image units that is:
-  const discX = 110 / 220;
-  const discY = 84 / ((220 * image.naturalHeight) / image.naturalWidth);
-  const discR = 128 / 220;
-
   const positions: number[] = [];
   const colors: number[] = [];
   for (let y = 0; y < height; y += 1) {
@@ -66,13 +60,8 @@ export function samplePortrait(image: HTMLImageElement, columns: number): Portra
       }
       const u = (x + random()) / width;
       const v = (y + random()) / height;
-      const dx = u - discX;
-      const dy = (v - discY) / aspect;
-      if (dx * dx + dy * dy > discR * discR) {
-        continue;
-      }
-      // Same fade as the photo's mask: transparent at the top edge, solid from 18 %.
-      if (v < 0.18 && random() > v / 0.18) {
+      // Same fade as the photo's mask: solid between 16 % and 80 % of the height.
+      if ((v < 0.16 && random() > v / 0.16) || (v > 0.8 && random() > (1 - v) / 0.2)) {
         continue;
       }
       const r = data[index] / 255;

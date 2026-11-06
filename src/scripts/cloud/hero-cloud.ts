@@ -167,7 +167,7 @@ export async function mountHeroCloud(hero: HTMLElement): Promise<HeroCloud | nul
 
   const small = window.matchMedia('(max-width: 760px), (pointer: coarse)').matches;
   const lowPower = (navigator.hardwareConcurrency ?? 8) <= 4;
-  const columns = small ? 104 : lowPower ? 132 : 168;
+  const columns = small ? 132 : lowPower ? 168 : 216;
 
   const image = await loadImage(source);
   const sample = samplePortrait(image, columns);
@@ -410,7 +410,7 @@ export async function mountHeroCloud(hero: HTMLElement): Promise<HeroCloud | nul
   let lastTime = performance.now();
   let time = 0;
   const state = { p: 0, opacity: 0, x: 0, y: 0, size: 0, rotX: 0, rotY: 0, strength: 0, initialised: false };
-  const portraitPointSize = (): number => Math.min(3.2, Math.max(1.6, (photo.getBoundingClientRect().height / rows) * 1.75));
+  const portraitPointSize = (): number => Math.min(4.2, Math.max(1.6, (photo.getBoundingClientRect().height / rows) * 1.7));
 
   const tick = (now: number): void => {
     frame = 0;

@@ -100,24 +100,25 @@ const cloudSource = await getImage({ src: portrait, width: 440, format: 'webp' }
     <div class="hero__visual">
       <div class="portrait" data-cloud-anchor data-cloud-src={cloudSource.src}>
         <div class="portrait__stack" data-parallax>
-          <span class="portrait__orbit" aria-hidden="true"></span>
-          <span class="portrait__disc" aria-hidden="true"></span>
-          <div class="portrait__cutout">
+          <span class="portrait__glow" aria-hidden="true"></span>
+          <div class="portrait__photo">
             <Picture
               src={portrait}
               formats={['avif', 'webp']}
               fallbackFormat="webp"
-              widths={[220, 440]}
-              sizes="220px"
+              widths={[360, 501]}
+              sizes="(min-width: 1000px) 520px, 360px"
               alt={hero.photoAlt}
               loading="eager"
               fetchpriority="high"
               class="portrait__img"
             />
           </div>
+          <span class="portrait__frame" aria-hidden="true"></span>
           <div class="portrait__detect" aria-hidden="true">
             <span class="portrait__label mono">{hero.detectionLabel}</span>
           </div>
+          <span class="portrait__coords mono" aria-hidden="true">24.14° N · 110.31° W</span>
         </div>
       </div>
 
@@ -211,6 +212,7 @@ const cloudSource = await getImage({ src: portrait, width: 440, format: 'webp' }
 <style>
   .hero {
     position: relative;
+    overflow-x: clip;
     padding-block: clamp(2.5rem, 6vw, 5rem) clamp(4rem, 8vw, 7rem);
   }
 
@@ -222,7 +224,46 @@ const cloudSource = await getImage({ src: portrait, width: 440, format: 'webp' }
 
   @media (min-width: 1000px) {
     .hero__grid {
-      grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.9fr);
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    }
+  }
+
+  /* Phones: the portrait goes full width right under the name; the run card stays last. */
+  @media (max-width: 999px) {
+    .hero .hero__grid {
+      gap: 0;
+    }
+
+    .hero .hero__copy,
+    .hero .hero__visual {
+      display: contents;
+    }
+
+    .hero .hero__prompt {
+      order: -3;
+    }
+
+    .hero .hero__name {
+      order: -2;
+    }
+
+    .hero .portrait {
+      order: -1;
+      justify-self: center;
+      margin-top: clamp(1.5rem, 6vw, 2.5rem);
+    }
+
+    .hero .run-card {
+      justify-self: center;
+      margin-top: 3rem;
+    }
+
+    .hero .portrait__frame {
+      inset: -3% 0;
+    }
+
+    .hero .portrait__coords {
+      right: 0;
     }
   }
 
@@ -359,14 +400,20 @@ const cloudSource = await getImage({ src: portrait, width: 440, format: 'webp' }
   }
 
   /*
-   * The cut-out photo (501 x 498 px, transparent background) is shown at 220 CSS px,
-   * never upscaled, on a brand disc that shows through its transparent background.
-   * Fixed 280 x 300 box, so the clip can use pixel coordinates.
+   * The cut-out photo (501 x 498 px, transparent background) is the hero visual and the
+   * LCP element: up to 520 px wide on desktop, the full width (max 360 px) on phones.
+   * The box keeps the photo's aspect ratio, so nothing moves when the 3D cloud takes over.
    */
   .portrait {
     position: relative;
-    width: 280px;
-    height: 300px;
+    width: min(100%, 360px);
+    aspect-ratio: 501 / 498;
+  }
+
+  @media (min-width: 1000px) {
+    .portrait {
+      width: min(100%, 520px);
+    }
   }
 
   .portrait__stack {
@@ -374,67 +421,59 @@ const cloudSource = await getImage({ src: portrait, width: 440, format: 'webp' }
     inset: 0;
   }
 
-  .portrait__disc {
+  .portrait__glow {
     position: absolute;
-    left: 12px;
-    top: 42px;
-    width: 256px;
-    height: 256px;
-    border-radius: 50%;
+    inset: -8%;
     background:
-      radial-gradient(circle at 50% 38%, rgb(139 234 250 / 0.55), transparent 58%),
-      radial-gradient(circle at 50% 50%, var(--accent-strong) 0%, #0b6f86 62%, #083846 100%);
-    box-shadow:
-      0 0 0 1px rgb(95 224 245 / 0.45),
-      0 30px 80px -20px rgb(47 201 230 / 0.45);
+      radial-gradient(closest-side at 50% 46%, rgb(47 201 230 / 0.2), transparent 80%),
+      radial-gradient(circle at 1px 1px, rgb(147 169 181 / 0.22) 1px, transparent 0) 0 0 / 16px 16px;
+    mask-image: radial-gradient(closest-side at 50% 48%, #000 40%, transparent);
   }
 
-  .portrait__disc::after {
-    content: '';
+  .portrait__photo {
     position: absolute;
     inset: 0;
-    border-radius: 50%;
-    background: radial-gradient(circle at 1px 1px, rgb(255 255 255 / 0.22) 1px, transparent 0) 0 0 / 14px 14px;
-    mask-image: radial-gradient(circle at 50% 30%, #000, transparent 70%);
   }
 
-  .portrait__orbit {
-    position: absolute;
-    left: -14px;
-    top: 16px;
-    width: 308px;
-    height: 308px;
-    border: 1px dashed rgb(95 224 245 / 0.35);
-    border-radius: 50%;
-  }
-
-  .portrait__cutout {
-    position: absolute;
-    inset: 0;
-    /* Cropped to the disc; the photo's flat top edge fades into it (see mask below). */
-    clip-path: circle(128px at 140px 170px);
-  }
-
-  .portrait__cutout :global(picture) {
-    position: absolute;
-    left: 30px;
-    top: 86px;
-    width: 220px;
-  }
-
+  .portrait__photo :global(picture),
   .portrait :global(.portrait__img) {
-    width: 220px;
-    height: auto;
-    mask-image: linear-gradient(to bottom, transparent 0, #000 18%);
+    display: block;
+    width: 100%;
+    height: 100%;
   }
 
+  /* The photo's flat top and bottom edges fade into the page. */
+  .portrait :global(.portrait__img) {
+    object-fit: contain;
+    mask-image: linear-gradient(to bottom, transparent 0, #000 16%, #000 80%, transparent 100%);
+  }
+
+  /* Viewfinder corners around the whole portrait. */
+  .portrait__frame {
+    position: absolute;
+    inset: -3% -4%;
+    --c: rgb(95 224 245 / 0.55);
+    background:
+      linear-gradient(var(--c), var(--c)) top left / 22px 1px,
+      linear-gradient(var(--c), var(--c)) top left / 1px 22px,
+      linear-gradient(var(--c), var(--c)) top right / 22px 1px,
+      linear-gradient(var(--c), var(--c)) top right / 1px 22px,
+      linear-gradient(var(--c), var(--c)) bottom left / 22px 1px,
+      linear-gradient(var(--c), var(--c)) bottom left / 1px 22px,
+      linear-gradient(var(--c), var(--c)) bottom right / 22px 1px,
+      linear-gradient(var(--c), var(--c)) bottom right / 1px 22px;
+    background-repeat: no-repeat;
+    pointer-events: none;
+  }
+
+  /* Face detection box, in percentages of the photo. */
   .portrait__detect {
     position: absolute;
-    left: 62px;
-    top: 116px;
-    width: 158px;
-    height: 162px;
-    border: 1px solid rgb(237 243 246 / 0.7);
+    left: 25%;
+    top: 21%;
+    width: 50%;
+    height: 54%;
+    border: 1px solid rgb(237 243 246 / 0.55);
     border-radius: 4px;
   }
 
@@ -442,8 +481,8 @@ const cloudSource = await getImage({ src: portrait, width: 440, format: 'webp' }
   .portrait__detect::after {
     content: '';
     position: absolute;
-    width: 14px;
-    height: 14px;
+    width: 16px;
+    height: 16px;
     border-color: var(--text);
     border-style: solid;
   }
@@ -474,19 +513,27 @@ const cloudSource = await getImage({ src: portrait, width: 440, format: 'webp' }
     white-space: nowrap;
   }
 
-  /* Hand-over to the point cloud: the photo and its disc dissolve, the frame stays. */
-  .portrait__disc,
-  .portrait__cutout {
+  .portrait__coords {
+    position: absolute;
+    right: -4%;
+    top: calc(-3% - 1.6rem);
+    color: var(--text-3);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+  }
+
+  /* Hand-over to the point cloud: the photo dissolves, the frame and labels stay. */
+  .portrait__photo,
+  .portrait__glow {
     transition: opacity 1.4s var(--ease-out) 0.35s;
   }
 
-  :global(.hero--cloud) .portrait__disc,
-  :global(.hero--cloud) .portrait__cutout {
+  :global(.hero--cloud) .portrait__photo {
     opacity: 0;
   }
 
-  :global(.hero--cloud) .portrait__orbit {
-    border-color: rgb(95 224 245 / 0.22);
+  :global(.hero--cloud) .portrait__glow {
+    opacity: 0.35;
   }
 
   .run-card {
@@ -503,8 +550,9 @@ const cloudSource = await getImage({ src: portrait, width: 440, format: 'webp' }
 
   @media (min-width: 1000px) {
     .run-card {
-      margin-top: 0.75rem;
-      margin-left: -3rem;
+      z-index: 1;
+      margin-top: -4.5rem;
+      margin-left: -4rem;
     }
   }
 
@@ -691,10 +739,10 @@ const cloudSource = await getImage({ src: portrait, width: 440, format: 'webp' }
     }
   }
 
+  /* No opacity: the photo is the LCP element and is visible from the first frame. */
   @keyframes portrait-enter {
     from {
-      opacity: 0;
-      transform: scale(0.96) translateY(16px);
+      transform: scale(0.97) translateY(14px);
     }
   }
 
