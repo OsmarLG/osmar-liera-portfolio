@@ -12,6 +12,7 @@ import Stack from './Stack.astro';
 import Contact from './Contact.astro';
 import Services from './Services.astro';
 import BlogTeaser from './BlogTeaser.astro';
+import Process from './Process.astro';
 import { getDictionary, type Lang } from '../../i18n';
 import { SITE_URL } from '../../i18n/profile';
 import { buildStructuredData } from '../../lib/structured-data';
@@ -36,6 +37,7 @@ const isBrandHome = Boolean(dict.services);
   altPath={dict.altPaths.home}
   structuredData={structuredData}
   ogType="profile"
+  flair
 >
   <TraceRail dict={dict} />
   <Hero dict={dict} />
@@ -44,6 +46,7 @@ const isBrandHome = Boolean(dict.services);
     isBrandHome ? (
       <>
         <Services dict={dict} />
+        <Process dict={dict} />
         <Profile dict={dict} />
         <Cases dict={dict} />
         <BlogTeaser dict={dict} />

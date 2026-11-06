@@ -1,0 +1,246 @@
+---
+import Kicker from '../Kicker.astro';
+import type { Dictionary } from '../../i18n';
+
+interface Props {
+  dict: Dictionary;
+}
+
+const { dict } = Astro.props;
+const process = dict.process;
+---
+
+{
+  process && (
+    <section class="section process" id={process.id} data-step="tools" data-cloud-stream data-cloud-dim="0.9" data-process aria-labelledby="process-title">
+      <div class="container process__grid" data-process-pin>
+        <div class="process__head">
+          <Kicker text={process.kicker} />
+          <h2 class="section-title process__title" id="process-title" data-split-title>
+            {process.title}
+          </h2>
+          <p class="section-intro" data-reveal>
+            {process.intro}
+          </p>
+          <ol class="process__rail mono" role="list" aria-hidden="true">
+            {process.steps.map((step, index) => (
+              <li class="process__rail-step" data-process-dot data-state={index === 0 ? 'active' : 'idle'}>
+                <span class="process__rail-dot" />
+                <span>
+                  {String(index + 1).padStart(2, '0')} {step.short}
+                </span>
+              </li>
+            ))}
+            <li class="process__rail-line">
+              <span class="process__rail-fill" data-process-fill />
+            </li>
+          </ol>
+        </div>
+
+        <ol class="process__steps" role="list">
+          {process.steps.map((step) => (
+            <li class="process-step" data-process-step>
+              <p class="process-step__label mono">{step.label}</p>
+              <h3 class="process-step__title">{step.title}</h3>
+              <p class="process-step__text">{step.text}</p>
+              <div class="process-step__log mono">
+                <p class="process-step__bar">
+                  <span class="process-step__dots" aria-hidden="true">
+                    <i />
+                    <i />
+                    <i />
+                  </span>
+                  {step.key}.log
+                </p>
+                <ul role="list">
+                  {step.log.map((line) => (
+                    <li data-log-line>{line}</li>
+                  ))}
+                </ul>
+              </div>
+              <p class="process-step__meta mono">{step.meta}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .process__grid {
+    display: grid;
+    gap: clamp(2rem, 5vw, 4rem);
+  }
+
+  @media (min-width: 1000px) {
+    .process__grid {
+      grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+      align-items: center;
+    }
+  }
+
+  .process__title {
+    max-width: 16ch;
+  }
+
+  /* Rail: only shown while the block is pinned (motion layer, wide screens). */
+  .process__rail {
+    display: none;
+    position: relative;
+    gap: 1.1rem;
+    margin-top: 2.5rem;
+    padding: 0 0 0 1.6rem;
+    color: var(--text-3);
+    font-size: 0.8rem;
+    list-style: none;
+  }
+
+  :global(.process[data-pinned]) .process__rail {
+    display: grid;
+  }
+
+  .process__rail-step {
+    position: relative;
+    display: flex;
+    align-items: center;
+    transition: color 0.3s ease;
+  }
+
+  .process__rail-dot {
+    position: absolute;
+    left: -1.6rem;
+    width: 11px;
+    height: 11px;
+    border: 1px solid var(--line-strong);
+    border-radius: 50%;
+    background: var(--bg);
+    transition:
+      background-color 0.3s ease,
+      border-color 0.3s ease,
+      box-shadow 0.3s ease;
+  }
+
+  .process__rail-step[data-state='active'] {
+    color: var(--accent);
+  }
+
+  .process__rail-step[data-state='active'] .process__rail-dot {
+    border-color: var(--accent);
+    background: var(--accent);
+    box-shadow: 0 0 0 5px var(--accent-soft);
+  }
+
+  .process__rail-step[data-state='done'] .process__rail-dot {
+    border-color: var(--accent-strong);
+    background: var(--accent-strong);
+  }
+
+  .process__rail-line {
+    position: absolute;
+    left: 5px;
+    top: 6px;
+    bottom: 6px;
+    z-index: -1;
+    width: 1px;
+    background: var(--line-strong);
+  }
+
+  .process__rail-fill {
+    position: absolute;
+    inset: 0;
+    background: var(--accent);
+    transform: scaleY(0);
+    transform-origin: top center;
+  }
+
+  /* Steps -------------------------------------------------------------- */
+  .process__steps {
+    display: grid;
+    gap: 1rem;
+    perspective: 1400px;
+  }
+
+  :global(.process[data-pinned]) .process__steps {
+    gap: 0;
+  }
+
+  :global(.process[data-pinned]) .process-step {
+    grid-area: 1 / 1;
+  }
+
+  .process-step {
+    display: grid;
+    gap: 0.75rem;
+    min-width: 0;
+    padding: clamp(1.25rem, 3vw, 2rem);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-l);
+    background: linear-gradient(160deg, rgb(16 30 40 / 0.96), rgb(8 16 23 / 0.96));
+    box-shadow: 0 40px 80px -50px rgb(0 0 0 / 0.9);
+    transform-origin: 50% 100%;
+  }
+
+  .process-step__label {
+    color: var(--accent);
+    font-size: 0.8rem;
+    letter-spacing: 0.04em;
+  }
+
+  .process-step__title {
+    font-size: var(--step-3);
+    line-height: 1.02;
+  }
+
+  .process-step__text {
+    max-width: 52ch;
+    color: var(--text-2);
+  }
+
+  .process-step__log {
+    margin-top: 0.5rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: rgb(5 9 13 / 0.75);
+    font-size: 0.8rem;
+  }
+
+  .process-step__bar {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.45rem 0.8rem;
+    border-bottom: 1px solid var(--line);
+    color: var(--text-3);
+    font-size: 0.72rem;
+  }
+
+  .process-step__dots {
+    display: inline-flex;
+    gap: 4px;
+  }
+
+  .process-step__dots i {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--line-strong);
+  }
+
+  .process-step__log ul {
+    display: grid;
+    gap: 0.2rem;
+    padding: 0.6rem 0.8rem 0.7rem;
+    list-style: none;
+    color: var(--text-2);
+  }
+
+  .process-step__log li:last-child {
+    color: var(--green);
+  }
+
+  .process-step__meta {
+    color: var(--text-3);
+    font-size: 0.78rem;
+  }
+</style>

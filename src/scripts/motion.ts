@@ -2,6 +2,10 @@
  * Motion layer. Only loaded when the visitor has NOT asked for reduced motion.
  * GSAP + ScrollTrigger drive scroll-linked reveals and diagrams; Lenis adds
  * smooth scrolling. Every animation is finite.
+ *
+ * Pages marked with body[data-flair] (home, blog list) also get the expressive layer:
+ * decoding headings, section wipes, the pinned "cómo trabajo" block, magnetic primary
+ * buttons and a cursor halo. The CV stays sober.
  */
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -256,6 +260,217 @@ function initApprovalCard(): void {
   });
 }
 
+/* ---------------------------------------------------------------------------
+ * Expressive layer (body[data-flair])
+ * ------------------------------------------------------------------------- */
+
+const GLYPHS = '<>/_-=+*#{}[]01$%';
+const randomGlyph = (): string => GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
+
+/**
+ * Terminal-style decode for a heading. The real text stays in place (transparent, so it
+ * keeps the layout and is what assistive tech reads); an aria-hidden copy on top resolves
+ * left to right behind a short band of random glyphs. No layout shift, nothing to unhide.
+ */
+function decode(heading: HTMLElement): void {
+  const text = (heading.textContent ?? '').replace(/\s+/g, ' ').trim();
+  if (!text || heading.children.length > 0 || heading.dataset.decoded !== undefined) {
+    return;
+  }
+  heading.dataset.decoded = '';
+  const layer = document.createElement('span');
+  layer.className = 'decode-layer';
+  layer.setAttribute('aria-hidden', 'true');
+  layer.style.color = getComputedStyle(heading).color;
+  const done = document.createElement('span');
+  const noise = document.createElement('span');
+  noise.className = 'decode-layer__noise';
+  const rest = document.createElement('span');
+  rest.className = 'decode-layer__rest';
+  layer.append(done, noise, rest);
+  heading.classList.add('is-decoding');
+  heading.append(layer);
+
+  const band = 7;
+  const state = { progress: 0 };
+  gsap.to(state, {
+    progress: 1,
+    duration: Math.min(1.3, 0.45 + text.length * 0.018),
+    ease: 'power2.out',
+    onUpdate: () => {
+      const resolved = Math.floor(state.progress * text.length);
+      const bandEnd = Math.min(text.length, resolved + band);
+      done.textContent = text.slice(0, resolved);
+      noise.textContent = [...text.slice(resolved, bandEnd)].map((char) => (char === ' ' ? ' ' : randomGlyph())).join('');
+      rest.textContent = text.slice(bandEnd);
+    },
+    onComplete: () => {
+      layer.remove();
+      heading.classList.remove('is-decoding');
+    },
+  });
+}
+
+function initDecodeHeadings(): void {
+  gsap.utils
+    .toArray<HTMLElement>('[data-split-title]')
+    .filter(belowFold)
+    .forEach((heading) => {
+      ScrollTrigger.create({ trigger: heading, start: 'top 86%', once: true, onEnter: () => decode(heading) });
+    });
+}
+
+/**
+ * Section wipes: a translucent panel sweeps in from the left behind each section while a
+ * trace line runs along its top edge. Purely decorative (pseudo-elements + a CSS variable).
+ */
+function initSectionWipes(): void {
+  document.documentElement.classList.add('has-wipes');
+  gsap.utils
+    .toArray<HTMLElement>('main .section')
+    .filter(belowFold)
+    .forEach((section) => {
+      gsap.fromTo(
+        section,
+        { '--wipe': 0 },
+        { '--wipe': 1, ease: 'none', scrollTrigger: { trigger: section, start: 'top 98%', end: 'top 30%', scrub: 0.6 } },
+      );
+    });
+}
+
+/**
+ * "Cómo trabajo": on wide screens the block pins and the three steps play like a deck while
+ * the rail fills (diagnóstico → implementación → seguimiento). Elsewhere the steps stack
+ * and simply reveal.
+ */
+function initProcess(): void {
+  const section = document.querySelector<HTMLElement>('[data-process]');
+  const pinTarget = section?.querySelector<HTMLElement>('[data-process-pin]');
+  if (!section || !pinTarget) {
+    return;
+  }
+  const steps = gsap.utils.toArray<HTMLElement>('[data-process-step]', section);
+  const dots = gsap.utils.toArray<HTMLElement>('[data-process-dot]', section);
+  const fill = section.querySelector<HTMLElement>('[data-process-fill]');
+  const lines = gsap.utils.toArray<HTMLElement>('[data-log-line]', section);
+  const mm = gsap.matchMedia();
+
+  mm.add('(min-width: 1000px) and (min-height: 660px)', () => {
+    section.dataset.pinned = '';
+    const timeline = gsap.timeline({ defaults: { ease: 'power2.inOut' } });
+    gsap.set(steps.slice(1), { opacity: 0, yPercent: 16, rotateX: -14 });
+    steps.forEach((step, index) => {
+      const stepLines = step.querySelectorAll<HTMLElement>('[data-log-line]');
+      const label = `step${index}`;
+      timeline.addLabel(label, index === 0 ? 0 : undefined);
+      if (index > 0) {
+        timeline.to(steps[index - 1], { opacity: 0, yPercent: -12, rotateX: 12, scale: 0.94, duration: 1 }, label);
+        timeline.to(step, { opacity: 1, yPercent: 0, rotateX: 0, duration: 1 }, label);
+      }
+      timeline.fromTo(
+        stepLines,
+        { opacity: 0, x: -12 },
+        { opacity: 1, x: 0, duration: 0.35, stagger: 0.18, ease: 'power2.out' },
+        index > 0 ? `${label}+=0.65` : 0,
+      );
+      timeline.to({}, { duration: 0.9 });
+    });
+    if (fill) {
+      timeline.fromTo(fill, { scaleY: 0 }, { scaleY: 1, ease: 'none', duration: timeline.duration() }, 0);
+    }
+    const setActive = (progress: number): void => {
+      const active = Math.min(steps.length - 1, Math.floor(progress * steps.length));
+      dots.forEach((dot, index) => {
+        dot.dataset.state = index < active ? 'done' : index === active ? 'active' : 'idle';
+      });
+    };
+    ScrollTrigger.create({
+      trigger: pinTarget,
+      start: 'center center',
+      end: () => `+=${Math.round(window.innerHeight * steps.length * 0.8)}`,
+      pin: true,
+      scrub: 0.6,
+      anticipatePin: 1,
+      animation: timeline,
+      invalidateOnRefresh: true,
+      onUpdate: (self) => setActive(self.progress),
+    });
+    return () => {
+      delete section.dataset.pinned;
+      gsap.set([...steps, ...lines], { clearProps: 'opacity,transform' });
+    };
+  });
+
+  mm.add('(max-width: 999px), (max-height: 659px)', () => {
+    const below = steps.filter(belowFold);
+    gsap.set(below, { opacity: 0, y: 32 });
+    ScrollTrigger.batch(below, {
+      start: 'top 88%',
+      once: true,
+      onEnter: (batch) => gsap.to(batch, { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out', stagger: 0.08, overwrite: true }),
+    });
+  });
+}
+
+/** Primary buttons lean towards the pointer (a few px) and spring back. Fine pointers only. */
+function initMagneticButtons(): void {
+  if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    return;
+  }
+  gsap.utils.toArray<HTMLElement>('.btn--primary').forEach((button) => {
+    button.classList.add('is-magnetic');
+    const xTo = gsap.quickTo(button, 'x', { duration: 0.45, ease: 'power3.out' });
+    const yTo = gsap.quickTo(button, 'y', { duration: 0.45, ease: 'power3.out' });
+    button.addEventListener('pointermove', (event) => {
+      const rect = button.getBoundingClientRect();
+      xTo(((event.clientX - (rect.left + rect.width / 2)) / (rect.width / 2)) * 7);
+      yTo(((event.clientY - (rect.top + rect.height / 2)) / (rect.height / 2)) * 5);
+    });
+    button.addEventListener('pointerleave', () => {
+      xTo(0);
+      yTo(0);
+    });
+  });
+}
+
+/** A soft light that follows the mouse behind the content and tightens over controls. */
+function initCursorHalo(): void {
+  if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    return;
+  }
+  const halo = document.createElement('div');
+  halo.className = 'cursor-halo';
+  halo.setAttribute('aria-hidden', 'true');
+  document.body.append(halo);
+  const xTo = gsap.quickTo(halo, 'x', { duration: 0.6, ease: 'power3.out' });
+  const yTo = gsap.quickTo(halo, 'y', { duration: 0.6, ease: 'power3.out' });
+  let visible = false;
+  window.addEventListener(
+    'pointermove',
+    (event) => {
+      if (event.pointerType !== 'mouse') {
+        return;
+      }
+      if (!visible) {
+        gsap.set(halo, { x: event.clientX, y: event.clientY });
+        halo.classList.add('is-on');
+        visible = true;
+      }
+      xTo(event.clientX);
+      yTo(event.clientY);
+    },
+    { passive: true },
+  );
+  document.documentElement.addEventListener('pointerleave', () => {
+    halo.classList.remove('is-on');
+    visible = false;
+  });
+  document.addEventListener('pointerover', (event) => {
+    const interactive = (event.target as Element | null)?.closest('a, button, label, summary, [role="tab"]');
+    halo.classList.toggle('is-hot', Boolean(interactive));
+  });
+}
+
 function initParallax(): void {
   const portrait = document.querySelector<HTMLElement>('[data-parallax]');
   if (!portrait) {
@@ -279,5 +494,12 @@ export function initMotion(): void {
   initDiagrams();
   initApprovalCard();
   initParallax();
+  if (document.body.hasAttribute('data-flair')) {
+    initDecodeHeadings();
+    initSectionWipes();
+    initProcess();
+    initMagneticButtons();
+    initCursorHalo();
+  }
   ScrollTrigger.refresh();
 }

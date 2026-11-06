@@ -27,6 +27,28 @@ export interface ServicesSection {
   whatsappMessage: string;
 }
 
+/** One step of the pinned "how I work" walkthrough. */
+export interface ProcessStep {
+  key: string;
+  /** Short name for the progress rail. */
+  short: string;
+  label: string;
+  title: string;
+  text: string;
+  meta: string;
+  /** Terminal-style log lines shown with the step. */
+  log: string[];
+}
+
+/** Pinned scrollytelling block: diagnosis → implementation → follow-up (Spanish home only). */
+export interface ProcessSection {
+  id: string;
+  kicker: string;
+  title: string;
+  intro: string;
+  steps: ProcessStep[];
+}
+
 /** Recent posts block on the home page (Spanish home only). */
 export interface BlogTeaser {
   kicker: string;
@@ -338,6 +360,7 @@ export interface Dictionary {
   };
   /** Present only on the personal-brand (Spanish) home. */
   services?: ServicesSection;
+  process?: ProcessSection;
   blogTeaser?: BlogTeaser;
   consent: ConsentCopy;
   cvPage: {
