@@ -1,0 +1,562 @@
+---
+import Icon from '../Icon.astro';
+import Kicker from '../Kicker.astro';
+import type { Dictionary } from '../../i18n';
+import { whatsappHref } from '../../i18n/profile';
+
+interface Props {
+  dict: Dictionary;
+}
+
+const { dict } = Astro.props;
+const quiz = dict.quiz;
+const pad = (value: number): string => String(value).padStart(2, '0');
+const letters = 'ABCDEF';
+/** Everything the client script needs to recommend a service and write the message. */
+const clientData = quiz && {
+  order: quiz.order,
+  results: quiz.results,
+  progress: quiz.progress,
+  next: quiz.next,
+  seeResult: quiz.seeResult,
+  firstStep: quiz.firstStep,
+  firstStepDiagnostic: quiz.firstStepDiagnostic,
+  messageIntro: quiz.messageIntro,
+  messageOutro: quiz.messageOutro,
+  summaryLabels: quiz.questions.map((question) => question.summaryLabel),
+};
+---
+
+{
+  quiz && clientData && (
+    <section class="section quiz" id={quiz.id} data-step="approval" data-cloud-dim="0.2" aria-labelledby="quiz-title">
+      <div class="container quiz__grid">
+        <div class="quiz__intro">
+          <Kicker text={quiz.kicker} />
+          <h2 class="section-title" id="quiz-title" data-split-title>
+            {quiz.title}
+          </h2>
+          <p class="section-intro" data-reveal>
+            {quiz.intro}
+          </p>
+          <ul class="quiz__promise mono" role="list" data-reveal>
+            {quiz.promise.map((item) => (
+              <li>{item}</li>
+            ))}
+          </ul>
+        </div>
+
+        <div class="quiz__panel" data-quiz data-reveal>
+          <script type="application/json" data-quiz-data set:html={JSON.stringify(clientData)} />
+          <div class="quiz__bar mono" aria-hidden="true">
+            <span class="quiz__dots">
+              <i />
+              <i />
+              <i />
+            </span>
+            <span>{quiz.file}</span>
+            <span class="quiz__count" data-quiz-count>
+              01 / {pad(quiz.questions.length)}
+            </span>
+          </div>
+          <div class="quiz__progress" aria-hidden="true">
+            <span data-quiz-progress />
+          </div>
+
+          <div class="quiz__fallback" data-quiz-fallback>
+            <p>{quiz.fallback}</p>
+            <a
+              class="btn btn--primary"
+              href={whatsappHref(quiz.fallbackMessage)}
+              target="_blank"
+              rel="noopener noreferrer"
+              data-wa
+              data-wa-message={quiz.fallbackMessage}
+              data-wa-location={quiz.id}
+            >
+              <Icon name="whatsapp" size={18} />
+              {quiz.fallbackCta}
+              <span class="sr-only">{dict.ui.newTab}</span>
+            </a>
+          </div>
+
+          <form class="quiz__form" data-quiz-form hidden novalidate>
+            {quiz.questions.map((question, index) => (
+              <fieldset class="quiz__step" data-quiz-step={index} hidden={index > 0} aria-describedby={question.hint ? `quiz-hint-${question.key}` : undefined}>
+                <legend class="quiz__legend">
+                  <span class="quiz__num mono">{pad(index + 1)}</span>
+                  {question.legend}
+                </legend>
+                {question.hint && (
+                  <p class="quiz__hint" id={`quiz-hint-${question.key}`}>
+                    {question.hint}
+                  </p>
+                )}
+                <div class="quiz__options">
+                  {question.options.map((option, optionIndex) => (
+                    <label class="quiz__option">
+                      <input type="radio" name={question.key} value={option.value} data-short={option.short ?? option.label} data-scores={JSON.stringify(option.scores)} />
+                      <span class="quiz__option-box">
+                        <span class="quiz__key mono" aria-hidden="true">
+                          {letters[optionIndex]}
+                        </span>
+                        <span>{option.label}</span>
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
+            ))}
+            <p class="quiz__error" data-quiz-error role="alert" hidden>
+              {quiz.required}
+            </p>
+            <div class="quiz__nav">
+              <button type="button" class="btn btn--small quiz__back" data-quiz-back hidden>
+                {quiz.back}
+              </button>
+              <button type="submit" class="btn btn--primary btn--small" data-quiz-next>
+                <span data-quiz-next-label>{quiz.next}</span>
+                <Icon name="arrow-right" size={16} />
+              </button>
+            </div>
+          </form>
+
+          <div class="quiz__result" data-quiz-result hidden tabindex="-1" role="group" aria-labelledby="quiz-result-lead quiz-result-name">
+            <p class="quiz__result-label mono">
+              <span aria-hidden="true">✓ </span>
+              {quiz.resultLabel}
+            </p>
+            <p class="quiz__result-lead" id="quiz-result-lead">
+              {quiz.resultLead}
+            </p>
+            <h3 class="quiz__result-name" id="quiz-result-name" data-quiz-name />
+            <p class="quiz__result-why" data-quiz-why />
+            <p class="quiz__result-first" data-quiz-first />
+            <p class="quiz__summary-title mono">{quiz.summaryTitle}</p>
+            <dl class="quiz__summary" data-quiz-summary />
+            <div class="quiz__actions">
+              <a
+                class="btn btn--primary"
+                href={whatsappHref(quiz.fallbackMessage)}
+                target="_blank"
+                rel="noopener noreferrer"
+                data-wa
+                data-wa-message={quiz.fallbackMessage}
+                data-wa-location={quiz.id}
+                data-quiz-wa
+              >
+                <Icon name="whatsapp" size={18} />
+                {quiz.cta}
+                <span class="sr-only">{dict.ui.newTab}</span>
+              </a>
+              <button type="button" class="btn btn--small" data-quiz-restart>
+                {quiz.restart}
+              </button>
+            </div>
+          </div>
+
+          <p class="sr-only" aria-live="polite" data-quiz-status />
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<script>
+  import { initQuiz } from '../../scripts/quiz';
+
+  initQuiz();
+</script>
+
+<style>
+  .quiz__grid {
+    display: grid;
+    gap: clamp(2rem, 5vw, 4rem);
+  }
+
+  @media (min-width: 1000px) {
+    .quiz__grid {
+      grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+      align-items: start;
+    }
+
+    .quiz__intro {
+      position: sticky;
+      top: calc(var(--header-h) + 2rem);
+    }
+  }
+
+  .quiz__promise {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.2rem;
+    margin-top: 1.5rem;
+    padding: 0;
+    list-style: none;
+    color: var(--text-3);
+    font-size: 0.78rem;
+  }
+
+  .quiz__promise li::before {
+    content: '› ';
+    color: var(--accent);
+  }
+
+  /* Panel: a small terminal ------------------------------------------------ */
+  .quiz__panel {
+    position: relative;
+    min-width: 0;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-l);
+    background: linear-gradient(170deg, rgb(16 30 40 / 0.97), rgb(8 16 23 / 0.97));
+    box-shadow: 0 50px 90px -60px rgb(0 0 0 / 0.95);
+    overflow: hidden;
+  }
+
+  .quiz__bar {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.65rem 1rem;
+    border-bottom: 1px solid var(--line);
+    color: var(--text-3);
+    font-size: 0.75rem;
+  }
+
+  .quiz__dots {
+    display: inline-flex;
+    gap: 5px;
+  }
+
+  .quiz__dots i {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--line-strong);
+  }
+
+  .quiz__count {
+    margin-left: auto;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .quiz__progress {
+    height: 2px;
+    background: var(--line);
+  }
+
+  .quiz__progress span {
+    display: block;
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-strong), var(--accent));
+    transform: scaleX(0.25);
+    transform-origin: left center;
+    transition: transform 0.5s var(--ease-out);
+  }
+
+  .quiz__fallback,
+  .quiz__form,
+  .quiz__result {
+    padding: clamp(1.25rem, 3.5vw, 2rem);
+  }
+
+  .quiz__fallback {
+    display: grid;
+    gap: 1.25rem;
+    justify-items: start;
+    color: var(--text-2);
+  }
+
+  .quiz__step {
+    min-width: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .quiz__legend {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    padding: 0;
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    font-weight: 650;
+    line-height: 1.15;
+    letter-spacing: -0.015em;
+  }
+
+  .quiz__num {
+    color: var(--accent);
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0;
+  }
+
+  .quiz__hint {
+    margin-top: 0.5rem;
+    color: var(--text-3);
+    font-size: 0.9rem;
+  }
+
+  .quiz__options {
+    display: grid;
+    gap: 0.5rem;
+    margin-top: 1.25rem;
+  }
+
+  @media (min-width: 560px) {
+    .quiz__options {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .quiz__option {
+    position: relative;
+    display: flex;
+    cursor: pointer;
+  }
+
+  .quiz__option input {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+  }
+
+  .quiz__option-box {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    gap: 0.75rem;
+    min-height: 52px;
+    padding: 0.7rem 0.9rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: rgb(5 9 13 / 0.55);
+    color: var(--text-2);
+    line-height: 1.3;
+    transition:
+      border-color 0.2s ease,
+      background-color 0.2s ease,
+      color 0.2s ease,
+      transform 0.25s var(--ease-out);
+  }
+
+  .quiz__key {
+    display: inline-grid;
+    flex: none;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    border: 1px solid var(--line-strong);
+    border-radius: 6px;
+    color: var(--text-3);
+    font-size: 0.72rem;
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease,
+      border-color 0.2s ease;
+  }
+
+  .quiz__option:hover .quiz__option-box {
+    border-color: var(--line-strong);
+    color: var(--text);
+    transform: translateX(3px);
+  }
+
+  .quiz__option input:focus-visible + .quiz__option-box {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .quiz__option input:checked + .quiz__option-box {
+    border-color: rgb(95 224 245 / 0.6);
+    background: var(--accent-soft);
+    color: var(--text);
+  }
+
+  .quiz__option input:checked + .quiz__option-box .quiz__key {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: var(--accent-ink);
+  }
+
+  .quiz__error {
+    margin-top: 1rem;
+    color: var(--amber);
+    font-size: 0.9rem;
+  }
+
+  .quiz__nav {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+
+  .quiz__nav [data-quiz-next] {
+    margin-left: auto;
+  }
+
+  /* Step and result entrances (finite; removed with reduced motion). */
+  @media (prefers-reduced-motion: no-preference) {
+    .quiz__step[data-enter='forward'] {
+      animation: quiz-in-forward 0.45s var(--ease-out) both;
+    }
+
+    .quiz__step[data-enter='back'] {
+      animation: quiz-in-back 0.45s var(--ease-out) both;
+    }
+
+    .quiz__step[data-enter] .quiz__option {
+      animation: quiz-option 0.5s var(--ease-out) both;
+    }
+
+    .quiz__step[data-enter] .quiz__option:nth-child(2) {
+      animation-delay: 0.04s;
+    }
+
+    .quiz__step[data-enter] .quiz__option:nth-child(3) {
+      animation-delay: 0.08s;
+    }
+
+    .quiz__step[data-enter] .quiz__option:nth-child(4) {
+      animation-delay: 0.12s;
+    }
+
+    .quiz__step[data-enter] .quiz__option:nth-child(5) {
+      animation-delay: 0.16s;
+    }
+
+    .quiz__step[data-enter] .quiz__option:nth-child(6) {
+      animation-delay: 0.2s;
+    }
+
+    .quiz__result[data-enter] > * {
+      animation: quiz-option 0.6s var(--ease-out) both;
+    }
+
+    .quiz__result[data-enter] > :nth-child(2) {
+      animation-delay: 0.06s;
+    }
+
+    .quiz__result[data-enter] > :nth-child(3) {
+      animation-delay: 0.12s;
+    }
+
+    .quiz__result[data-enter] > :nth-child(n + 4) {
+      animation-delay: 0.2s;
+    }
+  }
+
+  @keyframes quiz-in-forward {
+    from {
+      opacity: 0;
+      transform: translateX(28px);
+    }
+  }
+
+  @keyframes quiz-in-back {
+    from {
+      opacity: 0;
+      transform: translateX(-28px);
+    }
+  }
+
+  @keyframes quiz-option {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+  }
+
+  /* Result --------------------------------------------------------------- */
+  .quiz__result {
+    display: grid;
+    gap: 0.6rem;
+  }
+
+  .quiz__result:focus {
+    outline: none;
+  }
+
+  .quiz__result[hidden] {
+    display: none;
+  }
+
+  .quiz__result-label {
+    color: var(--green);
+    font-size: 0.8rem;
+  }
+
+  .quiz__result-lead {
+    color: var(--text-3);
+  }
+
+  .quiz__result-name {
+    font-size: var(--step-4);
+    line-height: 0.98;
+    letter-spacing: -0.03em;
+    color: var(--accent);
+  }
+
+  .quiz__result-why {
+    max-width: 52ch;
+    color: var(--text-2);
+    font-size: var(--step-1);
+    line-height: 1.5;
+  }
+
+  .quiz__result-first {
+    max-width: 56ch;
+    padding-left: 0.9rem;
+    border-left: 2px solid var(--amber);
+    color: var(--text-2);
+    font-size: 0.95rem;
+  }
+
+  .quiz__summary-title {
+    margin-top: 0.75rem;
+    color: var(--text-3);
+    font-size: 0.75rem;
+  }
+
+  .quiz__summary {
+    display: grid;
+    gap: 0.35rem;
+    padding: 0.75rem 0.9rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: rgb(5 9 13 / 0.6);
+    font-size: 0.88rem;
+  }
+
+  .quiz__summary :global(div) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.2rem 0.6rem;
+  }
+
+  .quiz__summary :global(dt) {
+    color: var(--text-3);
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+  }
+
+  .quiz__summary :global(dt)::after {
+    content: ':';
+  }
+
+  .quiz__summary :global(dd) {
+    color: var(--text);
+  }
+
+  .quiz__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+  }
+</style>

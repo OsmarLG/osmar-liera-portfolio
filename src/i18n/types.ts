@@ -49,6 +49,57 @@ export interface ProcessSection {
   steps: ProcessStep[];
 }
 
+export type QuizServiceKey = 'diagnostico' | 'redes' | 'web' | 'tienda' | 'automatizacion' | 'sistema' | 'asesoria';
+
+export interface QuizOption {
+  value: string;
+  label: string;
+  /** Wording used in the summary and the WhatsApp message. */
+  short?: string;
+  /** Points each answer gives to the services it points to. */
+  scores: Partial<Record<QuizServiceKey, number>>;
+}
+
+export interface QuizQuestion {
+  key: string;
+  legend: string;
+  hint?: string;
+  summaryLabel: string;
+  options: QuizOption[];
+}
+
+/** "Diagnóstico en 30 segundos": 4 questions that recommend one real service (Spanish home only). */
+export interface QuizSection {
+  id: string;
+  kicker: string;
+  title: string;
+  intro: string;
+  promise: string[];
+  file: string;
+  progress: string;
+  next: string;
+  back: string;
+  seeResult: string;
+  restart: string;
+  required: string;
+  resultLabel: string;
+  resultLead: string;
+  firstStep: string;
+  firstStepDiagnostic: string;
+  summaryTitle: string;
+  cta: string;
+  messageIntro: string;
+  /** "{service}" is replaced with the recommended service. */
+  messageOutro: string;
+  fallback: string;
+  fallbackCta: string;
+  fallbackMessage: string;
+  /** Tie-break order: the first service wins a tie. */
+  order: QuizServiceKey[];
+  results: Record<QuizServiceKey, { name: string; why: string }>;
+  questions: QuizQuestion[];
+}
+
 /** Recent posts block on the home page (Spanish home only). */
 export interface BlogTeaser {
   kicker: string;
@@ -361,6 +412,7 @@ export interface Dictionary {
   /** Present only on the personal-brand (Spanish) home. */
   services?: ServicesSection;
   process?: ProcessSection;
+  quiz?: QuizSection;
   blogTeaser?: BlogTeaser;
   consent: ConsentCopy;
   cvPage: {
