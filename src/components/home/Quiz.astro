@@ -55,11 +55,11 @@ const clientData = quiz && {
               <i />
             </span>
             <span>{quiz.file}</span>
-            <span class="quiz__count" data-quiz-count>
+            <span class="quiz__count" data-quiz-count hidden>
               01 / {pad(quiz.questions.length)}
             </span>
           </div>
-          <div class="quiz__progress" aria-hidden="true">
+          <div class="quiz__progress" aria-hidden="true" data-quiz-meta hidden>
             <span data-quiz-progress />
           </div>
 
@@ -362,7 +362,12 @@ const clientData = quiz && {
   .quiz__option:hover .quiz__option-box {
     border-color: var(--line-strong);
     color: var(--text);
-    transform: translateX(3px);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .quiz__option:hover .quiz__option-box {
+      transform: translateX(3px);
+    }
   }
 
   .quiz__option input:focus-visible + .quiz__option-box {

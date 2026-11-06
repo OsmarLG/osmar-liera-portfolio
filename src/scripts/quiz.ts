@@ -69,6 +69,10 @@ export function initQuiz(): void {
   let advanceTimer = 0;
 
   root.querySelector<HTMLElement>('[data-quiz-fallback]')!.hidden = true;
+  root.querySelector<HTMLElement>('[data-quiz-meta]')!.hidden = false;
+  if (count) {
+    count.hidden = false;
+  }
   form.hidden = false;
 
   const checked = (index: number): HTMLInputElement | null => steps[index].querySelector<HTMLInputElement>('input:checked');
