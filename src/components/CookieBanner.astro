@@ -1,0 +1,158 @@
+---
+/**
+ * Cookie banner (own component). Hidden until scripts/consent.ts decides to show it;
+ * rendered only when a measurement ID is configured. Fixed at the bottom, so it never
+ * shifts the layout.
+ */
+import type { Dictionary } from '../i18n';
+import { consentNeeded } from '../lib/tracking';
+
+interface Props {
+  dict: Dictionary;
+}
+
+const { dict } = Astro.props;
+const copy = dict.consent;
+---
+
+{
+  consentNeeded && (
+    <section class="consent" data-consent hidden role="region" aria-labelledby="consent-title" lang={dict.htmlLang}>
+      <div class="consent__panel">
+        <p class="consent__title" id="consent-title" tabindex="-1" data-consent-title>
+          {copy.title}
+        </p>
+        <p class="consent__text">
+          {copy.text}{' '}
+          <a href="/privacidad/" hreflang="es">
+            {copy.privacy}
+          </a>
+        </p>
+
+        <fieldset class="consent__settings" id="consent-settings" data-consent-settings hidden>
+          <legend class="sr-only">{copy.dialogLabel}</legend>
+          <label class="consent__option">
+            <input type="checkbox" checked disabled />
+            <span>
+              <strong>{copy.necessaryLabel}</strong>
+              <small>{copy.necessaryText}</small>
+            </span>
+          </label>
+          <label class="consent__option">
+            <input type="checkbox" data-consent-analytics />
+            <span>
+              <strong>{copy.analytics}</strong>
+              <small>{copy.analyticsText}</small>
+            </span>
+          </label>
+          <label class="consent__option">
+            <input type="checkbox" data-consent-ads />
+            <span>
+              <strong>{copy.ads}</strong>
+              <small>{copy.adsText}</small>
+            </span>
+          </label>
+        </fieldset>
+
+        <div class="consent__actions">
+          <button class="btn btn--primary btn--small" type="button" data-consent-accept>
+            {copy.accept}
+          </button>
+          <button class="btn btn--small" type="button" data-consent-necessary>
+            {copy.necessary}
+          </button>
+          <button class="btn btn--small" type="button" aria-expanded="false" aria-controls="consent-settings" data-consent-configure>
+            {copy.configure}
+          </button>
+          <button class="btn btn--primary btn--small" type="button" data-consent-save hidden>
+            {copy.save}
+          </button>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .consent {
+    position: fixed;
+    inset: auto 0 0;
+    z-index: 90;
+    padding: 0 max(12px, env(safe-area-inset-right)) max(12px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
+    pointer-events: none;
+  }
+
+  .consent__panel {
+    width: min(40rem, 100%);
+    max-height: calc(100vh - 24px);
+    margin-left: auto;
+    overflow-y: auto;
+    padding: 1.1rem 1.2rem 1.2rem;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius);
+    background: rgb(8 16 23 / 0.97);
+    box-shadow: 0 30px 60px -20px rgb(0 0 0 / 0.8);
+    pointer-events: auto;
+  }
+
+  .consent__title {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 650;
+  }
+
+  .consent__text {
+    margin-top: 0.35rem;
+    color: var(--text-2);
+    font-size: 0.93rem;
+    line-height: 1.5;
+  }
+
+  .consent__text a {
+    color: var(--accent);
+  }
+
+  .consent__settings {
+    display: grid;
+    gap: 0.6rem;
+    margin: 0.9rem 0 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .consent__option {
+    display: grid;
+    grid-template-columns: 1.1rem 1fr;
+    gap: 0.7rem;
+    align-items: start;
+    padding: 0.6rem 0.75rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-s);
+    cursor: pointer;
+  }
+
+  .consent__option input {
+    width: 1.1rem;
+    height: 1.1rem;
+    margin-top: 0.2rem;
+    accent-color: var(--accent);
+  }
+
+  .consent__option span {
+    display: grid;
+    gap: 0.1rem;
+  }
+
+  .consent__option small {
+    color: var(--text-3);
+    font-size: 0.85rem;
+    line-height: 1.4;
+  }
+
+  .consent__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+</style>

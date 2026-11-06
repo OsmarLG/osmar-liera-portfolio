@@ -1,0 +1,58 @@
+---
+/**
+ * Head tags for measurement. Order matters: dataLayer + Consent Mode v2 default
+ * (everything denied) and any stored choice are set BEFORE gtag.js / GTM load.
+ * GA4 always loads when its ID exists (advanced consent mode); Meta Pixel is
+ * loaded later by scripts/consent.ts, only with advertising consent.
+ */
+import { tracking } from '../lib/tracking';
+
+const { ga4Id, gtmId, googleSiteVerification } = tracking;
+---
+
+{googleSiteVerification && <meta name="google-site-verification" content={googleSiteVerification} />}
+{ga4Id && <link rel="preconnect" href="https://www.googletagmanager.com" />}
+{
+  (ga4Id || gtmId) && (
+    <script is:inline define:vars={{ ga4Id, gtmId }}>
+      window.dataLayer = window.dataLayer || [];
+      window.gtag = function () {
+        window.dataLayer.push(arguments);
+      };
+      window.gtag('consent', 'default', {
+        ad_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
+        analytics_storage: 'denied',
+        wait_for_update: 500,
+      });
+      try {
+        var stored = JSON.parse(localStorage.getItem('elroi_consent') || 'null');
+        if (stored && stored.v === 1) {
+          var ads = stored.ads ? 'granted' : 'denied';
+          window.gtag('consent', 'update', {
+            analytics_storage: stored.analytics ? 'granted' : 'denied',
+            ad_storage: ads,
+            ad_user_data: ads,
+            ad_personalization: ads,
+          });
+        }
+      } catch (error) {}
+      var load = function (src) {
+        var script = document.createElement('script');
+        script.async = true;
+        script.src = src;
+        document.head.appendChild(script);
+      };
+      if (ga4Id) {
+        window.gtag('js', new Date());
+        window.gtag('config', ga4Id);
+        load('https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(ga4Id));
+      }
+      if (gtmId) {
+        window.dataLayer.push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+        load('https://www.googletagmanager.com/gtm.js?id=' + encodeURIComponent(gtmId));
+      }
+    </script>
+  )
+}

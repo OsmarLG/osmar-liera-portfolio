@@ -1,0 +1,157 @@
+---
+import Base from '../layouts/Base.astro';
+import Kicker from '../components/Kicker.astro';
+import { getDictionary } from '../i18n';
+import { person } from '../i18n/profile';
+import { consentNeeded } from '../lib/tracking';
+
+const dict = getDictionary('es');
+const updated = '5 de noviembre de 2026';
+---
+
+<Base
+  dict={dict}
+  title="Aviso de privacidad y cookies · Osmar Liera"
+  description="Qué mide el sitio de Osmar Liera (Google Analytics, Meta Pixel y cookies), para qué y cómo cambiar tus preferencias."
+  path="/privacidad/"
+  altPath={dict.altPaths.home}
+  translated={false}
+  motion={false}
+>
+  <article class="legal container" aria-labelledby="legal-title">
+    <Kicker text="privacidad" />
+    <h1 id="legal-title">Aviso de privacidad y cookies</h1>
+    <p class="legal__updated mono">Última actualización: {updated}</p>
+
+    <h2>Quién es responsable</h2>
+    <p>
+      Este sitio es de {person.fullName} ({person.shortName}), con domicilio en {person.city}, {person.region}, México. Para cualquier duda sobre tus datos escríbeme a
+      <a href={`mailto:${person.email}`}>{person.email}</a>.
+    </p>
+
+    <h2>Qué datos se recogen</h2>
+    <ul>
+      <li>
+        <strong>Si me escribes por WhatsApp o correo:</strong> tu nombre, tu número o correo y lo que me cuentes. Los uso solo para contestarte y darte seguimiento.
+      </li>
+      <li>
+        <strong>Medición del sitio:</strong> páginas que visitas, de dónde llegaste (por ejemplo, una campaña o una red social), tu tipo de dispositivo y navegador, de forma
+        agregada.
+      </li>
+    </ul>
+
+    <h2>Herramientas de medición</h2>
+    <ul>
+      <li>
+        <strong>Google Analytics 4</strong> (Google): cuenta visitas y páginas vistas. Usa el modo de consentimiento de Google: si no aceptas la analítica, no guarda cookies
+        y solo envía señales sin identificarte.
+      </li>
+      <li>
+        <strong>Meta Pixel</strong> (Meta: Facebook e Instagram): mide los anuncios. Solo se carga si aceptas las cookies de publicidad.
+      </li>
+      <li>
+        <strong>Origen de tu visita:</strong> si llegas desde un anuncio o un enlace con parámetros de campaña (utm, gclid, fbclid), el sitio lo guarda en tu navegador. Si
+        aceptaste la analítica se conserva entre visitas; si no, se borra al cerrar la pestaña.
+      </li>
+    </ul>
+
+    <h2>Cuando haces clic en WhatsApp</h2>
+    <p>
+      Los botones de WhatsApp pasan primero por <strong>labs.elroi.cloud</strong> (ELROI Labs, mi estudio), que registra el clic, la página y el origen de la visita para
+      saber qué artículo o campaña te trajo, y después te lleva a WhatsApp con el mensaje listo. No se envía nada hasta que tú mandas el mensaje.
+    </p>
+
+    <h2>Cookies</h2>
+    <ul>
+      <li><strong>Necesarias:</strong> guardan tu elección de cookies (<code>elroi_consent</code>). Siempre activas.</li>
+      <li><strong>Analítica:</strong> cookies de Google Analytics (<code>_ga</code>, <code>_ga_*</code>).</li>
+      <li><strong>Publicidad:</strong> cookies de Meta (<code>_fbp</code>, <code>_fbc</code>) y de anuncios de Google.</li>
+    </ul>
+
+    <h2>Cómo cambiar tus preferencias</h2>
+    <p>
+      {
+        consentNeeded ? (
+          <>
+            Puedes cambiar tu elección cuando quieras desde{' '}
+            <button class="legal__link" type="button" data-consent-open>
+              Preferencias de cookies
+            </button>{' '}
+            (también está en el pie de cada página). Además puedes borrar las cookies desde tu navegador.
+          </>
+        ) : (
+          <>Hoy este sitio no tiene activada ninguna herramienta de medición. Si se activa, verás un aviso para elegir y podrás cambiarlo desde el pie de cada página.</>
+        )
+      }
+    </p>
+
+    <h2>Tus derechos</h2>
+    <p>
+      Puedes pedir acceso, corrección o eliminación de tus datos, u oponerte a su uso, escribiendo a <a href={`mailto:${person.email}`}>{person.email}</a>. Te contesto en
+      cuanto pueda.
+    </p>
+  </article>
+</Base>
+
+<style>
+  .legal {
+    max-width: 46rem;
+    padding-block: clamp(2.5rem, 6vw, 4rem) clamp(4rem, 8vw, 6rem);
+    color: var(--text-2);
+    line-height: 1.7;
+  }
+
+  .legal h1 {
+    font-size: var(--step-4);
+    line-height: 1;
+    letter-spacing: -0.026em;
+    color: var(--text);
+  }
+
+  .legal__updated {
+    margin-top: 0.75rem;
+    color: var(--text-3);
+    font-size: 0.8rem;
+  }
+
+  .legal h2 {
+    margin-top: 2.25rem;
+    color: var(--text);
+    font-size: var(--step-2);
+  }
+
+  .legal p,
+  .legal ul {
+    margin-top: 0.75rem;
+  }
+
+  .legal ul {
+    display: grid;
+    gap: 0.5rem;
+    padding-left: 1.2rem;
+  }
+
+  .legal strong {
+    color: var(--text);
+  }
+
+  .legal a,
+  .legal__link {
+    color: var(--accent);
+    overflow-wrap: anywhere;
+  }
+
+  .legal__link {
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  .legal code {
+    font-family: var(--font-mono);
+    font-size: 0.88em;
+  }
+</style>

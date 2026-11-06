@@ -3,6 +3,8 @@ import { Font } from 'astro:assets';
 import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import Analytics from '../components/Analytics.astro';
+import CookieBanner from '../components/CookieBanner.astro';
 import type { Dictionary } from '../i18n';
 import { SITE_URL, person } from '../i18n/profile';
 import { socialProfiles } from '../i18n/social';
@@ -17,17 +19,41 @@ interface Props {
   altPath?: string;
   noindex?: boolean;
   structuredData?: object;
-  ogType?: 'website' | 'profile';
+  ogType?: 'website' | 'profile' | 'article';
   /** Whether to load the scroll/motion layer (GSAP + Lenis). */
   motion?: boolean;
+  /** False for pages that only exist in Spanish (blog, privacy): no hreflang pair. */
+  translated?: boolean;
+  /** Share image; defaults to the site OG image (1200 × 630 JPEG). */
+  image?: { src: string; alt: string; width?: number; height?: number; type?: string };
+  /** Open Graph article metadata (ogType "article"). */
+  article?: { publishedTime: string; modifiedTime?: string; section?: string; tags?: string[] };
 }
 
-const { dict, title, description, path, altPath, noindex = false, structuredData, ogType = 'website', motion = true } = Astro.props;
+const {
+  dict,
+  title,
+  description,
+  path,
+  altPath,
+  noindex = false,
+  structuredData,
+  ogType = 'website',
+  motion = true,
+  translated = true,
+  image,
+  article,
+} = Astro.props;
 
 const canonical = new URL(path, SITE_URL).href;
-const ogImage = new URL(dict.meta.ogImage, SITE_URL).href;
+const ogImage = new URL(image?.src ?? dict.meta.ogImage, SITE_URL).href;
+const ogImageAlt = image?.alt ?? dict.meta.ogAlt;
+const ogImageWidth = image ? image.width : 1200;
+const ogImageHeight = image ? image.height : 630;
+const ogImageType = image ? image.type : 'image/jpeg';
 const esPath = dict.lang === 'es' ? path : altPath;
 const enPath = dict.lang === 'en' ? path : altPath;
+const rssUrl = new URL('/blog/rss.xml', SITE_URL).href;
 ---
 
 <!doctype html>
@@ -39,7 +65,7 @@ const enPath = dict.lang === 'en' ? path : altPath;
     <meta name="description" content={description} />
     {!noindex && <link rel="canonical" href={canonical} />}
     {
-      !noindex && esPath && enPath && (
+      !noindex && translated && esPath && enPath && (
         <>
           <link rel="alternate" hreflang="es-MX" href={new URL(esPath, SITE_URL).href} />
           <link rel="alternate" hreflang="en" href={new URL(enPath, SITE_URL).href} />
@@ -58,6 +84,7 @@ const enPath = dict.lang === 'en' ? path : altPath;
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
     <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="alternate" type="application/rss+xml" title="Blog de Osmar Liera" href={rssUrl} />
     {socialProfiles.map((profile) => <link rel="me" href={profile.href} />)}
 
     <meta property="og:type" content={ogType} />
@@ -66,13 +93,24 @@ const enPath = dict.lang === 'en' ? path : altPath;
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:locale" content={dict.ogLocale} />
-    <meta property="og:locale:alternate" content={dict.ogLocaleAlternate} />
+    {translated && <meta property="og:locale:alternate" content={dict.ogLocaleAlternate} />}
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:secure_url" content={ogImage} />
-    <meta property="og:image:type" content="image/jpeg" />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content={dict.meta.ogAlt} />
+    {ogImageType && <meta property="og:image:type" content={ogImageType} />}
+    {ogImageWidth && <meta property="og:image:width" content={String(ogImageWidth)} />}
+    {ogImageHeight && <meta property="og:image:height" content={String(ogImageHeight)} />}
+    <meta property="og:image:alt" content={ogImageAlt} />
+    {
+      ogType === 'article' && article && (
+        <>
+          <meta property="article:published_time" content={article.publishedTime} />
+          {article.modifiedTime && <meta property="article:modified_time" content={article.modifiedTime} />}
+          <meta property="article:author" content={SITE_URL + '/'} />
+          {article.section && <meta property="article:section" content={article.section} />}
+          {article.tags?.map((tag) => <meta property="article:tag" content={tag} />)}
+        </>
+      )
+    }
     {
       ogType === 'profile' && (
         <>
@@ -86,13 +124,14 @@ const enPath = dict.lang === 'en' ? path : altPath;
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
-    <meta name="twitter:image:alt" content={dict.meta.ogAlt} />
+    <meta name="twitter:image:alt" content={ogImageAlt} />
 
     <Font cssVariable="--font-display" preload />
     <Font cssVariable="--font-body" preload />
     <Font cssVariable="--font-mono" />
 
     {structuredData && <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />}
+    <Analytics />
   </head>
   <body data-motion={motion ? 'on' : 'off'}>
     <a class="skip-link" href="#contenido">{dict.ui.skip}</a>
@@ -102,11 +141,18 @@ const enPath = dict.lang === 'en' ? path : altPath;
     </main>
     <Footer dict={dict} altPath={altPath ?? dict.altPaths.home} />
     <slot name="after" />
+    <CookieBanner dict={dict} />
 
     <script>
       import { initSite } from '../scripts/site';
+      import { initConsent } from '../scripts/consent';
+      import { initAttribution } from '../scripts/attribution';
+      import { initWhatsAppLinks } from '../scripts/whatsapp';
 
       initSite();
+      initConsent();
+      initAttribution();
+      initWhatsAppLinks();
 
       const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       if (!reduceMotion && document.body.dataset.motion === 'on') {
