@@ -5,6 +5,51 @@ export type StepKey = 'request' | 'agent' | 'tools' | 'approval' | 'result';
 export interface NavItem {
   id: string;
   label: string;
+  /** Page link instead of an in-page anchor on the home page (e.g. "/blog/"). */
+  href?: string;
+}
+
+export interface ServiceItem {
+  name: string;
+  text: string;
+}
+
+/** Personal-brand services block (Spanish home only). */
+export interface ServicesSection {
+  kicker: string;
+  title: string;
+  intro: string;
+  audience: string;
+  diagnostic: { label: string; name: string; text: string; bullets: string[]; cta: string; whatsappMessage: string };
+  implementations: { label: string; name: string; text: string; items: ServiceItem[] };
+  monthly: { label: string; name: string; text: string; bullets: string[]; note: string };
+  cta: string;
+  whatsappMessage: string;
+}
+
+/** Recent posts block on the home page (Spanish home only). */
+export interface BlogTeaser {
+  kicker: string;
+  title: string;
+  intro: string;
+  cta: string;
+}
+
+export interface ConsentCopy {
+  title: string;
+  text: string;
+  accept: string;
+  necessary: string;
+  configure: string;
+  save: string;
+  necessaryLabel: string;
+  necessaryText: string;
+  analytics: string;
+  analyticsText: string;
+  ads: string;
+  adsText: string;
+  privacy: string;
+  dialogLabel: string;
 }
 
 export interface Signal {
@@ -186,6 +231,9 @@ export interface Dictionary {
     playAnimation: string;
     downloadPdf: string;
     contributionLabel: string;
+    blog: string;
+    privacy: string;
+    cookiePrefs: string;
   };
   nav: NavItem[];
   ids: {
@@ -196,6 +244,8 @@ export interface Dictionary {
     products: string;
     stack: string;
     contact: string;
+    services: string;
+    blog: string;
   };
   hero: {
     prompt: string;
@@ -208,6 +258,8 @@ export interface Dictionary {
     ctaCases: string;
     ctaCv: string;
     ctaWhatsapp: string;
+    /** Personal-brand hero: WhatsApp first, then services; no CV button. */
+    ctaServices?: string;
     photoAlt: string;
     detectionLabel: string;
   };
@@ -284,6 +336,10 @@ export interface Dictionary {
     cvText: string;
     cvCta: string;
   };
+  /** Present only on the personal-brand (Spanish) home. */
+  services?: ServicesSection;
+  blogTeaser?: BlogTeaser;
+  consent: ConsentCopy;
   cvPage: {
     kicker: string;
     title: string;

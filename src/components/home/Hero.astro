@@ -42,21 +42,53 @@ const waHref = whatsappHref(dict.contact.whatsappMessage);
         <li><span class="hero__status" aria-hidden="true"></span>{hero.availability}</li>
       </ul>
 
-      <div class="hero__actions" data-enter="6">
-        <a class="btn btn--primary" href={`#${dict.ids.cases}`}>
-          {hero.ctaCases}
-          <Icon name="arrow-down" class="icon-down" size={18} />
-        </a>
-        <a class="btn" href={dict.paths.cv}>
-          <Icon name="file" size={18} />
-          {hero.ctaCv}
-        </a>
-        <a class="btn" href={waHref} target="_blank" rel="noopener noreferrer">
-          <Icon name="whatsapp" size={18} />
-          {hero.ctaWhatsapp}
-          <span class="sr-only">{ui.newTab}</span>
-        </a>
-      </div>
+      {
+        hero.ctaServices ? (
+          <div class="hero__actions" data-enter="6">
+            <a
+              class="btn btn--primary"
+              href={waHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              data-wa
+              data-wa-message={dict.contact.whatsappMessage}
+              data-wa-location="hero"
+            >
+              <Icon name="whatsapp" size={18} />
+              {hero.ctaWhatsapp}
+              <span class="sr-only">{ui.newTab}</span>
+            </a>
+            <a class="btn" href={`#${dict.ids.services}`}>
+              {hero.ctaServices}
+              <Icon name="arrow-down" class="icon-down" size={18} />
+            </a>
+          </div>
+        ) : (
+          <div class="hero__actions" data-enter="6">
+            <a class="btn btn--primary" href={`#${dict.ids.cases}`}>
+              {hero.ctaCases}
+              <Icon name="arrow-down" class="icon-down" size={18} />
+            </a>
+            <a class="btn" href={dict.paths.cv}>
+              <Icon name="file" size={18} />
+              {hero.ctaCv}
+            </a>
+            <a
+              class="btn"
+              href={waHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              data-wa
+              data-wa-message={dict.contact.whatsappMessage}
+              data-wa-location="hero"
+            >
+              <Icon name="whatsapp" size={18} />
+              {hero.ctaWhatsapp}
+              <span class="sr-only">{ui.newTab}</span>
+            </a>
+          </div>
+        )
+      }
 
       <div data-enter="7">
         <SocialLinks dict={dict} class="hero__social" />

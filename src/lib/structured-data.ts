@@ -2,8 +2,8 @@ import type { Dictionary } from '../i18n';
 import { SITE_URL, person } from '../i18n/profile';
 import { company, socialProfiles } from '../i18n/social';
 
-const PERSON_ID = `${SITE_URL}/#person`;
-const WEBSITE_ID = `${SITE_URL}/#website`;
+export const PERSON_ID = `${SITE_URL}/#person`;
+export const WEBSITE_ID = `${SITE_URL}/#website`;
 
 /**
  * Builds the JSON-LD graph (WebSite + ProfilePage + Person) for a page.
@@ -41,7 +41,7 @@ export function buildStructuredData(dict: Dictionary, pageUrl: string, pageName:
         givenName: 'Osmar Alejandro',
         familyName: 'Liera Gómez',
         jobTitle: isEs
-          ? ['Ingeniero de IA Aplicada (Applied AI Engineer)', 'Ingeniero Backend / Full-Stack']
+          ? ['Consultor en marketing y tecnología', 'Ingeniero de IA Aplicada (Applied AI Engineer)', 'Ingeniero Backend / Full-Stack']
           : ['Applied AI Engineer', 'Backend / Full-Stack Engineer'],
         description: dict.meta.homeDescription,
         url: `${SITE_URL}/`,
@@ -98,7 +98,26 @@ export function buildStructuredData(dict: Dictionary, pageUrl: string, pageName:
           name: 'Instituto Tecnológico de La Paz',
           address: { '@type': 'PostalAddress', addressLocality: 'La Paz', addressCountry: 'MX' },
         },
+        ...(isEs
+          ? {
+              makesOffer: [
+                'Diagnóstico Digital',
+                'Manejo de redes sociales',
+                'Landing page y sitio web',
+                'Tienda en línea',
+                'Automatización de mensajes y prospectos',
+                'Sistema a la medida',
+                'Asesoría Mensual',
+              ].map((name) => ({
+                '@type': 'Offer',
+                itemOffered: { '@type': 'Service', name, areaServed: ['La Paz, Baja California Sur', 'Los Cabos, Baja California Sur'] },
+              })),
+            }
+          : {}),
         knowsAbout: [
+          'Digital marketing',
+          'Community management',
+          'E-commerce',
           'Applied AI',
           'LLM agents',
           'Model Context Protocol (MCP)',

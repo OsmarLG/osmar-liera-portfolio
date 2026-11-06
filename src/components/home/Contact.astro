@@ -11,6 +11,8 @@ interface Props {
 const { dict } = Astro.props;
 const { contact, ui } = dict;
 const waHref = whatsappHref(contact.whatsappMessage);
+/** The personal-brand (Spanish) home links the CV only from the footer. */
+const showCv = !dict.services;
 ---
 
 <section class="section contact" id={dict.ids.contact} data-step="result" aria-labelledby="contact-title">
@@ -24,7 +26,15 @@ const waHref = whatsappHref(contact.whatsappMessage);
       <p class="section-intro" data-reveal>{contact.text}</p>
 
       <div class="contact__actions" data-reveal>
-        <a class="btn btn--primary" href={waHref} target="_blank" rel="noopener noreferrer">
+        <a
+          class="btn btn--primary"
+          href={waHref}
+          target="_blank"
+          rel="noopener noreferrer"
+          data-wa
+          data-wa-message={contact.whatsappMessage}
+          data-wa-location={dict.ids.contact}
+        >
           <Icon name="whatsapp" size={18} />
           {contact.whatsapp}
           <span class="sr-only">{ui.newTab}</span>
@@ -51,15 +61,19 @@ const waHref = whatsappHref(contact.whatsappMessage);
       </dl>
     </div>
 
-    <aside class="contact__side" aria-label={contact.cvTitle}>
-      <div class="cv-card" data-reveal>
-        <p class="cv-card__title">{contact.cvTitle}</p>
-        <p class="cv-card__text">{contact.cvText}</p>
-        <a class="btn btn--primary btn--small" href={dict.paths.cv}>
-          <Icon name="file" size={16} />
-          {contact.cvCta}
-        </a>
-      </div>
+    <aside class="contact__side" aria-label={showCv ? contact.cvTitle : 'Redes sociales'}>
+      {
+        showCv && (
+          <div class="cv-card" data-reveal>
+            <p class="cv-card__title">{contact.cvTitle}</p>
+            <p class="cv-card__text">{contact.cvText}</p>
+            <a class="btn btn--primary btn--small" href={dict.paths.cv}>
+              <Icon name="file" size={16} />
+              {contact.cvCta}
+            </a>
+          </div>
+        )
+      }
       <div data-reveal>
         <SocialLinks dict={dict} variant="list" includeCompany />
       </div>

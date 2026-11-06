@@ -10,6 +10,8 @@ import Experience from './Experience.astro';
 import Products from './Products.astro';
 import Stack from './Stack.astro';
 import Contact from './Contact.astro';
+import Services from './Services.astro';
+import BlogTeaser from './BlogTeaser.astro';
 import { getDictionary, type Lang } from '../../i18n';
 import { SITE_URL } from '../../i18n/profile';
 import { buildStructuredData } from '../../lib/structured-data';
@@ -22,6 +24,8 @@ const { lang } = Astro.props;
 const dict = getDictionary(lang);
 const pageUrl = new URL(dict.paths.home, SITE_URL).href;
 const structuredData = buildStructuredData(dict, pageUrl, dict.meta.homeTitle, dict.meta.homeDescription);
+/** Spanish: personal-brand home (services, about, AI cases, blog). English keeps the portfolio. */
+const isBrandHome = Boolean(dict.services);
 ---
 
 <Base
@@ -36,11 +40,24 @@ const structuredData = buildStructuredData(dict, pageUrl, dict.meta.homeTitle, d
   <TraceRail dict={dict} />
   <Hero dict={dict} />
   <Signals dict={dict} />
-  <Profile dict={dict} />
-  <Cases dict={dict} />
-  <Principles dict={dict} />
-  <Experience dict={dict} />
-  <Products dict={dict} />
-  <Stack dict={dict} />
+  {
+    isBrandHome ? (
+      <>
+        <Services dict={dict} />
+        <Profile dict={dict} />
+        <Cases dict={dict} />
+        <BlogTeaser dict={dict} />
+      </>
+    ) : (
+      <>
+        <Profile dict={dict} />
+        <Cases dict={dict} />
+        <Principles dict={dict} />
+        <Experience dict={dict} />
+        <Products dict={dict} />
+        <Stack dict={dict} />
+      </>
+    )
+  }
   <Contact dict={dict} />
 </Base>

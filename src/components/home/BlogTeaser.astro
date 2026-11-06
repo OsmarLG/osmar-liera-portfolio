@@ -1,0 +1,73 @@
+---
+import Icon from '../Icon.astro';
+import Kicker from '../Kicker.astro';
+import PostCard from '../blog/PostCard.astro';
+import type { Dictionary } from '../../i18n';
+import { blogPath, getPosts } from '../../lib/blog';
+
+interface Props {
+  dict: Dictionary;
+}
+
+const { dict } = Astro.props;
+const teaser = dict.blogTeaser;
+const posts = teaser ? (await getPosts()).slice(0, 3) : [];
+---
+
+{
+  teaser && posts.length > 0 && (
+    <section class="section blog-teaser" id={dict.ids.blog} data-step="approval" aria-labelledby="blog-teaser-title">
+      <div class="container">
+        <div class="section-head blog-teaser__head">
+          <div>
+            <Kicker text={teaser.kicker} />
+            <h2 class="section-title" id="blog-teaser-title" data-split-title>
+              {teaser.title}
+            </h2>
+            <p class="section-intro" data-reveal>
+              {teaser.intro}
+            </p>
+          </div>
+          <a class="link link-arrow" href={blogPath} data-reveal>
+            {teaser.cta}
+            <Icon name="arrow-right" size={18} />
+          </a>
+        </div>
+        <ul class="blog-teaser__list" role="list" data-reveal-group>
+          {posts.map((post) => (
+            <li>
+              <PostCard post={post} />
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .blog-teaser__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem 2rem;
+  }
+
+  .blog-teaser__list {
+    display: grid;
+    gap: 1rem;
+  }
+
+  @media (min-width: 720px) {
+    .blog-teaser__list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1000px) {
+    .blog-teaser__list {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+</style>

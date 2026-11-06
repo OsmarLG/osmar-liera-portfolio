@@ -9,6 +9,7 @@ interface Props {
 
 const { dict, altPath } = Astro.props;
 const otherLang = dict.lang === 'es' ? 'en' : 'es';
+const currentPath = Astro.url.pathname;
 ---
 
 <header class="site-header" data-header>
@@ -26,27 +27,28 @@ const otherLang = dict.lang === 'es' ? 'en' : 'es';
     <nav class="site-nav" id="site-nav" aria-label={dict.ui.navLabel} data-nav>
       <ul role="list">
         {
-          dict.nav.map((item) => (
-            <li>
-              <a href={`${dict.paths.home}#${item.id}`} data-nav-link={item.id}>
-                {item.label}
-              </a>
-            </li>
-          ))
+          dict.nav.map((item) =>
+            item.href ? (
+              <li>
+                <a href={item.href} aria-current={currentPath.startsWith(item.href) ? 'page' : undefined}>
+                  {item.label}
+                </a>
+              </li>
+            ) : (
+              <li>
+                <a href={`${dict.paths.home}#${item.id}`} data-nav-link={item.id}>
+                  {item.label}
+                </a>
+              </li>
+            ),
+          )
         }
-        <li class="site-nav__cv">
-          <a href={dict.paths.cv}>{dict.ui.cvLabel}</a>
-        </li>
       </ul>
     </nav>
 
     <div class="site-header__actions">
       <a class="lang-switch" href={altPath} hreflang={otherLang} lang={otherLang} aria-label={`${dict.ui.switchLangShort} · ${dict.ui.switchLang}`}>
         {dict.ui.switchLangShort}
-      </a>
-      <a class="btn btn--small btn--primary header-cv" href={dict.paths.cv}>
-        <Icon name="file" size={16} />
-        {dict.ui.cv}
       </a>
       <button
         class="menu-button"
@@ -160,17 +162,13 @@ const otherLang = dict.lang === 'es' ? 'en' : 'es';
   }
 
   .site-nav a:hover,
-  .site-nav a[aria-current='true'] {
+  .site-nav a[aria-current] {
     color: var(--text);
   }
 
   .site-nav a:hover::after,
-  .site-nav a[aria-current='true']::after {
+  .site-nav a[aria-current]::after {
     transform: scaleX(1);
-  }
-
-  .site-nav__cv {
-    display: none;
   }
 
   .site-header__actions {
@@ -234,10 +232,6 @@ const otherLang = dict.lang === 'es' ? 'en' : 'es';
       margin-left: auto;
     }
 
-    .header-cv {
-      display: none;
-    }
-
     /* Without JS the nav is a scrollable row; with JS it becomes a disclosure. */
     .site-nav {
       order: 3;
@@ -248,10 +242,6 @@ const otherLang = dict.lang === 'es' ? 'en' : 'es';
 
     .site-nav ul {
       flex-wrap: nowrap;
-    }
-
-    .site-nav__cv {
-      display: block;
     }
 
     .site-header[data-menu-ready] .menu-button {
