@@ -14,7 +14,7 @@ const es: Dictionary = {
     cvTitle: 'CV de Osmar Liera · Ingeniero de IA Aplicada, Backend y Full-Stack',
     cvDescription:
       'Currículum completo de Osmar Liera: IA aplicada (agentes LLM, MCP, OCR con OpenAI Vision), backend con Python/FastAPI y Laravel, y desarrollo Full-Stack. Descarga los PDF.',
-    ogAlt: 'Osmar Liera — Applied AI Engineer · Backend / Full-Stack',
+    ogAlt: 'Osmar Liera — Software, IA y negocios digitales · La Paz, Baja California Sur, México',
     ogImage: '/og/og-es.jpg',
   },
   ui: {

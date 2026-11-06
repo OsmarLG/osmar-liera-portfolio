@@ -26,6 +26,7 @@ const structuredData = buildStructuredData(dict, pageUrl, dict.meta.cvTitle, dic
   altPath={dict.altPaths.cv}
   structuredData={structuredData}
   ogType="profile"
+  image={lang === 'es' ? { src: '/og/cv-es.jpg', alt: 'Osmar Liera — Applied AI Engineer · Backend / Full-Stack', width: 1200, height: 630, type: 'image/jpeg' } : undefined}
 >
   <article class="cv container" aria-labelledby="cv-title">
     <header class="cv__header">

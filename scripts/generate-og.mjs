@@ -1,5 +1,5 @@
 /**
- * Generates the Open Graph images (public/og/og-es.jpg, public/og/og-en.jpg).
+ * Generates the CV Open Graph images (public/og/cv-es.jpg, public/og/og-en.jpg).
  *
  * Renders an HTML card with the local fonts in headless Chrome, then encodes it
  * as a JPEG under 300 KB with sharp. Run it only when the copy changes:
@@ -98,7 +98,8 @@ try {
       `--screenshot=${png}`,
       pathToFileURL(page).href,
     ]);
-    const out = join(outDir, `og-${lang}.jpg`);
+    // La imagen de marca de la portada en español (og-es.jpg) la diseña Contenido; aquí solo sale la del CV.
+    const out = join(outDir, lang === 'es' ? 'cv-es.jpg' : `og-${lang}.jpg`);
     await sharp(png).resize(1200, 630, { fit: 'cover', position: 'top' }).jpeg({ quality: 84, mozjpeg: true }).toFile(out);
     console.log(`${out} — ${Math.round(statSync(out).size / 1024)} KB`);
   }
