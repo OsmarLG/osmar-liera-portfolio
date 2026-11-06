@@ -10,7 +10,7 @@ const { dict } = Astro.props;
 const { profile, ui } = dict;
 ---
 
-<section class="section profile" id={dict.ids.profile} data-step="agent" aria-labelledby="profile-title">
+<section class="section profile" id={dict.ids.profile} data-step="agent" data-cloud-stream data-cloud-dim="0.4" aria-labelledby="profile-title">
   <div class="container profile__grid">
     <div class="profile__intro">
       <Kicker num="01" text={profile.kicker} />

@@ -1,5 +1,5 @@
 ---
-import { Picture } from 'astro:assets';
+import { Picture, getImage } from 'astro:assets';
 import Icon from '../Icon.astro';
 import SocialLinks from '../SocialLinks.astro';
 import type { Dictionary } from '../../i18n';
@@ -13,9 +13,11 @@ interface Props {
 const { dict } = Astro.props;
 const { hero, run, ui } = dict;
 const waHref = whatsappHref(dict.contact.whatsappMessage);
+/** Pixels the 3D point cloud samples on the client (loaded after the page is idle). */
+const cloudSource = await getImage({ src: portrait, width: 440, format: 'webp' });
 ---
 
-<section class="hero" data-step="request" aria-labelledby="hero-title">
+<section class="hero" data-step="request" data-cloud-shape="portrait" data-hero aria-labelledby="hero-title">
   <div class="container hero__grid">
     <div class="hero__copy">
       <p class="hero__prompt mono" data-enter="1">
@@ -96,7 +98,7 @@ const waHref = whatsappHref(dict.contact.whatsappMessage);
     </div>
 
     <div class="hero__visual">
-      <div class="portrait">
+      <div class="portrait" data-cloud-anchor data-cloud-src={cloudSource.src}>
         <div class="portrait__stack" data-parallax>
           <span class="portrait__orbit" aria-hidden="true"></span>
           <span class="portrait__disc" aria-hidden="true"></span>
@@ -142,6 +144,69 @@ const waHref = whatsappHref(dict.contact.whatsappMessage);
     </div>
   </div>
 </section>
+
+<script>
+  import type { HeroCloud } from '../../scripts/cloud/hero-cloud';
+
+  /**
+   * The 3D portrait is an enhancement: it loads after the page is idle and only with
+   * WebGL, motion allowed and no Save-Data. Otherwise the static photo is the hero.
+   */
+  const hero = document.querySelector<HTMLElement>('[data-hero]');
+  const connection = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
+  const allowed =
+    hero !== null &&
+    'WebGLRenderingContext' in window &&
+    !window.matchMedia('(prefers-reduced-motion: reduce)').matches &&
+    connection?.saveData !== true;
+
+  let cloud: HeroCloud | null = null;
+  let mounting = false;
+
+  const mount = (): void => {
+    if (!hero || cloud || mounting) {
+      return;
+    }
+    mounting = true;
+    import('../../scripts/cloud/hero-cloud')
+      .then(({ mountHeroCloud }) => mountHeroCloud(hero))
+      .then((instance) => {
+        cloud = instance;
+      })
+      .catch(() => {
+        cloud = null;
+      })
+      .finally(() => {
+        mounting = false;
+      });
+  };
+
+  const whenIdle = (): void => {
+    if ('requestIdleCallback' in window) {
+      window.requestIdleCallback(mount, { timeout: 3000 });
+    } else {
+      setTimeout(mount, 600);
+    }
+  };
+
+  if (allowed) {
+    if (document.readyState === 'complete') {
+      whenIdle();
+    } else {
+      window.addEventListener('load', whenIdle, { once: true });
+    }
+    // Free the GPU when leaving the page; rebuild if it comes back from the back/forward cache.
+    window.addEventListener('pagehide', () => {
+      cloud?.dispose();
+      cloud = null;
+    });
+    window.addEventListener('pageshow', (event) => {
+      if (event.persisted) {
+        whenIdle();
+      }
+    });
+  }
+</script>
 
 <style>
   .hero {
@@ -407,6 +472,21 @@ const waHref = whatsappHref(dict.contact.whatsappMessage);
     font-size: 0.72rem;
     font-weight: 600;
     white-space: nowrap;
+  }
+
+  /* Hand-over to the point cloud: the photo and its disc dissolve, the frame stays. */
+  .portrait__disc,
+  .portrait__cutout {
+    transition: opacity 1.4s var(--ease-out) 0.35s;
+  }
+
+  :global(.hero--cloud) .portrait__disc,
+  :global(.hero--cloud) .portrait__cutout {
+    opacity: 0;
+  }
+
+  :global(.hero--cloud) .portrait__orbit {
+    border-color: rgb(95 224 245 / 0.22);
   }
 
   .run-card {

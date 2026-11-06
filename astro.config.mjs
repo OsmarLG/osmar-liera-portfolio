@@ -67,6 +67,12 @@ export default defineConfig({
   devToolbar: {
     enabled: false,
   },
+  vite: {
+    build: {
+      // three.js (hero point cloud) is one lazy chunk loaded after idle on the home only.
+      chunkSizeWarningLimit: 600,
+    },
+  },
   i18n: {
     defaultLocale: 'es',
     locales: ['es', 'en'],

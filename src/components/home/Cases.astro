@@ -11,9 +11,10 @@ const { dict } = Astro.props;
 const { cases } = dict;
 ---
 
-<section class="section cases" id={dict.ids.cases} data-step="tools" aria-labelledby="cases-title">
+<section class="section cases" id={dict.ids.cases} data-step="tools" data-cloud-shape="graph" aria-labelledby="cases-title">
   <div class="container">
     <header class="section-head">
+      <span class="cloud-target" data-cloud-target aria-hidden="true"></span>
       <Kicker num="02" text={cases.kicker} />
       <h2 class="section-title" id="cases-title" data-split-title>{cases.title}</h2>
       <p class="section-intro" data-reveal>{cases.intro}</p>

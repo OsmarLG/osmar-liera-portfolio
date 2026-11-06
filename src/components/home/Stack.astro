@@ -9,9 +9,10 @@ const { dict } = Astro.props;
 const { stack, ui } = dict;
 ---
 
-<section class="section stack" id={dict.ids.stack} data-step="result" aria-labelledby="stack-title">
+<section class="section stack" id={dict.ids.stack} data-step="result" data-cloud-shape="cursor" aria-labelledby="stack-title">
   <div class="container">
     <header class="section-head">
+      <span class="cloud-target" data-cloud-target aria-hidden="true"></span>
       <h2 class="section-title" id="stack-title" data-split-title>{stack.title}</h2>
       <p class="section-intro" data-reveal>{stack.intro}</p>
     </header>

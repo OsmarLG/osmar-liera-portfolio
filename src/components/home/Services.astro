@@ -14,9 +14,10 @@ const services = dict.services;
 
 {
   services && (
-    <section class="section services" id={dict.ids.services} data-step="agent" aria-labelledby="services-title">
+    <section class="section services" id={dict.ids.services} data-step="agent" data-cloud-shape="cursor" aria-labelledby="services-title">
       <div class="container">
         <div class="section-head">
+          <span class="cloud-target" data-cloud-target aria-hidden="true"></span>
           <Kicker text={services.kicker} />
           <h2 class="section-title" id="services-title" data-split-title>
             {services.title}

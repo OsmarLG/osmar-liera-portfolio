@@ -427,6 +427,52 @@ li {
 }
 
 /* ==========================================================================
+   Depth layers: the 3D cloud and the cursor halo live behind the content
+   ========================================================================== */
+.hero-cloud {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* Invisible boxes that tell the cloud where to draw a section's shape. */
+.cloud-target {
+  position: absolute;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.section-head {
+  position: relative;
+}
+
+.section-head > .cloud-target {
+  top: -1.25rem;
+  right: 0;
+  width: min(30vw, 150px);
+  height: min(30vw, 150px);
+}
+
+@media (min-width: 1000px) {
+  .section-head > .cloud-target {
+    top: 0;
+    width: min(34%, 400px);
+    height: 100%;
+  }
+}
+
+.has-cloud main,
+.has-cloud .site-footer,
+[data-flair] main,
+[data-flair] .site-footer {
+  position: relative;
+  z-index: 1;
+}
+
+/* ==========================================================================
    Cross-document view transitions (zero JS)
    ========================================================================== */
 @media (prefers-reduced-motion: no-preference) {

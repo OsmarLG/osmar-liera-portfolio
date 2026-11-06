@@ -15,9 +15,10 @@ const waHref = whatsappHref(contact.whatsappMessage);
 const showCv = !dict.services;
 ---
 
-<section class="section contact" id={dict.ids.contact} data-step="result" aria-labelledby="contact-title">
+<section class="section contact" id={dict.ids.contact} data-step="result" data-cloud-shape="pin" aria-labelledby="contact-title">
   <div class="container contact__grid">
     <div class="contact__main">
+      <span class="cloud-target" data-cloud-target aria-hidden="true"></span>
       <p class="contact__status mono" data-reveal>
         <span class="contact__dot" aria-hidden="true"></span>
         {dict.hero.availability}
@@ -97,6 +98,25 @@ const showCv = !dict.services;
     .contact__grid {
       grid-template-columns: minmax(0, 1.3fr) minmax(0, 0.7fr);
       align-items: start;
+    }
+  }
+
+  .contact__main {
+    position: relative;
+  }
+
+  .contact__main > .cloud-target {
+    top: -1rem;
+    right: 0;
+    width: min(30vw, 150px);
+    height: min(30vw, 150px);
+  }
+
+  @media (min-width: 1000px) {
+    .contact__main > .cloud-target {
+      top: 1.5rem;
+      width: 36%;
+      height: 10rem;
     }
   }
 
