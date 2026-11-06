@@ -422,6 +422,13 @@ export async function mountHeroCloud(hero: HTMLElement): Promise<HeroCloud | nul
     time += dt;
     const ease = 1 - Math.exp(-dt * 6);
 
+    // The photo hands over to the points once the portrait has been on screen, so the
+    // assembling intro is actually seen (on phones the portrait is below the fold).
+    if (introStart < 0 && photo.getBoundingClientRect().top < viewportHeight * 0.8) {
+      introStart = now;
+      hero.classList.add('hero--cloud');
+    }
+
     const center = window.scrollY + viewportHeight / 2;
     const targetP = progressAt(center);
     state.p = state.initialised ? lerp(state.p, targetP, 1 - Math.exp(-dt * 9)) : targetP;
@@ -462,12 +469,6 @@ export async function mountHeroCloud(hero: HTMLElement): Promise<HeroCloud | nul
     state.rotX = lerp(state.rotX, targetRotX, ease);
     state.rotY = lerp(state.rotY, targetRotY, ease);
 
-    // The photo hands over to the points once the portrait has been on screen, so the
-    // assembling intro is actually seen (on phones the portrait is below the fold).
-    if (introStart < 0 && photo.getBoundingClientRect().top < viewportHeight * 0.8) {
-      introStart = now;
-      hero.classList.add('hero--cloud');
-    }
     if (introStart >= 0) {
       uniforms.uIntro.value = Math.min(1, (now - introStart) / 1800);
     }
