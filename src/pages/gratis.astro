@@ -1,0 +1,281 @@
+---
+/**
+ * /gratis/ — guía «7 herramientas gratis» que se manda por ManyChat a quien comenta GRATIS
+ * en el carrusel de @soyosmarlg (14 nov 2026).
+ */
+import Base from '../layouts/Base.astro';
+import Kicker from '../components/Kicker.astro';
+import WhatsAppCta from '../components/blog/WhatsAppCta.astro';
+import { getDictionary } from '../i18n';
+
+const dict = getDictionary('es');
+
+type Tool = {
+  id: string;
+  area: string;
+  name: string;
+  what: string;
+  link?: { href: string; label: string };
+  linkNote?: string;
+  steps: string[];
+  pay: string;
+};
+
+const tools: Tool[] = [
+  {
+    id: 'google',
+    area: 'Que te encuentren',
+    name: 'Perfil de Negocio de Google',
+    what: 'Tu ficha en Google y Google Maps: horario, ubicación, fotos, teléfono y reseñas. Es lo primero que ve alguien que busca tu giro cerca.',
+    link: { href: 'https://www.google.com/business/', label: 'google.com/business' },
+    steps: [
+      'Entra con tu cuenta de Google, busca tu negocio y reclámalo (o créalo si no aparece).',
+      'Verifícalo con el método que te pida Google (video, llamada, mensaje o código).',
+      'Pon tu horario, tu WhatsApp y 10 fotos reales. Después manda tu liga de reseñas a tus 5 mejores clientes.',
+    ],
+    pay: 'La ficha nunca se paga. Los anuncios de Google conviene probarlos cuando ya tienes fotos y reseñas.',
+  },
+  {
+    id: 'whatsapp',
+    area: 'Contestar rápido',
+    name: 'WhatsApp Business',
+    what: 'La app de WhatsApp para negocios. Gratis, con perfil de empresa, catálogo y mensajes automáticos.',
+    link: { href: 'https://www.whatsapp.com/business', label: 'whatsapp.com/business' },
+    steps: [
+      'Instala WhatsApp Business. Puedes pasar tu número actual con tus chats.',
+      'En «Herramientas para la empresa» llena tu perfil y activa el mensaje de bienvenida y el de ausencia.',
+      'Crea respuestas rápidas para lo que más te preguntan (precio, horario, ubicación) y sube tu catálogo con precios.',
+    ],
+    pay: 'Cuando ya no alcanzas a contestar, o cuando varias personas tienen que atender el mismo número.',
+  },
+  {
+    id: 'citas',
+    area: 'Agendar citas',
+    name: 'Cal.com',
+    what: 'Una página de citas: tu cliente ve tus horarios libres y aparta solo. El plan gratis es para una persona.',
+    link: { href: 'https://cal.com', label: 'cal.com' },
+    steps: [
+      'Crea tu cuenta y conecta tu Google Calendar para que no te aparten cuando ya estás ocupado.',
+      'Crea un tipo de cita con su duración y tus horarios de atención.',
+      'Pon la liga en tu bio de Instagram y en tu mensaje de bienvenida de WhatsApp.',
+    ],
+    pay: 'Cuando varias personas de tu equipo dan citas.',
+  },
+  {
+    id: 'diseno',
+    area: 'Diseñar',
+    name: 'Canva',
+    what: 'Diseño para posts, historias, menús y volantes, con plantillas.',
+    link: { href: 'https://www.canva.com', label: 'canva.com' },
+    steps: [
+      'Crea tu cuenta y sube tu logo y tus colores.',
+      'Haz 3 plantillas: post, historia y promoción.',
+      'Cada vez cambia solo el texto y la foto. Se ve más profesional que 30 diseños distintos.',
+    ],
+    pay: 'Canva Pro conviene cuando quieres quitar fondos de un clic o pasar un diseño a otros tamaños en automático.',
+  },
+  {
+    id: 'video',
+    area: 'Editar video',
+    name: 'Edits (de Instagram)',
+    what: 'La app de video de Instagram: cortes, subtítulos automáticos y música, sin marca de agua.',
+    linkNote: 'Búscala como «Edits» de Instagram en la App Store o en Google Play.',
+    steps: [
+      'Descárgala y entra con tu cuenta de Instagram.',
+      'Graba o importa tus clips, corta lo que sobra y activa los subtítulos.',
+      'Súbelo directo a Instagram o guárdalo para otras redes.',
+    ],
+    pay: 'Para lo del día a día no hace falta pagar. Un editor de pago solo si haces videos más producidos.',
+  },
+  {
+    id: 'pedidos',
+    area: 'Pedidos y registros',
+    name: 'Google Forms',
+    what: 'Formularios de pedido, encuesta o registro. Las respuestas caen solas en una hoja de cálculo.',
+    link: { href: 'https://forms.google.com', label: 'forms.google.com' },
+    steps: [
+      'Entra a Google Forms y crea un formulario en blanco.',
+      'Pregunta lo que necesitas: nombre, WhatsApp, producto, cantidad y fecha de entrega.',
+      'En «Respuestas» vincúlalo a Hojas de cálculo y manda la liga por WhatsApp.',
+    ],
+    pay: 'Cuando quieres cobrar en línea o que el inventario se descuente solo.',
+  },
+  {
+    id: 'facturas',
+    area: 'Facturar',
+    name: 'Facturación del SAT',
+    what: 'El servicio gratuito del SAT para generar y cancelar facturas.',
+    link: { href: 'https://www.sat.gob.mx', label: 'sat.gob.mx' },
+    steps: [
+      'En el portal del SAT entra a «Factura electrónica» › «Genera tu factura» con tu e.firma o tu contraseña.',
+      'Da de alta a tus clientes y productos frecuentes para no capturarlos cada vez.',
+      'Descarga el XML y el PDF y mándalos a tu cliente.',
+    ],
+    pay: 'Si emites muchas facturas o quieres que salgan solas desde tu punto de venta. Confírmalo con tu contador.',
+  },
+];
+---
+
+<Base
+  dict={dict}
+  title="7 herramientas gratis para tu negocio · Osmar Liera"
+  description="Siete herramientas gratis que reemplazan cosas que muchos negocios pagan: Google, WhatsApp Business, citas, diseño, video, pedidos y facturas. Con ligas y 3 pasos para dejar cada una lista."
+  path="/gratis/"
+  altPath={dict.altPaths.home}
+  translated={false}
+  motion={false}
+>
+  <article class="guia container" aria-labelledby="guia-title">
+    <Kicker text="guía gratis" />
+    <h1 id="guia-title">7 herramientas gratis que reemplazan cosas que tu negocio paga</h1>
+    <p class="guia__intro">
+      Para cada una: para qué sirve, la liga y <strong>3 pasos para dejarla lista en unos 10 minutos</strong>. Ninguna te cobra por empezar. Al final de cada una te digo
+      cuándo ya conviene pagar.
+    </p>
+
+    <nav class="guia__toc" aria-label="Herramientas">
+      {
+        tools.map((tool, index) => (
+          <a href={`#${tool.id}`}>
+            <span class="mono">{String(index + 1).padStart(2, '0')}</span> {tool.area}
+          </a>
+        ))
+      }
+    </nav>
+
+    {
+      tools.map((tool, index) => (
+        <section class="guia__tool" id={tool.id} aria-labelledby={`${tool.id}-title`}>
+          <p class="guia__area mono">
+            {String(index + 1).padStart(2, '0')} · {tool.area}
+          </p>
+          <h2 id={`${tool.id}-title`}>{tool.name}</h2>
+          <p>{tool.what}</p>
+          {tool.link ? (
+            <p class="guia__link">
+              <a href={tool.link.href} target="_blank" rel="noopener noreferrer">
+                {tool.link.label} ↗
+              </a>
+            </p>
+          ) : (
+            <p class="guia__link">{tool.linkNote}</p>
+          )}
+          <ol>
+            {tool.steps.map((step) => (
+              <li>{step}</li>
+            ))}
+          </ol>
+          <p class="guia__pay">
+            <strong>¿Cuándo pagar?</strong> {tool.pay}
+          </p>
+        </section>
+      ))
+    }
+
+    <section class="guia__end" aria-labelledby="guia-end-title">
+      <h2 id="guia-end-title">¿Quieres que te las deje configuradas?</h2>
+      <p>Las dejo listas con tu negocio, tus fotos y tus respuestas, y te enseño a usarlas. Escríbeme y te digo con cuál empezar.</p>
+      <WhatsAppCta
+        label="Escríbeme por WhatsApp"
+        message="Hola Osmar, vi tu guía de 7 herramientas gratis y quiero que me ayudes a configurarlas."
+        location="guia-gratis"
+      />
+    </section>
+  </article>
+</Base>
+
+<style>
+  .guia {
+    max-width: 46rem;
+    padding-block: clamp(2.5rem, 6vw, 4rem) clamp(4rem, 8vw, 6rem);
+    color: var(--text-2);
+    line-height: 1.7;
+  }
+
+  .guia h1 {
+    font-size: var(--step-4);
+    line-height: 1.02;
+    letter-spacing: -0.026em;
+    color: var(--text);
+  }
+
+  .guia__intro {
+    margin-top: 1rem;
+    font-size: var(--step-1);
+  }
+
+  .guia strong {
+    color: var(--text);
+  }
+
+  .guia__toc {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1.75rem;
+  }
+
+  .guia__toc a {
+    padding: 0.35rem 0.8rem;
+    border: 1px solid var(--line, rgba(127, 127, 127, 0.3));
+    border-radius: 999px;
+    color: var(--text);
+    font-size: 0.9rem;
+    text-decoration: none;
+  }
+
+  .guia__toc .mono,
+  .guia__area {
+    color: var(--accent);
+  }
+
+  .guia__tool {
+    margin-top: 2.75rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--line, rgba(127, 127, 127, 0.25));
+  }
+
+  .guia__area {
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .guia h2 {
+    margin-top: 0.35rem;
+    color: var(--text);
+    font-size: var(--step-2);
+  }
+
+  .guia p,
+  .guia ol {
+    margin-top: 0.75rem;
+  }
+
+  .guia ol {
+    display: grid;
+    gap: 0.5rem;
+    padding-left: 1.3rem;
+  }
+
+  .guia a {
+    color: var(--accent);
+    overflow-wrap: anywhere;
+  }
+
+  .guia__link {
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+  }
+
+  .guia__pay {
+    padding-left: 1rem;
+    border-left: 3px solid var(--accent);
+  }
+
+  .guia__end {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--line, rgba(127, 127, 127, 0.25));
+  }
+</style>
