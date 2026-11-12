@@ -1,0 +1,142 @@
+{
+  "videos": {
+    "reel-ofertas-buen-fin": {
+      "src": "/showcase/reel-ofertas-buen-fin.mp4",
+      "poster": "/showcase/reel-ofertas-buen-fin.webp",
+      "width": 720,
+      "height": 1280,
+      "duration": 28,
+      "bytes": 1157847
+    },
+    "reel-medir-buen-fin": {
+      "src": "/showcase/reel-medir-buen-fin.mp4",
+      "poster": "/showcase/reel-medir-buen-fin.webp",
+      "width": 720,
+      "height": 1280,
+      "duration": 24,
+      "bytes": 992645
+    },
+    "reel-pagina-o-instagram": {
+      "src": "/showcase/reel-pagina-o-instagram.mp4",
+      "poster": "/showcase/reel-pagina-o-instagram.webp",
+      "width": 720,
+      "height": 1280,
+      "duration": 25,
+      "bytes": 874260
+    },
+    "reel-tienda-no-vende": {
+      "src": "/showcase/reel-tienda-no-vende.mp4",
+      "poster": "/showcase/reel-tienda-no-vende.webp",
+      "width": 720,
+      "height": 1280,
+      "duration": 34.5,
+      "bytes": 1675172
+    },
+    "reel-recordatorios-whatsapp": {
+      "src": "/showcase/reel-recordatorios-whatsapp.mp4",
+      "poster": "/showcase/reel-recordatorios-whatsapp.webp",
+      "width": 720,
+      "height": 1280,
+      "duration": 25,
+      "bytes": 984001
+    },
+    "reel-ia-3-usos": {
+      "src": "/showcase/reel-ia-3-usos.mp4",
+      "poster": "/showcase/reel-ia-3-usos.webp",
+      "width": 720,
+      "height": 1280,
+      "duration": 26,
+      "bytes": 1072217
+    },
+    "reel-ideas-ia-5-min": {
+      "src": "/showcase/reel-ideas-ia-5-min.mp4",
+      "poster": "/showcase/reel-ideas-ia-5-min.webp",
+      "width": 720,
+      "height": 1280,
+      "duration": 26,
+      "bytes": 1001636
+    },
+    "reel-fotos-producto-celular": {
+      "src": "/showcase/reel-fotos-producto-celular.mp4",
+      "poster": "/showcase/reel-fotos-producto-celular.webp",
+      "width": 720,
+      "height": 1280,
+      "duration": 24,
+      "bytes": 904836
+    },
+    "reel-diagnosticos-enero": {
+      "src": "/showcase/reel-diagnosticos-enero.mp4",
+      "poster": "/showcase/reel-diagnosticos-enero.webp",
+      "width": 720,
+      "height": 1280,
+      "duration": 24,
+      "bytes": 974402
+    },
+    "elroi-en-30-segundos": {
+      "src": "/showcase/elroi-en-30-segundos.mp4",
+      "poster": "/showcase/elroi-en-30-segundos.webp",
+      "width": 720,
+      "height": 1280,
+      "duration": 17.5,
+      "bytes": 2076923
+    },
+    "elroi-bot-whatsapp": {
+      "src": "/showcase/elroi-bot-whatsapp.mp4",
+      "poster": "/showcase/elroi-bot-whatsapp.webp",
+      "width": 720,
+      "height": 1280,
+      "duration": 18,
+      "bytes": 423633
+    }
+  },
+  "images": {
+    "carrusel-servicios": {
+      "src": "/showcase/carrusel-servicios.webp",
+      "width": 720,
+      "height": 900,
+      "bytes": 30976
+    },
+    "carrusel-errores": {
+      "src": "/showcase/carrusel-errores.webp",
+      "width": 720,
+      "height": 900,
+      "bytes": 40284
+    },
+    "carrusel-metricas": {
+      "src": "/showcase/carrusel-metricas.webp",
+      "width": 720,
+      "height": 900,
+      "bytes": 35150
+    },
+    "carrusel-giros": {
+      "src": "/showcase/carrusel-giros.webp",
+      "width": 720,
+      "height": 900,
+      "bytes": 31964
+    },
+    "web-labs-movil": {
+      "src": "/showcase/web-labs-movil.webp",
+      "width": 720,
+      "height": 1280,
+      "bytes": 64882
+    },
+    "sistema-cotizador-movil": {
+      "src": "/showcase/sistema-cotizador-movil.webp",
+      "width": 720,
+      "height": 1280,
+      "bytes": 63018
+    },
+    "crm-pipeline": {
+      "src": "/showcase/crm-pipeline.webp",
+      "width": 1366,
+      "height": 633,
+      "bytes": 44124
+    },
+    "crm-tareas": {
+      "src": "/showcase/crm-tareas.webp",
+      "width": 1366,
+      "height": 633,
+      "bytes": 39212
+    }
+  }
+}

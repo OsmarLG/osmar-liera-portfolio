@@ -1,0 +1,109 @@
+---
+import { showcaseVideo } from '../../lib/showcase';
+
+interface Props {
+  /** Key of a video in src/data/showcase.json. */
+  piece: string;
+  /** What the video shows (accessible name). */
+  label: string;
+  playLabel: string;
+  pauseLabel: string;
+}
+
+const { piece, label, playLabel, pauseLabel } = Astro.props;
+const video = showcaseVideo(piece);
+---
+
+{/* The box reserves its space (no layout shift). The poster sits under the video and is lazy;
+    the video downloads nothing until it plays. Without JS the native controls stay. */}
+<div class="vreel" data-reel style={`aspect-ratio: ${video.width} / ${video.height}`}>
+  <img class="vreel__poster" src={video.poster} alt="" width={video.width} height={video.height} loading="lazy" decoding="async" />
+  <video class="vreel__video" data-reel-video muted loop playsinline preload="none" controls width={video.width} height={video.height} aria-label={label}>
+    <source src={video.src} type="video/mp4" />
+  </video>
+  <button
+    class="vreel__toggle"
+    type="button"
+    data-reel-toggle
+    data-label-play={`${playLabel}: ${label}`}
+    data-label-pause={`${pauseLabel}: ${label}`}
+    aria-label={`${playLabel}: ${label}`}
+    hidden
+  >
+    <svg class="vreel__icon vreel__icon--play" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" fill="currentColor"></path></svg>
+    <svg class="vreel__icon vreel__icon--pause" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" fill="currentColor"></path></svg>
+  </button>
+</div>
+
+<script>
+  import { initShowcase } from '../../scripts/showcase';
+
+  initShowcase();
+</script>
+
+<style>
+  .vreel {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+
+  .vreel__poster,
+  .vreel__video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .vreel[data-ready] {
+    cursor: pointer;
+  }
+
+  .vreel__toggle {
+    position: absolute;
+    right: 0.6rem;
+    bottom: 0.6rem;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: rgb(5 9 13 / 0.78);
+    color: var(--text);
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease,
+      transform 0.25s var(--ease-out);
+  }
+
+  .vreel__toggle:hover,
+  .vreel__toggle:focus-visible {
+    background: var(--accent);
+    color: var(--accent-ink);
+  }
+
+  .vreel__toggle:active {
+    transform: scale(0.94);
+  }
+
+  .vreel__icon--pause,
+  .vreel[data-state='playing'] .vreel__icon--play {
+    display: none;
+  }
+
+  .vreel[data-state='playing'] .vreel__icon--pause {
+    display: block;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .vreel__toggle {
+      transition: none;
+    }
+  }
+</style>

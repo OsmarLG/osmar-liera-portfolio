@@ -1,0 +1,31 @@
+---
+import PieceMedia from './PieceMedia.astro';
+import type { ShowcasePiece } from '../../i18n/types';
+
+interface Props {
+  media: ShowcasePiece;
+  playLabel: string;
+  pauseLabel: string;
+}
+
+const { media, playLabel, pauseLabel } = Astro.props;
+---
+
+{/* Screenshot or screen recording of a case, shown above its diagram. */}
+<figure class="case-media" data-reveal>
+  <PieceMedia media={media} playLabel={playLabel} pauseLabel={pauseLabel} />
+  <figcaption class="case-media__caption">{media.caption}</figcaption>
+</figure>
+
+<style>
+  .case-media {
+    min-width: 0;
+  }
+
+  .case-media__caption {
+    margin-top: 0.7rem;
+    color: var(--text-3);
+    font-size: 0.875rem;
+    line-height: 1.4;
+  }
+</style>

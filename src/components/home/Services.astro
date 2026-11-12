@@ -1,6 +1,7 @@
 ---
 import Icon from '../Icon.astro';
 import Kicker from '../Kicker.astro';
+import ServiceCard from '../showcase/ServiceCard.astro';
 import type { Dictionary } from '../../i18n';
 import { whatsappHref } from '../../i18n/profile';
 
@@ -27,21 +28,21 @@ const services = dict.services;
           </p>
         </div>
 
-        <ol class="services__grid" role="list" data-reveal-group>
-          <li class="service service--entry">
-            <p class="service__label mono">{services.diagnostic.label}</p>
-            <h3 class="service__name">{services.diagnostic.name}</h3>
-            <p class="service__text">{services.diagnostic.text}</p>
-            <ul class="service__bullets" role="list">
-              {services.diagnostic.bullets.map((bullet) => (
-                <li>
-                  <Icon name="check" size={16} />
-                  {bullet}
-                </li>
-              ))}
-            </ul>
+        {/* Each implementation with one real piece. A scroll-snap row on small screens, five columns on wide ones. */}
+        <div class="services__scroller" role="group" aria-label={services.implementations.name} tabindex="0">
+          <ul class="services__cards" role="list" data-reveal-group>
+            {services.cards.map((card) => (
+              <ServiceCard card={card} playLabel={dict.ui.playVideo} pauseLabel={dict.ui.pauseVideo} />
+            ))}
+          </ul>
+        </div>
+
+        <div class="services__path" data-reveal>
+          <div class="services__stage services__stage--entry">
+            <h3 class="services__stage-name">{services.diagnostic.name}</h3>
+            <p class="services__stage-text">{services.diagnostic.text}</p>
             <a
-              class="btn btn--primary service__cta"
+              class="btn btn--primary services__cta"
               href={whatsappHref(services.diagnostic.whatsappMessage)}
               target="_blank"
               rel="noopener noreferrer"
@@ -53,53 +54,12 @@ const services = dict.services;
               {services.diagnostic.cta}
               <span class="sr-only">{dict.ui.newTab}</span>
             </a>
-          </li>
-
-          <li class="service">
-            <p class="service__label mono">{services.implementations.label}</p>
-            <h3 class="service__name">{services.implementations.name}</h3>
-            <p class="service__text">{services.implementations.text}</p>
-            <dl class="service__items">
-              {services.implementations.items.map((item) => (
-                <div>
-                  <dt>{item.name}</dt>
-                  <dd>{item.text}</dd>
-                </div>
-              ))}
-            </dl>
-          </li>
-
-          <li class="service">
-            <p class="service__label mono">{services.monthly.label}</p>
-            <h3 class="service__name">{services.monthly.name}</h3>
-            <p class="service__text">{services.monthly.text}</p>
-            <ul class="service__bullets" role="list">
-              {services.monthly.bullets.map((bullet) => (
-                <li>
-                  <Icon name="check" size={16} />
-                  {bullet}
-                </li>
-              ))}
-            </ul>
-            <p class="service__note">{services.monthly.note}</p>
-          </li>
-        </ol>
-
-        <div class="services__foot" data-reveal>
-          <p class="services__audience">{services.audience}</p>
-          <a
-            class="btn"
-            href={whatsappHref(services.whatsappMessage)}
-            target="_blank"
-            rel="noopener noreferrer"
-            data-wa
-            data-wa-message={services.whatsappMessage}
-            data-wa-location={dict.ids.services}
-          >
-            <Icon name="whatsapp" size={18} />
-            {services.cta}
-            <span class="sr-only">{dict.ui.newTab}</span>
-          </a>
+          </div>
+          <div class="services__stage">
+            <h3 class="services__stage-name">{services.monthly.name}</h3>
+            <p class="services__stage-text">{services.monthly.text}</p>
+            <p class="services__stage-note">{services.monthly.note}</p>
+          </div>
         </div>
       </div>
     </section>
@@ -107,121 +67,93 @@ const services = dict.services;
 }
 
 <style>
-  .services__grid {
+  /* Small screens: a row that scrolls sideways and bleeds to the screen edges. */
+  .services__scroller {
+    margin-inline: calc(var(--gutter) * -1);
+    padding-inline: var(--gutter);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--gutter);
+    scrollbar-width: none;
+  }
+
+  .services__scroller::-webkit-scrollbar {
+    display: none;
+  }
+
+  .services__scroller:focus-visible {
+    outline-offset: -2px;
+  }
+
+  .services__cards {
     display: grid;
-    gap: 1rem;
-    counter-reset: none;
+    grid-auto-flow: column;
+    grid-auto-columns: clamp(180px, 62vw, 240px);
+    gap: clamp(0.75rem, 1.6vw, 1rem);
+    width: max-content;
+    padding-block: 4px;
+  }
+
+  .services__cards > :global(*) {
+    scroll-snap-align: center;
   }
 
   @media (min-width: 1000px) {
-    .services__grid {
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr) minmax(0, 1fr);
-      align-items: stretch;
+    .services__scroller {
+      margin-inline: 0;
+      padding-inline: 0;
+      overflow: visible;
+    }
+
+    .services__cards {
+      grid-auto-flow: row;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      width: auto;
     }
   }
 
-  .service {
+  .services__path {
+    display: grid;
+    gap: 1rem;
+    margin-top: clamp(2.5rem, 6vw, 4rem);
+  }
+
+  @media (min-width: 800px) {
+    .services__path {
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    }
+  }
+
+  .services__stage {
     display: flex;
     flex-direction: column;
+    align-items: flex-start;
     gap: 0.6rem;
-    min-width: 0;
-    padding: clamp(1.25rem, 3vw, 1.75rem);
-    border: 1px solid var(--line);
+    padding: clamp(1.25rem, 3vw, 2rem);
     border-radius: var(--radius-l);
     background: var(--surface);
   }
 
-  .service--entry {
-    border-color: rgb(95 224 245 / 0.35);
-    background: linear-gradient(150deg, rgb(95 224 245 / 0.1), var(--surface) 60%);
+  .services__stage--entry {
+    background: var(--surface-2);
   }
 
-  .service__label {
-    color: var(--accent);
-    font-size: 0.78rem;
-    letter-spacing: 0.04em;
-  }
-
-  .service__name {
+  .services__stage-name {
     font-size: var(--step-2);
   }
 
-  .service__text {
+  .services__stage-text {
+    max-width: 52ch;
     color: var(--text-2);
   }
 
-  .service__bullets {
-    display: grid;
-    gap: 0.55rem;
-    margin-top: 0.4rem;
-  }
-
-  .service__bullets li {
-    display: grid;
-    grid-template-columns: 16px 1fr;
-    gap: 0.6rem;
-    align-items: start;
-    color: var(--text-2);
-    font-size: 0.97rem;
-    line-height: 1.5;
-  }
-
-  .service__bullets :global(svg) {
-    margin-top: 0.25rem;
-    color: var(--green);
-  }
-
-  .service__items {
-    display: grid;
-    gap: 0.9rem;
-    margin-top: 0.4rem;
-  }
-
-  .service__items div {
-    padding-top: 0.9rem;
-    border-top: 1px solid var(--line);
-  }
-
-  .service__items dt {
-    font-family: var(--font-display);
-    font-weight: 650;
-    font-size: 1.1rem;
-  }
-
-  .service__items dd {
-    margin-top: 0.15rem;
-    color: var(--text-2);
-    font-size: 0.97rem;
-    line-height: 1.5;
-  }
-
-  .service__note {
-    margin-top: auto;
-    padding-top: 0.75rem;
+  .services__stage-note {
     color: var(--text-3);
     font-size: 0.92rem;
   }
 
-  .service__cta {
-    align-self: flex-start;
-    margin-top: auto;
-  }
-
-  .service--entry .service__bullets {
-    margin-bottom: 1rem;
-  }
-
-  .services__foot {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1.25rem 2rem;
-    margin-top: clamp(2rem, 5vw, 3rem);
-  }
-
-  .services__audience {
-    max-width: 62ch;
-    color: var(--text-2);
+  .services__cta {
+    margin-top: 0.6rem;
   }
 </style>

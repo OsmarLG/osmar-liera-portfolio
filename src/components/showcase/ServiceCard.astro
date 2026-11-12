@@ -1,0 +1,49 @@
+---
+import PieceMedia from './PieceMedia.astro';
+import type { ServiceCardItem } from '../../i18n/types';
+
+interface Props {
+  card: ServiceCardItem;
+  playLabel: string;
+  pauseLabel: string;
+}
+
+const { card, playLabel, pauseLabel } = Astro.props;
+---
+
+{/* One service: a real piece, its name, one line, and what the piece is. */}
+<li class="scard">
+  <PieceMedia media={card.media} playLabel={playLabel} pauseLabel={pauseLabel} />
+  <h3 class="scard__name">{card.name}</h3>
+  <p class="scard__line">{card.line}</p>
+  <p class="scard__piece">{card.media.caption}</p>
+</li>
+
+<style>
+  .scard {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .scard__name {
+    margin-top: 1rem;
+    font-size: var(--step-1);
+    line-height: 1.15;
+  }
+
+  .scard__line {
+    margin-top: 0.4rem;
+    color: var(--text-2);
+    font-size: 0.97rem;
+    line-height: 1.45;
+  }
+
+  .scard__piece {
+    margin-top: auto;
+    padding-top: 0.7rem;
+    color: var(--text-3);
+    font-size: 0.875rem;
+    line-height: 1.35;
+  }
+</style>

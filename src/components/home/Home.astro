@@ -3,6 +3,7 @@ import Base from '../../layouts/Base.astro';
 import TraceRail from './TraceRail.astro';
 import Hero from './Hero.astro';
 import Signals from './Signals.astro';
+import Showcase from './Showcase.astro';
 import Profile from './Profile.astro';
 import Cases from './Cases.astro';
 import Principles from './Principles.astro';
@@ -42,6 +43,7 @@ const isBrandHome = Boolean(dict.services);
 >
   <TraceRail dict={dict} />
   <Hero dict={dict} />
+  <Showcase dict={dict} />
   <Signals dict={dict} />
   {
     isBrandHome ? (

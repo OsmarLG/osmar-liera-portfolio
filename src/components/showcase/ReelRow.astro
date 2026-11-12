@@ -1,0 +1,154 @@
+---
+import VideoReel from './VideoReel.astro';
+
+interface Props {
+  /** Accessible name of the row. */
+  label: string;
+  items: { piece: string; title: string }[];
+  prevLabel: string;
+  nextLabel: string;
+  playLabel: string;
+  pauseLabel: string;
+}
+
+const { label, items, prevLabel, nextLabel, playLabel, pauseLabel } = Astro.props;
+---
+
+{/* Scroll-snap row. Only the reel nearest the centre plays (scripts/showcase.ts);
+    without JS it is a plain scrollable row of videos with native controls. */}
+<div class="reelrow" data-reelrow>
+  <div class="reelrow__track" role="group" aria-label={label} tabindex="0" data-reelrow-track>
+    <ul class="reelrow__list" role="list">
+      {
+        items.map((item) => (
+          <li class="reelrow__item" data-reelrow-item>
+            <VideoReel piece={item.piece} label={item.title} playLabel={playLabel} pauseLabel={pauseLabel} />
+            <p class="reelrow__title">{item.title}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+  <div class="reelrow__nav" data-reelrow-nav hidden>
+    <button class="reelrow__arrow" type="button" data-reelrow-prev aria-label={prevLabel}>
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg>
+    </button>
+    <button class="reelrow__arrow" type="button" data-reelrow-next aria-label={nextLabel}>
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg>
+    </button>
+  </div>
+</div>
+
+<style>
+  .reelrow {
+    --reel-w: clamp(180px, 62vw, 228px);
+    position: relative;
+  }
+
+  /* Bleeds to the screen edges so the next reel peeks in; the padding keeps the page margin. */
+  .reelrow__track {
+    margin-inline: calc(var(--gutter) * -1);
+    padding-inline: var(--gutter);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--gutter);
+    scrollbar-width: none;
+  }
+
+  .reelrow__track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .reelrow__track:focus-visible {
+    outline-offset: -2px;
+  }
+
+  .reelrow__list {
+    display: flex;
+    gap: clamp(0.75rem, 1.6vw, 1rem);
+    width: max-content;
+    padding-block: 4px;
+  }
+
+  .reelrow__item {
+    flex: none;
+    width: var(--reel-w);
+    scroll-snap-align: center;
+    transition: opacity 0.35s ease;
+  }
+
+  .reelrow[data-ready] .reelrow__item:not([data-active]) {
+    opacity: 0.6;
+  }
+
+  .reelrow[data-ready] .reelrow__item:not([data-active]):hover,
+  .reelrow[data-ready] .reelrow__item:focus-within {
+    opacity: 1;
+  }
+
+  .reelrow__title {
+    margin-top: 0.7rem;
+    color: var(--text-2);
+    font-size: 0.95rem;
+    line-height: 1.35;
+  }
+
+  .reelrow__item[data-active] .reelrow__title {
+    color: var(--text);
+  }
+
+  .reelrow__nav {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+    margin-top: 1.25rem;
+  }
+
+  .reelrow__arrow {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: var(--surface-2);
+    color: var(--text);
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease,
+      transform 0.25s var(--ease-out);
+  }
+
+  .reelrow__arrow:hover:not(:disabled) {
+    background: var(--accent);
+    color: var(--accent-ink);
+  }
+
+  .reelrow__arrow:active:not(:disabled) {
+    transform: scale(0.94);
+  }
+
+  .reelrow__arrow:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+
+  @media (min-width: 1000px) {
+    .reelrow {
+      --reel-w: calc((min(var(--max), 100vw - var(--gutter) * 2) - 4rem) / 5);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reelrow__item,
+    .reelrow__arrow {
+      transition: none;
+    }
+
+    .reelrow[data-ready] .reelrow__item:not([data-active]) {
+      opacity: 1;
+    }
+  }
+</style>

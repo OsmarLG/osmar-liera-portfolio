@@ -14,6 +14,40 @@ export interface ServiceItem {
   text: string;
 }
 
+/** A real piece shown on the home. `piece` is a key of src/data/showcase.json (built by scripts/media/build-showcase.mjs). */
+export interface ShowcasePiece {
+  piece: string;
+  kind: 'video' | 'image';
+  /** What the piece shows, for screen readers. */
+  alt: string;
+  /** One visible line under the piece. */
+  caption: string;
+}
+
+/** One service with one real piece and one line. */
+export interface ServiceCardItem {
+  key: string;
+  name: string;
+  line: string;
+  media: ShowcasePiece;
+}
+
+/** Row of @soyosmarlg reels and carousel covers right after the hero (Spanish home only). */
+export interface ShowcaseSection {
+  id: string;
+  kicker: string;
+  title: string;
+  intro: string;
+  /** Accessible name of the scrollable row. */
+  rowLabel: string;
+  prev: string;
+  next: string;
+  reels: { piece: string; title: string }[];
+  carouselsTitle: string;
+  carousels: ShowcasePiece[];
+  follow: string;
+}
+
 /** Personal-brand services block (Spanish home only). */
 export interface ServicesSection {
   kicker: string;
@@ -22,6 +56,8 @@ export interface ServicesSection {
   audience: string;
   diagnostic: { label: string; name: string; text: string; bullets: string[]; cta: string; whatsappMessage: string };
   implementations: { label: string; name: string; text: string; items: ServiceItem[] };
+  /** The five implementations as cards, each with a real piece. */
+  cards: ServiceCardItem[];
   monthly: { label: string; name: string; text: string; bullets: string[]; note: string };
   cta: string;
   whatsappMessage: string;
@@ -161,6 +197,8 @@ export interface AiCase {
   summary: string;
   bullets: string[];
   tags: string[];
+  /** Screenshot or screen recording shown above the diagram, when an honest one exists. */
+  media?: ShowcasePiece;
   diagramTitle: string;
   diagramSummary: string;
   diagram: DiagramColumn[];
@@ -302,6 +340,8 @@ export interface Dictionary {
     technology: string;
     pauseAnimation: string;
     playAnimation: string;
+    playVideo: string;
+    pauseVideo: string;
     downloadPdf: string;
     contributionLabel: string;
     blog: string;
@@ -411,6 +451,7 @@ export interface Dictionary {
   };
   /** Present only on the personal-brand (Spanish) home. */
   services?: ServicesSection;
+  showcase?: ShowcaseSection;
   process?: ProcessSection;
   quiz?: QuizSection;
   blogTeaser?: BlogTeaser;

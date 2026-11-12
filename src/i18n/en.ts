@@ -50,6 +50,8 @@ const en: Dictionary = {
     technology: 'Technology',
     pauseAnimation: 'Pause animation',
     playAnimation: 'Resume animation',
+    playVideo: 'Play video',
+    pauseVideo: 'Pause video',
     downloadPdf: 'Download PDF',
     contributionLabel: 'Professional contribution',
     blog: 'Blog (Spanish)',

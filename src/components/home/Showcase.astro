@@ -1,0 +1,137 @@
+---
+import Kicker from '../Kicker.astro';
+import Icon from '../Icon.astro';
+import ReelRow from '../showcase/ReelRow.astro';
+import PieceMedia from '../showcase/PieceMedia.astro';
+import type { Dictionary } from '../../i18n';
+import { socialProfiles } from '../../i18n/social';
+
+interface Props {
+  dict: Dictionary;
+}
+
+const { dict } = Astro.props;
+const showcase = dict.showcase;
+const instagram = socialProfiles.find((profile) => profile.id === 'instagram');
+---
+
+{
+  showcase && (
+    <section class="section showcase" id={showcase.id} aria-labelledby="showcase-title">
+      <div class="container">
+        <div class="section-head showcase__head">
+          <div>
+            <Kicker text={showcase.kicker} />
+            <h2 class="section-title" id="showcase-title">
+              {showcase.title}
+            </h2>
+          </div>
+          <p class="section-intro showcase__intro">{showcase.intro}</p>
+        </div>
+
+        <ReelRow
+          label={showcase.rowLabel}
+          items={showcase.reels}
+          prevLabel={showcase.prev}
+          nextLabel={showcase.next}
+          playLabel={dict.ui.playVideo}
+          pauseLabel={dict.ui.pauseVideo}
+        />
+
+        <div class="showcase__carousels">
+          <div class="showcase__carousels-head" data-reveal>
+            <h3 class="showcase__subtitle">{showcase.carouselsTitle}</h3>
+            {instagram && (
+              <a class="showcase__follow" href={instagram.href} target="_blank" rel="noopener noreferrer me">
+                <Icon name="instagram" size={18} />
+                {showcase.follow}
+                <span class="sr-only">{dict.ui.newTab}</span>
+              </a>
+            )}
+          </div>
+          <ul class="showcase__grid" role="list" data-reveal-group>
+            {showcase.carousels.map((item) => (
+              <li>
+                <PieceMedia media={item} playLabel={dict.ui.playVideo} pauseLabel={dict.ui.pauseVideo} />
+                <p class="showcase__caption">{item.caption}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .showcase {
+    padding-block: clamp(3.5rem, 7vw, 6rem);
+  }
+
+  .showcase__head {
+    display: grid;
+    gap: 1rem 3rem;
+    margin-bottom: clamp(1.75rem, 4vw, 2.75rem);
+  }
+
+  .showcase__intro {
+    margin-top: 0;
+  }
+
+  @media (min-width: 900px) {
+    .showcase__head {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 26rem);
+      align-items: end;
+    }
+  }
+
+  .showcase__carousels {
+    margin-top: clamp(3rem, 7vw, 5rem);
+  }
+
+  .showcase__carousels-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem 2rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .showcase__subtitle {
+    font-size: var(--step-2);
+  }
+
+  .showcase__follow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 44px;
+    color: var(--accent);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .showcase__follow:hover {
+    text-decoration: underline;
+  }
+
+  .showcase__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(0.75rem, 1.6vw, 1rem);
+  }
+
+  @media (min-width: 800px) {
+    .showcase__grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  .showcase__caption {
+    margin-top: 0.6rem;
+    color: var(--text-2);
+    font-size: 0.95rem;
+    line-height: 1.35;
+  }
+</style>
