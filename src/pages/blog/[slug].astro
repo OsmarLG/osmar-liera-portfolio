@@ -5,6 +5,7 @@ import Base from '../../layouts/Base.astro';
 import Icon from '../../components/Icon.astro';
 import AuthorBox from '../../components/blog/AuthorBox.astro';
 import PostCard from '../../components/blog/PostCard.astro';
+import ShareBar from '../../components/blog/ShareBar.astro';
 import { mdxComponents } from '../../components/blog/mdx-components';
 import { getDictionary } from '../../i18n';
 import { SITE_URL, whatsappHref } from '../../i18n/profile';
@@ -174,6 +175,10 @@ const waMessage = `Hola Osmar, leí tu artículo «${title}» y me gustaría pla
       )
     }
 
+    <div class="post__share">
+      <ShareBar title={title} url={new URL(path, SITE_URL).href} />
+    </div>
+
     <div class="post__author">
       <AuthorBox />
     </div>
@@ -278,6 +283,7 @@ const waMessage = `Hola Osmar, leí tu artículo «${title}» y me gustaría pla
   .post__head,
   .post__faq,
   .post__tags,
+  .post__share,
   .post__author,
   .post__cta {
     max-width: var(--measure);
@@ -514,12 +520,12 @@ const waMessage = `Hola Osmar, leí tu artículo «${title}» y me gustaría pla
     font-weight: 650;
   }
 
-  .prose :global(a) {
+  .prose :global(a:not(.btn)) {
     color: var(--accent);
     text-decoration-color: rgb(95 224 245 / 0.4);
   }
 
-  .prose :global(a:hover) {
+  .prose :global(a:not(.btn):hover) {
     text-decoration-color: currentColor;
   }
 

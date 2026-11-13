@@ -1,0 +1,171 @@
+---
+/**
+ * <ShareBar title url /> — "Comparte este artículo" row under each post.
+ * Every network is a plain link (works without JS). With JS: «Compartir» opens the phone's own share
+ * sheet (Instagram, Facebook, Messenger… whatever the reader has installed) and «Copiar enlace» copies the URL.
+ */
+import Icon from '../Icon.astro';
+
+interface Props {
+  title: string;
+  url: string;
+}
+
+const { title, url } = Astro.props;
+const encodedUrl = encodeURIComponent(url);
+const networks = [
+  {
+    name: 'WhatsApp',
+    icon: 'whatsapp',
+    href: `https://wa.me/?text=${encodeURIComponent(`${title} ${url}`)}`,
+  },
+  { name: 'Facebook', icon: 'facebook', href: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}` },
+  { name: 'LinkedIn', icon: 'linkedin', href: `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}` },
+  {
+    name: 'X',
+    icon: 'x',
+    href: `https://x.com/intent/post?text=${encodeURIComponent(title)}&url=${encodedUrl}`,
+  },
+] as const;
+---
+
+<section class="share" aria-labelledby="share-title" data-share data-share-title={title} data-share-url={url}>
+  <p class="share__title mono" id="share-title">Comparte este artículo</p>
+  <ul class="share__list" role="list">
+    <li data-share-native hidden>
+      <button type="button" class="share__btn share__btn--main">
+        <Icon name="share" size={18} />
+        <span>Compartir</span>
+      </button>
+    </li>
+    {
+      networks.map((network) => (
+        <li>
+          <a
+            class="share__btn"
+            href={network.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            data-share-network={network.name.toLowerCase()}
+          >
+            <Icon name={network.icon} size={18} />
+            <span>{network.name}</span>
+            <span class="sr-only">(se abre en una pestaña nueva)</span>
+          </a>
+        </li>
+      ))
+    }
+    <li>
+      <button type="button" class="share__btn" data-share-copy>
+        <Icon name="link" size={18} />
+        <span data-share-copy-label>Copiar enlace</span>
+      </button>
+    </li>
+  </ul>
+  <p class="sr-only" aria-live="polite" data-share-status></p>
+</section>
+
+<script>
+  import { track as trackEvent } from '../../scripts/analytics';
+
+  function track(network: string): void {
+    trackEvent('share', { method: network, content_type: 'article' });
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-share]').forEach((box) => {
+    const title = box.dataset.shareTitle ?? document.title;
+    const url = box.dataset.shareUrl ?? location.href;
+    const status = box.querySelector<HTMLElement>('[data-share-status]');
+
+    const native = box.querySelector<HTMLElement>('[data-share-native]');
+    if (native && typeof navigator.share === 'function') {
+      native.hidden = false;
+      native.querySelector('button')?.addEventListener('click', () => {
+        track('nativo');
+        navigator.share({ title, url }).catch(() => {});
+      });
+    }
+
+    box.querySelectorAll<HTMLAnchorElement>('[data-share-network]').forEach((link) => {
+      link.addEventListener('click', () => track(link.dataset.shareNetwork ?? 'red'));
+    });
+
+    const copy = box.querySelector<HTMLButtonElement>('[data-share-copy]');
+    const label = copy?.querySelector<HTMLElement>('[data-share-copy-label]');
+    copy?.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(url);
+      } catch {
+        window.prompt('Copia el enlace:', url);
+        return;
+      }
+      track('copiar');
+      if (label) {
+        label.textContent = '¡Copiado!';
+        window.setTimeout(() => (label.textContent = 'Copiar enlace'), 2000);
+      }
+      if (status) status.textContent = 'Enlace copiado';
+    });
+  });
+</script>
+
+<style>
+  .share {
+    margin-top: 2.5rem;
+    padding-top: 1.75rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .share__title {
+    color: var(--text-2);
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .share__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  .share__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 44px;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--text);
+    font: inherit;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+      border-color 0.2s ease,
+      color 0.2s ease,
+      background-color 0.2s ease;
+  }
+
+  .share__btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .share__btn--main {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: var(--accent-ink);
+  }
+
+  .share__btn--main:hover {
+    background: #8beafa;
+    color: var(--accent-ink);
+  }
+</style>
